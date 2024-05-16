@@ -10,5 +10,6 @@ await client.close();
 <template>
   <div>
     <h1 v-if="movie">{{ movie.fullplot }}</h1>
+    <p>ahojky</p>
   </div>
 </template>
