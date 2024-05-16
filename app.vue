@@ -4,7 +4,6 @@ import { connectDB, client } from '~/utils/db.js';
 connectDB();
 
 const movie = await client.db("sample_mflix").collection("movies").findOne({ title: "The Great Train Robbery" });
-await client.close();
 </script>
 
 <template>
