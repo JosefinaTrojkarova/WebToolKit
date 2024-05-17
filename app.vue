@@ -9,6 +9,5 @@ const movie = await client.db("sample_mflix").collection("movies").findOne({ tit
 <template>
   <div>
     <h1 v-if="movie">{{ movie.fullplot }}</h1>
-    <p>ahojky</p>
   </div>
 </template>
