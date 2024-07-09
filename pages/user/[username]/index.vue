@@ -5,13 +5,7 @@
 </template>
 
 <script>
-export default {
-    computed: {
-        username() {
-            return this.$route.params.username;
-        }
-    }
-};
+const { username } = useRoute().params
 </script>
 
 <style lang="scss" scoped></style>
