@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { connectDB, client } from '~/utils/db.js';
+// import { connectDB, client } from '~/server/utils/db.js';
 
-connectDB();
+//connectDB();
 
-const movie = await client.db("sample_mflix").collection("movies").findOne({ title: "The Great Train Robbery" });
+//const movie = await client.db("sample_mflix").collection("movies").findOne({ title: "The Great Train Robbery" });
 </script>
 
 <template>
   <div>
-    <h1 v-if="movie">{{ movie.fullplot }}</h1>
+    
   </div>
 </template>
