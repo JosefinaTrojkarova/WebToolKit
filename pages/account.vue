@@ -1,15 +1,12 @@
 <template>
     <div>
-
+        <h1>Account setting for {{ currentUser }}</h1>
     </div>
 </template>
 
-<script>
-    export default {
-        
-    }
+<script setup lang="ts">
+// Temporary placeholder
+let currentUser = 'John Doe'
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style scoped></style>

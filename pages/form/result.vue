@@ -1,15 +1,33 @@
 <template>
     <div>
+        <header>
+            <h1>Here are the best tools for you:</h1>
+        </header>
+        <main>
+            <!-- Display a list of tools -->
 
+            <!-- Placeholder -->
+            <NuxtLink to="/tool/tailwindcss" class="card">
+                <h2>Tailwind CSS</h2>
+                <p>Tool Description</p>
+            </NuxtLink>
+        </main>
     </div>
 </template>
 
-<script>
-    export default {
-        
-    }
+<script setup lang="ts">
+
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+/* Temporary style */
+.card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 1rem;
+    margin: 1rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
 </style>

@@ -1,15 +1,15 @@
 <template>
     <div>
+        <!-- Fill this properly from database -->
 
+        <!-- Placeholder -->
+        <input type="text" placeholder="Name of the tool" :value="name" />
+        <input type="text" placeholder="Description of the tool" />
     </div>
 </template>
 
-<script>
-    export default {
-        
-    }
+<script setup lang="ts">
+const { name } = useRoute().params;
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style scoped></style>
