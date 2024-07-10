@@ -12,7 +12,7 @@
           class="card"
         >
           <h2>{{ item.name }}</h2>
-          <p>Tool Description</p>
+          <p>{{ item.description }}</p>
         </NuxtLink>
   
         <!-- Display a message if no tools are found -->
@@ -27,6 +27,7 @@
   interface DataItem {
     _id: string;
     name: string;
+    description: string;
   }
   
   const { data } = await useFetch<DataItem[]>('/api/data')

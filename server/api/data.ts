@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb'
 
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
-    const client = new MongoClient(config.mongodbUri)
+    const client = new MongoClient(config.mongodbUri as string)
 
   try {
     await client.connect()
