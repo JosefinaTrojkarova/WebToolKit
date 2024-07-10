@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { useModal } from '~/composables/useModal'
+import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 
 const { isModalOpen, openModal, closeModal } = useModal()
 </script>

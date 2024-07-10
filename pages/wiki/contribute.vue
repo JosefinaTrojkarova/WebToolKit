@@ -14,8 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { useModal } from '~/composables/useModal'
-
 const { isModalOpen, openModal, closeModal } = useModal()
 const router = useRouter()
 
