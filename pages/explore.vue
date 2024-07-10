@@ -4,14 +4,18 @@
       <input v-model="searchQuery" type="text" placeholder="Search for tools" />
     </header>
     <main>
-      <!-- Loading and error handling -->
-      <p v-if="pending">Loading tools...</p>
-      <p v-else-if="error">Error: {{ error.message }}</p>
+      <!-- Display error state -->
+      <p v-if="error">Error: {{ error.message }}</p>
 
+      <!-- Display tools when data is available -->
       <template v-else>
-        <!-- List of tools -->
-        <NuxtLink v-for="item in filteredData" :key="item._id"
-          :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`" class="card">
+        <!-- Display a list of tools -->
+        <NuxtLink 
+          v-for="item in filteredData" 
+          :key="item._id"
+          :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`" 
+          class="card"
+        >
           <h2>{{ item.name }}</h2>
           <p>{{ item.description }}</p>
         </NuxtLink>
@@ -22,6 +26,7 @@
     </main>
   </div>
 </template>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
@@ -33,7 +38,7 @@ interface DataItem {
 
 const searchQuery = ref('')
 
-const { data, error, pending } = await useLazyFetch<DataItem[]>('/api/data')
+const { data, error } = await useFetch<DataItem[]>('/api/data')
 
 const filteredData = computed(() => {
   if (!data.value) return []
@@ -43,7 +48,7 @@ const filteredData = computed(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 /* Temporary style */
 .card {
   border: 1px solid #ccc;

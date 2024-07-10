@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
     const collection = database.collection('Main')
 
     const data = await collection.find({}).toArray()
+    
     return data
   } catch (error) {
     console.error(error)
