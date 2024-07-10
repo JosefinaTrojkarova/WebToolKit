@@ -10,9 +10,16 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "express": "^4.19.2",
     "mongodb": "^6.8.0",
     "nuxt": "^3.12.3",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^2.18.1",
+    "@types/node": "^20.14.10",
+    "typescript": "^5.5.3",
+    "vue-tsc": "^2.0.26"
   }
 }
