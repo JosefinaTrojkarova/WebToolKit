@@ -30,7 +30,7 @@
     description: string;
   }
   
-  const { data } = await useFetch<DataItem[]>('/api/data')
+  const { data } = await useLazyFetch<DataItem[]>('/api/data')
   
   const searchQuery = ref('')
   
