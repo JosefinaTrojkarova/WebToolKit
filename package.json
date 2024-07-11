@@ -13,6 +13,7 @@
     "@vercel/speed-insights": "^1.0.12",
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
+    "node-cache": "^5.1.2",
     "nuxt": "^3.12.3",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0"
