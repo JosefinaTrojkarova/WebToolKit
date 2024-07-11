@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb'
 import NodeCache from 'node-cache'
 
-const cache = new NodeCache({ stdTTL: 200, checkperiod: 400 })
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 })
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
