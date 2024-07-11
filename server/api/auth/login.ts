@@ -24,11 +24,16 @@ export default defineEventHandler(async (event) => {
             })
         }
 
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+          throw new Error('JWT_SECRET is not set in environment variables');
+        }
+        
         const token = jwt.sign(
-            { userId: user._id, email: user.email },
-            process.env.JWT_SECRET || 'fallback_secret',
-            { expiresIn: '1h' }
-        )
+          { userId: user._id, email: user.email },
+          jwtSecret,
+          { expiresIn: '2m' } // cas
+        );
 
         return {
             message: 'Login successful',
