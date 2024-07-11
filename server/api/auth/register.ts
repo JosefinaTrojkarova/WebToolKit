@@ -1,9 +1,7 @@
-// server/api/auth/register.ts
 import { User } from '~/server/models/User'
 import bcrypt from 'bcrypt'
 
 export default defineEventHandler(async (event) => {
-  console.log('Register API route hit')
   const body = await readBody(event)
   const { username, email, password } = body
 

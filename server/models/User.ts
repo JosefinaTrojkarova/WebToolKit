@@ -6,8 +6,17 @@ const userSchema = new mongoose.Schema({
   authentication: {
     password: { type: String, required: true, select: false },
     salt: { type: String, select: false },
-    sessionToken: { type: String, select: false },
+    token: { type: String, select: false },
   },
 }, { timestamps: true })
+
+export interface IUser extends mongoose.Document {
+  username: string;
+  email: string;
+  authentication: {
+    password: string;
+    salt: string;
+  };
+}
 
 export const User = mongoose.model('User', userSchema, 'Users')
