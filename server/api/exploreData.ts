@@ -9,7 +9,14 @@ export default defineEventHandler(async (event) => {
     const database = client.db('Tools')
     const collection = database.collection('Main')
 
-    const data = await collection.find({}).toArray()
+    const data = await collection.find({}, {
+      projection: {
+        _id: 1,
+        name: 1,
+        description: 1,
+        logo: 1
+      }
+    }).toArray()
     
     return data
   } catch (error) {

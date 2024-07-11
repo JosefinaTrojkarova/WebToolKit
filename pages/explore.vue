@@ -4,18 +4,17 @@
       <input v-model="searchQuery" type="text" placeholder="Search for tools" />
     </header>
     <main>
-      <!-- Display error state -->
-      <p v-if="error">Error: {{ error.message }}</p>
+      <!-- Loading -->
+      <p v-if="status === 'pending'">Loading...</p>
 
-      <!-- Display tools when data is available -->
-      <template v-else>
+      <!-- Error -->
+      <p v-else-if="error">Error: {{ error.message }}</p>
+
+      <!-- Data loaded -->
+      <template v-else-if="data">
         <!-- Display a list of tools -->
-        <NuxtLink 
-          v-for="item in filteredData" 
-          :key="item._id"
-          :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`" 
-          class="card"
-        >
+        <NuxtLink v-for="item in filteredData" :key="item._id"
+          :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`" class="card">
           <h2>{{ item.name }}</h2>
           <p>{{ item.description }}</p>
         </NuxtLink>
@@ -26,20 +25,13 @@
     </main>
   </div>
 </template>
-
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import type { ItemBasicInfo } from '~/types/types'
 
-interface DataItem {
-  _id: string;
-  name: string;
-  description: string;
-}
+const { data, status, error  } = useLazyFetch<ItemBasicInfo[]>('/api/exploreData')
 
+// Search for tools - Temporary
 const searchQuery = ref('')
-
-const { data, error } = await useFetch<DataItem[]>('/api/data')
-
 const filteredData = computed(() => {
   if (!data.value) return []
   return data.value.filter(item =>
