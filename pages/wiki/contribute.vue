@@ -6,7 +6,7 @@
         <Modal :is-open="isModalOpen" @close="closeModal">
             <p>Enter the name of the tool</p>
             <input v-model="toolName" type="text" placeholder="Name" />
-            <NuxtLink :to="`/user/${currentUser}/${toolName}/edit`" @click.native.prevent="navigateToEdit">
+            <NuxtLink :to="`/user/${currentUser}/${toolName}/edit`" @click.prevent="navigateToEdit">
                 Next
             </NuxtLink>
         </Modal>
