@@ -4,30 +4,37 @@ import NodeCache from 'node-cache'
 const cache = new NodeCache({ stdTTL: 200, checkperiod: 400 })
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig()
-    const client = new MongoClient(config.mongodbUri as string)
+  const config = useRuntimeConfig()
+  const client = new MongoClient(config.mongodbUri as string)
 
-    const cacheKey = 'toolsData'
+  const cacheKey = 'toolsData'
+  const query = getQuery(event)
+  const explore = query.basic === 'true'
 
-    const cachedData = cache.get(cacheKey)
-    if (cachedData) {
-        return cachedData
+  const cachedData = cache.get(cacheKey + (explore ? '_explore' : '_full'))
+  if (cachedData) {
+    return cachedData
+  }
+
+  try {
+    await client.connect()
+    const database = client.db('Tools')
+    const collection = database.collection('Main')
+
+    let data
+    if (explore) {
+      data = await collection.find({}, { projection: { name: 1, description: 1, logo: 1 } }).toArray()
+    } else {
+      data = await collection.find({}).toArray()
     }
 
-    try {
-        await client.connect()
-        const database = client.db('Tools')
-        const collection = database.collection('Main')
+    cache.set(cacheKey + (explore ? '_explore' : '_full'), data)
 
-        const data = await collection.find({}, {}).toArray()
-
-        cache.set(cacheKey, data)
-
-        return data
-    } catch (error) {
-        console.error(error)
-        return { error: 'Internal Server Error' }
-    } finally {
-        await client.close()
-    }
+    return data
+  } catch (error) {
+    console.error(error)
+    return { error: 'Internal Server Error' }
+  } finally {
+    await client.close()
+  }
 })

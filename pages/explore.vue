@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import type { ItemBasicInfo } from '~/types/types'
 
-const { data, status, error  } = useLazyFetch<ItemBasicInfo[]>('/api/data')
+const { data, status, error } = useLazyFetch<ItemBasicInfo[]>('/api/data?explore=true')
 
 // Search for tools - Temporary
 const searchQuery = ref('')
