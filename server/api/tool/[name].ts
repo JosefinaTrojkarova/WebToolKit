@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
         const database = client.db('Tools')
         const collection = database.collection('Main')
 
-        const data = await collection.findOne({ name })
+        const data = await collection.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') } })
 
         if (!data) {
             return { error: 'Tool not found' }
