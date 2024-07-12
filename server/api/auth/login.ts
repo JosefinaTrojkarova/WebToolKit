@@ -26,13 +26,13 @@ export default defineEventHandler(async (event) => {
 
         const jwtSecret = process.env.JWT_SECRET;
         if (!jwtSecret) {
-          throw new Error('JWT_SECRET is not set in environment variables');
+            throw new Error('JWT_SECRET is not set in environment variables');
         }
-        
+
         const token = jwt.sign(
-          { userId: user._id, email: user.email },
-          jwtSecret,
-          { expiresIn: '2m' } // cas
+            { userId: user._id, email: user.email },
+            jwtSecret,
+            { expiresIn: '1h' }
         );
 
         return {
@@ -45,7 +45,6 @@ export default defineEventHandler(async (event) => {
             }
         }
     } catch (error) {
-        console.error('Login error:', error)
         throw createError({
             statusCode: 401,
             statusMessage: error instanceof Error ? error.message : 'Login failed',

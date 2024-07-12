@@ -1,12 +1,11 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose' // zmenit na native driver
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   authentication: {
-    password: { type: String, required: true, select: false },
-    salt: { type: String, select: false },
-    token: { type: String, select: false },
+    password: { type: String, required: true },
+    salt: { type: String },
   },
 }, { timestamps: true })
 
@@ -19,4 +18,4 @@ export interface IUser extends mongoose.Document {
   };
 }
 
-export const User = mongoose.model('User', userSchema, 'Users')
+export const User = mongoose.model<IUser>('User', userSchema, 'Users')
