@@ -4,8 +4,16 @@ import NodeCache from 'node-cache'
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 })
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  const client = new MongoClient(config.mongodbUri as string)
+  const nitroApp = useNitroApp()
+  const mongoClient = nitroApp.mongoClient as MongoClient | undefined
+
+  if (!mongoClient) {
+    console.error('MongoDB client is not available')
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Database connection error',
+    })
+  }
 
   const cacheKey = 'toolsData'
   const query = getQuery(event)
@@ -17,8 +25,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await client.connect()
-    const database = client.db('Tools')
+    const database = mongoClient.db('Tools')
     const collection = database.collection('Main')
 
     let data
@@ -33,8 +40,9 @@ export default defineEventHandler(async (event) => {
     return data
   } catch (error) {
     console.error(error)
-    return { error: 'Internal Server Error' }
-  } finally {
-    await client.close()
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Internal Server Error',
+    })
   }
 })
