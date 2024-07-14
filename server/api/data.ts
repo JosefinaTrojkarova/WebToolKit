@@ -5,26 +5,34 @@ const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 })
 
 export default defineEventHandler(async (event) => {
   const nitroApp = useNitroApp()
-  const mongoClient = nitroApp.mongoClient as MongoClient | undefined
 
-  if (!mongoClient) {
-    console.error('MongoDB client is not available')
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Database connection error',
-    })
-  }
+  async function getMongoClient(): Promise<MongoClient> {
+    let retries = 0;
+    const maxRetries = 5;
+    const retryDelay = 1000;
 
-  const cacheKey = 'toolsData'
-  const query = getQuery(event)
-  const explore = query.basic === 'true'
-
-  const cachedData = cache.get(cacheKey + (explore ? '_explore' : '_full'))
-  if (cachedData) {
-    return cachedData
+    while (retries < maxRetries) {
+      if (nitroApp.mongoClient) {
+        return nitroApp.mongoClient;
+      }
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      retries++;
+    }
+    throw new Error('MongoDB client is not available');
   }
 
   try {
+    const mongoClient = await getMongoClient();
+
+    const cacheKey = 'toolsData'
+    const query = getQuery(event)
+    const explore = query.basic === 'true'
+
+    const cachedData = cache.get(cacheKey + (explore ? '_explore' : '_full'))
+    if (cachedData) {
+      return cachedData
+    }
+
     const database = mongoClient.db('Tools')
     const collection = database.collection('Main')
 

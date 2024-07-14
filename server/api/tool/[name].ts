@@ -5,14 +5,20 @@ const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 })
 
 export default defineEventHandler(async (event) => {
     const nitroApp = useNitroApp()
-    const mongoClient = nitroApp.mongoClient as MongoClient | undefined
 
-    if (!mongoClient) {
-        console.error('MongoDB client is not available')
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Database connection error',
-        })
+    async function getMongoClient(): Promise<MongoClient> {
+        let retries = 0;
+        const maxRetries = 5;
+        const retryDelay = 1000;
+
+        while (retries < maxRetries) {
+            if (nitroApp.mongoClient) {
+                return nitroApp.mongoClient;
+            }
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+            retries++;
+        }
+        throw new Error('MongoDB client is not available');
     }
 
     const { name } = event.context.params as { name: string }
@@ -31,6 +37,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
+        const mongoClient = await getMongoClient();
         const database = mongoClient.db('Tools')
         const collection = database.collection('Main')
 
@@ -48,6 +55,12 @@ export default defineEventHandler(async (event) => {
         return data
     } catch (error) {
         console.error(error)
+        if (error instanceof Error && error.message === 'MongoDB client is not available') {
+            throw createError({
+                statusCode: 503,
+                statusMessage: 'Service Temporarily Unavailable',
+            })
+        }
         throw createError({
             statusCode: 500,
             statusMessage: 'Internal Server Error',

@@ -8,7 +8,10 @@
       <p v-if="status === 'pending'">Loading...</p>
 
       <!-- Error -->
-      <p v-else-if="error">Error: {{ error.message }}</p>
+      <div v-else-if="error">
+        <p>Error: {{ error.message }}</p>
+        <button @click="retry">Retry</button>
+      </div>
 
       <!-- Data loaded -->
       <template v-else-if="data">
@@ -25,10 +28,15 @@
     </main>
   </div>
 </template>
+
 <script setup lang="ts">
 import type { ItemBasicInfo } from '~/types/types'
 
-const { data, status, error } = useLazyFetch<ItemBasicInfo[]>('/api/data?explore=true')
+const { data, status, error, refresh } = useLazyFetch<ItemBasicInfo[]>('/api/data?explore=true')
+
+const retry = () => {
+  refresh()
+}
 
 // Search for tools - Temporary
 const searchQuery = ref('')
