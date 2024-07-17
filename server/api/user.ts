@@ -1,10 +1,12 @@
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import jwt from 'jsonwebtoken';
-import type  { IUser } from '../models/Users';
+import type { IUser } from '../models/Users';
 
 export default defineEventHandler(async (event) => {
+    // get the token from the request
     const token = getRequestHeader(event, 'authorization')?.split(' ')[1];
 
+    // check if the token is provided
     if (!token) {
         console.log('No token provided');
         throw createError({
@@ -14,6 +16,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
+        // get the JWT secret from environment variables
         const jwtSecret = process.env.JWT_SECRET;
         if (!jwtSecret) {
             console.error('JWT_SECRET is not set in environment variables');
@@ -23,6 +26,7 @@ export default defineEventHandler(async (event) => {
             });
         }
 
+        // verify the token
         let decoded;
         try {
             decoded = jwt.verify(token, jwtSecret) as { userId: string };
@@ -35,8 +39,8 @@ export default defineEventHandler(async (event) => {
         }
 
         const nitroApp = useNitroApp();
-        console.log('Nitro app:', nitroApp);
-        console.log('MongoDB client:', nitroApp.mongoClient);
+        //console.log('Nitro app:', nitroApp);
+        //console.log('MongoDB client:', nitroApp.mongoClient);
 
         if (!nitroApp.mongoClient) {
             console.error('MongoDB client is not available in Nitro app');
@@ -50,6 +54,7 @@ export default defineEventHandler(async (event) => {
         const db = mongoClient.db('User');
         const UsersCollection: Collection<IUser> = db.collection('Users');
 
+        // get the user by id
         const user = await UsersCollection.findOne(
             { _id: new ObjectId(decoded.userId) },
             { projection: { authentication: 0 } }

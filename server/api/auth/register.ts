@@ -1,11 +1,12 @@
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import bcrypt from 'bcrypt';
-import type  { IUser } from '../../models/Users';
+import type { IUser } from '../../models/Users';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { username, email, password } = body;
 
+  // connect to mongo
   try {
     const nitroApp = useNitroApp();
     const mongoClient = nitroApp.mongoClient as MongoClient | undefined;
@@ -21,6 +22,7 @@ export default defineEventHandler(async (event) => {
     const db = mongoClient.db('User');
     const UsersCollection: Collection<IUser> = db.collection('Users');
 
+    // check if the user already exists
     const existingUser = await UsersCollection.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
       throw createError({
@@ -29,9 +31,11 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    // hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // create new user
     const newUser: IUser = {
       username,
       email,
