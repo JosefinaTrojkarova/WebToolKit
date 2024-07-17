@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 
+// User interface
 export interface IUser {
     _id?: ObjectId;
     username: string;

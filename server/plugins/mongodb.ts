@@ -9,6 +9,7 @@ declare module 'nitropack' {
 export default defineNitroPlugin(async (nitroApp) => {
   const config = useRuntimeConfig();
 
+  // function to connect to MongoDB with retries
   async function connectWithRetry(maxRetries = 5, delay = 5000) {
     let retries = 0;
     while (retries < maxRetries) {
@@ -28,6 +29,7 @@ export default defineNitroPlugin(async (nitroApp) => {
     }
   }
 
+  // connect to MongoDB
   try {
     nitroApp.mongoClient = await connectWithRetry();
   } catch (error) {
@@ -35,6 +37,7 @@ export default defineNitroPlugin(async (nitroApp) => {
     nitroApp.mongoClient = null;
   }
 
+  // close MongoDB connection on Nitro app close
   nitroApp.hooks.hook('close', async () => {
     if (nitroApp.mongoClient) {
       await nitroApp.mongoClient.close();
