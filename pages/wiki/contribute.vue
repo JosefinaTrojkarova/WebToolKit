@@ -87,7 +87,7 @@ const editLink = computed(() => {
 })
 
 // Fetch data for existing tools
-const { data, error, refresh } = useLazyFetch<ItemBasicInfo[]>('/api/data?contribute=true')
+const { data, refresh } = useLazyFetch<ItemBasicInfo[]>('/api/data?contribute=true')
 
 const retry = () => {
     refresh()

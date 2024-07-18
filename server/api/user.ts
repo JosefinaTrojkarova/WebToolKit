@@ -39,8 +39,6 @@ export default defineEventHandler(async (event) => {
         }
 
         const nitroApp = useNitroApp();
-        //console.log('Nitro app:', nitroApp);
-        //console.log('MongoDB client:', nitroApp.mongoClient);
 
         if (!nitroApp.mongoClient) {
             console.error('MongoDB client is not available in Nitro app');

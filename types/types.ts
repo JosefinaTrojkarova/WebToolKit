@@ -15,3 +15,11 @@ export type User = {
   username: string;
   email: string;
 }
+
+export type ISuggestion = {
+  suggestedBy: string;
+  name: string;
+  description: string;
+  additionalInfo?: string;
+  createdAt: string;
+}
