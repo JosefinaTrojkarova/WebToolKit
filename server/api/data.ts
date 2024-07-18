@@ -27,10 +27,11 @@ export default defineEventHandler(async (event) => {
 
     const cacheKey = 'toolsData';
     const query = getQuery(event);
-    const explore = query.basic === 'true';
+    const explore = query.explore === 'true';
+    const contribute = query.contribute === 'true';
 
     // check if the data is already cached and return it
-    const cachedData = cache.get(cacheKey + (explore ? '_explore' : '_full'));
+    const cachedData = cache.get(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full'));
     if (cachedData) {
       return cachedData;
     }
@@ -42,11 +43,13 @@ export default defineEventHandler(async (event) => {
     let data;
     if (explore) {
       data = await collection.find({}, { projection: { name: 1, description: 1, logo: 1 } }).toArray();
+    } else if (contribute) {
+      data = await collection.find({}, { projection: { name: 1 } }).toArray();
     } else {
       data = await collection.find({}).toArray();
     }
 
-    cache.set(cacheKey + (explore ? '_explore' : '_full'), data);
+    cache.set(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full'), data);
 
     return data;
   } catch (error) {
