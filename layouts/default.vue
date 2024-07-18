@@ -13,6 +13,9 @@
                     <NuxtLink to="/wiki/contribute">Contribute</NuxtLink>
                 </li>
                 <li>
+                    <NuxtLink to="/dashboard">Dashboard</NuxtLink>
+                </li>
+                <li>
                     <button @click="openModal">Log In</button>
                 </li>
             </ul>

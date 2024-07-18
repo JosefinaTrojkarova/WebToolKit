@@ -9,3 +9,9 @@ export type Tool = {
   name: string;
   description: string;
 }
+
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+}
