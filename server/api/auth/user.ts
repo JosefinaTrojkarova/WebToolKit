@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import jwt from 'jsonwebtoken';
-import type { IUser } from '../models/Users';
+import type { IUser } from '../../models/Users';
 
 export default defineEventHandler(async (event) => {
     // get the token from the request

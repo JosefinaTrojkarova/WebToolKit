@@ -53,7 +53,7 @@ const fetchUserInfo = async () => {
     }
 
     try {
-        const response = await fetch('/api/user', {
+        const response = await fetch('/api/auth/user', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
