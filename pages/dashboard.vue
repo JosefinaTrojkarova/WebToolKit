@@ -6,6 +6,7 @@
             <p>Email: {{ user.email }}</p>
             <!-- Add more user information as needed -->
             <button @click="logout">Log Out</button>
+            <button @click="deleteAccount" class="delete-button">Delete Account</button>
         </div>
         <div v-else-if="error">
             <p>{{ error }}</p>
@@ -52,6 +53,37 @@ const logout = () => {
     error.value = 'You have been logged out.'
 }
 
+const deleteAccount = async () => {
+    if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        return
+    }
+
+    const token = localStorage.getItem('token')
+    if (!token) {
+        error.value = 'You must be logged in to delete your account'
+        return
+    }
+
+    try {
+        const response = await fetch('/api/auth/delete', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if (!response.ok) {
+            const errorData = await response.json()
+            throw new Error(errorData.statusMessage || 'Failed to delete account')
+        }
+        localStorage.removeItem('token')
+        user.value = null
+        error.value = 'Your account has been deleted successfully.'
+    } catch (err) {
+        console.error('Error deleting account:', err)
+        error.value = err instanceof Error ? err.message : 'An error occurred while deleting your account'
+    }
+}
+
 onMounted(fetchUserInfo)
 </script>
 
@@ -68,5 +100,14 @@ button {
 
 button:hover {
     background-color: #d44;
+}
+
+.delete-button {
+    background-color: #f00;
+    margin-left: 1rem;
+}
+
+.delete-button:hover {
+    background-color: #d00;
 }
 </style>
