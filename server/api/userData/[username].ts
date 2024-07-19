@@ -1,7 +1,9 @@
-import { MongoClient } from 'mongodb';
+// Purpose: Get user's username and email data the database.
+
 import type { IUser } from '../../models/Users';
 
 export default defineEventHandler(async (event) => {
+    // gets username from the URL
     const username = event.context.params?.username;
 
     if (!username) {
@@ -11,24 +13,20 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    const config = useRuntimeConfig();
+    const nitroApp = useNitroApp();
 
-    if (!config.mongodbUri) {
+    if (!nitroApp.mongoClient) {
         throw createError({
             statusCode: 500,
-            statusMessage: 'Database configuration error',
+            statusMessage: 'Database connection error',
         });
     }
 
-    let mongoClient: MongoClient | null = null;
-    
     try {
-        mongoClient = new MongoClient(config.mongodbUri);
-        await mongoClient.connect();
-
-        const db = mongoClient.db('User');
+        const db = nitroApp.mongoClient.db('User');
         const UsersCollection = db.collection<IUser>('Users');
 
+        // find username
         const user = await UsersCollection.findOne(
             { username: username },
             { projection: { authentication: 0 } }
@@ -52,9 +50,5 @@ export default defineEventHandler(async (event) => {
             statusCode: 500,
             statusMessage: 'An error occurred while fetching the user',
         });
-    } finally {
-        if (mongoClient) {
-            await mongoClient.close();
-        }
     }
 });

@@ -1,3 +1,5 @@
+// Purpose: Log in a user with email and password.
+
 import { MongoClient, Collection } from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -11,8 +13,6 @@ export default defineEventHandler(async (event) => {
     try {
         const nitroApp = useNitroApp();
         console.log('Log in: ', email);
-        //console.log('Nitro app:', nitroApp);
-        //console.log('MongoDB client:', nitroApp.mongoClient);
 
         if (!nitroApp.mongoClient) {
             console.error('MongoDB client is not available in Nitro app');

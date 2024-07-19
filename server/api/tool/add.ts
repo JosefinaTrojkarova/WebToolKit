@@ -1,9 +1,11 @@
+// Purpose: API endpoint to submit a new tool suggestion.
+
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import type { ISuggestion } from '~/types/types';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    const { toolId, suggestedBy, name, description, additionalInfo } = body;
+    const { suggestedBy, name, description, additionalInfo } = body;
 
     try {
         const nitroApp = useNitroApp();

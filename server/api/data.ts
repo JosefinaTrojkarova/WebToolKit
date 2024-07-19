@@ -1,3 +1,5 @@
+// Purpose: API endpoint to get basic data about all the tools from the database.
+
 import { MongoClient } from 'mongodb';
 import NodeCache from 'node-cache';
 

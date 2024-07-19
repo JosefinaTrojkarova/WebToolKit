@@ -1,3 +1,5 @@
+// Purpouse: API endpoint to get all the data about one specific tool from the database.
+
 import { MongoClient } from 'mongodb';
 import NodeCache from 'node-cache';
 

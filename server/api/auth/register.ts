@@ -1,3 +1,5 @@
+// Purpose: Register a new user.
+
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import bcrypt from 'bcrypt';
 import type { IUser } from '../../models/Users';

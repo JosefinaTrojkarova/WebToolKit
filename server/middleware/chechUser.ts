@@ -1,4 +1,5 @@
-import { MongoClient, Collection } from 'mongodb';
+// Purpous: Check if a user exists in the database else redirect to 404 page.
+
 import type { IUser } from '../models/Users';
 
 export default defineEventHandler(async (event) => {
@@ -16,21 +17,16 @@ export default defineEventHandler(async (event) => {
         return sendRedirect(event, '/404', 302);
     }
 
-    const config = useRuntimeConfig();
+    const nitroApp = useNitroApp();
 
-    if (!config.mongodbUri) {
-        console.error('MongoDB URI is not available');
+    if (!nitroApp.mongoClient) {
+        console.error('MongoDB client is not available');
         return sendRedirect(event, '/error', 302);
     }
 
-    let mongoClient: MongoClient | null = null;
-
     try {
-        mongoClient = new MongoClient(config.mongodbUri);
-        await mongoClient.connect();
-
-        const db = mongoClient.db('User');
-        const UsersCollection: Collection<IUser> = db.collection('Users');
+        const db = nitroApp.mongoClient.db('User');
+        const UsersCollection = db.collection<IUser>('Users');
 
         const user = await UsersCollection.findOne({ username: username });
 
@@ -42,9 +38,5 @@ export default defineEventHandler(async (event) => {
     } catch (error) {
         console.error('Error checking user existence:', error);
         return sendRedirect(event, '/error', 302);
-    } finally {
-        if (mongoClient) {
-            await mongoClient.close();
-        }
     }
 });

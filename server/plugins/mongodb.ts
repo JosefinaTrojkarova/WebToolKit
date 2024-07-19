@@ -1,3 +1,5 @@
+// Purpose: Plugin to connect to MongoDB and store the connection in the Nitro app.
+
 import { MongoClient } from 'mongodb';
 
 declare module 'nitropack' {

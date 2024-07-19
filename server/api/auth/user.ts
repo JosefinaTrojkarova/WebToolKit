@@ -1,3 +1,5 @@
+// Purpouse: Check if the user is authenticated.
+
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import jwt from 'jsonwebtoken';
 import type { IUser } from '../../models/Users';
