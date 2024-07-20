@@ -23,3 +23,12 @@ export type ISuggestion = {
   additionalInfo?: string;
   createdAt: string;
 }
+
+export type ToolEdit = {
+  editedBy: string;
+  name: string;
+  description: string;
+  additionalInfo: string;
+  createdAt: string;
+    // ... other fields
+}

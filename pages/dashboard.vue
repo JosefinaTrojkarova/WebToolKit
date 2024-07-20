@@ -4,6 +4,7 @@
         <div v-if="user">
             <p>Username: {{ user.username }}</p>
             <p>Email: {{ user.email }}</p>
+            <nuxt-link :to="`user/${user.username}`">View Profile</nuxt-link>
             <!-- Add more user information as needed -->
             <button @click="logout">Log Out</button>
             <button @click="deleteAccount" class="delete-button">Delete Account</button>
@@ -90,6 +91,7 @@ onMounted(fetchUserInfo)
 <style scoped>
 button {
     margin-top: 1rem;
+    margin-left: 1rem;
     padding: 0.5rem 1rem;
     background-color: #f56;
     color: white;
