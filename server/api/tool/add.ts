@@ -1,7 +1,7 @@
 // Purpose: API endpoint to submit a new tool suggestion.
 
-import { MongoClient, ObjectId, Collection } from 'mongodb';
-import type { ISuggestion } from '~/types/types';
+import { MongoClient, Collection } from 'mongodb';
+import type { ToolSuggestion } from '~/types/types';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -20,17 +20,18 @@ export default defineEventHandler(async (event) => {
         }
 
         const db = mongoClient.db('Tools');
-        const SuggestionsCollection: Collection<ISuggestion> = db.collection('Create');
+        const SuggestionsCollection: Collection<ToolSuggestion> = db.collection('Create');
 
-        // Create a new suggestion
-        const newSuggestion: ISuggestion = {
+        // Create a new add suggestion
+        const newAdd: ToolSuggestion = {
             suggestedBy,
             name,
             description,
             additionalInfo,
             createdAt: new Date().toISOString(),
+            // add fields later + add them to types.ts
         };
-        const result = await SuggestionsCollection.insertOne(newSuggestion);
+        const result = await SuggestionsCollection.insertOne(newAdd);
 
         if (!result.acknowledged) {
             throw new Error('Failed to insert new suggestion');

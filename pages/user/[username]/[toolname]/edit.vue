@@ -3,10 +3,6 @@
         <h1>Hi {{ username }}! You are editing {{ toolname }}</h1>
         <form @submit.prevent="submitEdit">
             <div>
-                <label for="name">Tool Name:</label>
-                <input v-model="form.name" type="text" id="name" placeholder="Tool Name" />
-            </div>
-            <div>
                 <label for="description">Description:</label>
                 <textarea v-model="form.description" id="description" placeholder="Description"></textarea>
             </div>
@@ -58,7 +54,7 @@ const submitEdit = async () => {
             },
             body: JSON.stringify({
                 toolId: toolname,
-                editedBy: username,
+                suggestedBy: username,
                 ...form.value
             })
         })

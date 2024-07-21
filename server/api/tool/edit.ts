@@ -1,11 +1,18 @@
 // Purpose: API endpoint to submit an existing tool edit suggestion.
 
-import { MongoClient, ObjectId, Collection } from 'mongodb';
-import type { Tool, ToolEdit } from '~/types/types';
+import { MongoClient, Collection } from 'mongodb';
+import type { Tool, ToolSuggestion } from '~/types/types';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    const { editedBy, name, description, additionalInfo } = body;
+    const { suggestedBy, name, description, additionalInfo } = body;
+
+    if (!name) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Tool name is required',
+        });
+    }
 
     try {
         const nitroApp = useNitroApp();
@@ -20,26 +27,30 @@ export default defineEventHandler(async (event) => {
         }
 
         const db = mongoClient.db('Tools');
-        const ToolsCollection: Collection<Tool> = db.collection('Tools');
-        const EditsCollection: Collection<ToolEdit> = db.collection('Edit');
+        const ToolsCollection: Collection<Tool> = db.collection('Main');
+        const EditsCollection: Collection<ToolSuggestion> = db.collection('Edit');
 
-        // Fetch the existing tool
-        const existingTool = await ToolsCollection.findOne({ name: name });
+        // Fetch the existing tool (case-insensitive)
+        const existingTool = await ToolsCollection.findOne({
+            name: { $regex: new RegExp(`^${name}$`, 'i') }
+        });
 
         if (!existingTool) {
+            console.error(`Tool not found: ${name}`);
             throw createError({
                 statusCode: 404,
-                statusMessage: 'Tool not found',
+                statusMessage: `Tool not found: ${name}`,
             });
         }
 
-        // Create a new edit entry
-        const newEdit: ToolEdit = {
-            editedBy,
-            name,
+        // Create a new edit suggestion
+        const newEdit: ToolSuggestion = {
+            suggestedBy,
+            name: existingTool.name,
             description,
             additionalInfo,
             createdAt: new Date().toISOString(),
+            // add fields later + add them to types.ts
         };
 
         const result = await EditsCollection.insertOne(newEdit);
@@ -53,7 +64,7 @@ export default defineEventHandler(async (event) => {
         console.error('Edit submission error:', error);
         if (error instanceof Error) {
             throw createError({
-                statusCode: 500,
+                statusCode: error.message.includes('not found') ? 404 : 500,
                 statusMessage: error.message,
             });
         } else {

@@ -16,19 +16,10 @@ export type User = {
   email: string;
 }
 
-export type ISuggestion = {
+export type ToolSuggestion = {
   suggestedBy: string;
   name: string;
   description: string;
   additionalInfo?: string;
   createdAt: string;
-}
-
-export type ToolEdit = {
-  editedBy: string;
-  name: string;
-  description: string;
-  additionalInfo: string;
-  createdAt: string;
-    // ... other fields
 }
