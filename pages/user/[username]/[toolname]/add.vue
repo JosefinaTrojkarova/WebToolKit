@@ -14,7 +14,7 @@
                 <label for="additionalInfo">Additional Info:</label>
                 <textarea v-model="form.additionalInfo" id="additionalInfo" placeholder="Additional Info"></textarea>
             </div>
-            <button type="submit">Submit Suggestion</button>
+            <button type="submit">Submit Add Suggestion</button>
         </form>
     </div>
 </template>
@@ -37,7 +37,7 @@ const submitSuggestion = async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                toolId: toolname, // assuming toolname is the toolId
+                toolId: toolname,
                 suggestedBy: username,
                 ...form.value
             })

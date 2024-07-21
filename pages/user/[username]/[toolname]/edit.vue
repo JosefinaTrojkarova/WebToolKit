@@ -10,7 +10,7 @@
                 <label for="additionalInfo">Additional Info:</label>
                 <textarea v-model="form.additionalInfo" id="additionalInfo" placeholder="Additional Info"></textarea>
             </div>
-            <button type="submit">Submit Edit</button>
+            <button type="submit">Submit Edit Suggestion</button>
         </form>
     </div>
 </template>

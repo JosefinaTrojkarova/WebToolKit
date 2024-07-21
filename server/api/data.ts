@@ -31,9 +31,10 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const explore = query.explore === 'true';
     const contribute = query.contribute === 'true';
+    const searchQuery = query.search as string;
 
     // check if the data is already cached and return it
-    const cachedData = cache.get(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full'));
+    const cachedData = cache.get(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full') + (searchQuery ? `_${searchQuery}` : ''));
     if (cachedData) {
       return cachedData;
     }
@@ -41,17 +42,37 @@ export default defineEventHandler(async (event) => {
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 
-    // get the data from the database and cache it
     let data;
-    if (explore) {
-      data = await collection.find({}, { projection: { name: 1, description: 1, logo: 1 } }).toArray();
-    } else if (contribute) {
-      data = await collection.find({}, { projection: { name: 1 } }).toArray();
+
+    if (searchQuery) {
+      // Atlas Search
+      const pipeline = [
+        {
+          $search: {
+            index: "ToolsSearch",
+            autocomplete: {
+              query: searchQuery,
+              path: "name",
+              tokenOrder: "sequential"
+            }
+          }
+        },
+        {
+          $project: explore ? { name: 1, description: 1, logo: 1 } :
+            contribute ? { name: 1 } : {}
+        }
+      ];
+
+      data = await collection.aggregate(pipeline).toArray();
     } else {
-      data = await collection.find({}).toArray();
+      // Regular query when there's no search
+      const projection = explore ? { name: 1, description: 1, logo: 1 } :
+        contribute ? { name: 1 } : {};
+
+      data = await collection.find({}, { projection }).toArray();
     }
 
-    cache.set(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full'), data);
+    cache.set(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full') + (searchQuery ? `_${searchQuery}` : ''), data);
 
     return data;
   } catch (error) {

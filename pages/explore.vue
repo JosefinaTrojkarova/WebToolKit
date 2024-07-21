@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      <input v-model="searchQuery" type="text" placeholder="Search for tools" />
+      <input v-model="searchQuery" type="text" placeholder="Search for tools" @input="debouncedSearch" />
     </header>
     <main>
       <!-- Loading -->
@@ -10,42 +10,44 @@
       <!-- Error -->
       <div v-else-if="error">
         <p>Error: {{ error.message }}</p>
-        <button @click="retry">Retry</button>
+        <button @click="() => refresh()">Retry</button>
       </div>
 
       <!-- Data loaded -->
       <template v-else-if="data">
         <!-- Display a list of tools -->
-        <NuxtLink v-for="item in filteredData" :key="item._id"
-          :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`" class="card">
+        <NuxtLink v-for="item in data" :key="item._id" :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`"
+          class="card">
           <h2>{{ item.name }}</h2>
           <p>{{ item.description }}</p>
         </NuxtLink>
 
         <!-- Display a message if no tools are found -->
-        <p v-if="filteredData.length === 0">No tools found.</p>
+        <p v-if="data.length === 0">No tools found.</p>
       </template>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core'
 import type { ItemBasicInfo } from '~/types/types'
 
-const { data, status, error, refresh } = useLazyFetch<ItemBasicInfo[]>('/api/data?explore=true')
-
-const retry = () => {
-  refresh()
-}
-
-// Search for tools - Temporary
 const searchQuery = ref('')
-const filteredData = computed(() => {
-  if (!data.value) return []
-  return data.value.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+
+const { data, status, error, refresh } = useLazyFetch<ItemBasicInfo[]>(() => {
+  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
+  const url = `/api/data?explore=true${searchParam}`
+  return url
+}, {
+  watch: [searchQuery],
+  immediate: true,
 })
+
+const debouncedSearch = useDebounceFn(() => {
+  console.log('Debounced search with query:', searchQuery.value)
+  refresh()
+}, 300)
 </script>
 
 <style lang="scss" scoped>
