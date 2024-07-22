@@ -1,4 +1,4 @@
-// Purpouse: Check if the user is authenticated.
+// Purpose: Check if the user is authenticated.
 
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import jwt from 'jsonwebtoken';

@@ -1,4 +1,4 @@
-// Purpouse: Delete account.
+// Purpose: Delete account.
 
 import { MongoClient, ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';

@@ -1,4 +1,4 @@
-// Purpous: Check if a user exists in the database else redirect to 404 page.
+// Purpose: Check if a user exists in the database else redirect to 404 page.
 
 import type { IUser } from '../models/Users';
 

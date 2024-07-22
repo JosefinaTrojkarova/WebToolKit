@@ -19,7 +19,10 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         strict: true,
-        types: ['@types/node', '@nuxt/types']
+        types: ['@types/node', '@nuxt/types'],
+        "moduleResolution": "node",
+        "target": "es2022",
+        "module": "esnext",
       }
     }
   }

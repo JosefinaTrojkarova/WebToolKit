@@ -13,7 +13,6 @@
     "@types/mongodb": "^4.0.7",
     "@vercel/speed-insights": "^1.0.12",
     "bcrypt": "^5.1.1",
-    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "node-cache": "^5.1.2",
