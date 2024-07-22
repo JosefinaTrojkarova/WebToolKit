@@ -1,3 +1,78 @@
-// add fonts and stuff
+// Variables:
 
-$variable: #131313; //change
+
+// Colors Styles
+// System:
+$system-white: #FCFCFC;
+$system-bg: #EDEEEF;
+$system-error: #FCFCFC;
+$system-validation: #FCFCFC;
+$system-success: #FCFCFC;
+
+// Primary:
+$primary-100: #CCD7F8;
+$primary-200: #88A4E5;
+$primary-300: #4473C5;
+$primary-400: #13469A; // Text
+$primary-500: #002F81;
+$primary-600: #001C5D;
+$primary-700: #000B2C;
+
+// Secondary:
+$secondary-100: #FFE4CC;
+$secondary-200: #FFC188;
+$secondary-300: #FF9F45;
+$secondary-400: #E67E22; // Accent
+$secondary-500: #BB5B01;
+$secondary-600: #773900;
+$secondary-700: #331800;
+
+// Gray:
+$gray-50: #8690AC;
+$gray-100: #A68B74;
+$gray-200: #898F98;
+$gray-300: #484D57;
+$gray-400: #2E323A;
+$gray-500: #1A1C21;
+
+
+// Fonts
+$font-headings: 'Kanit', sans-serif;
+$font-paragraphs: 'Ubuntu', sans-serif;
+
+// Headings:
+h1,
+h2,
+h3,
+h4
+{
+font-family: $font-headings;
+font-weight: 600;
+color: $primary-400;
+line-height: 120%;
+}
+
+h1 {
+    font-size: 80px;
+}
+
+h2 {
+    font-size: 40px;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+h4 {
+    font-size: 20px;
+}
+
+// Paragraphs:
+p {
+    font-family: $font-paragraphs;
+    font-weight: 400;
+    font-size: 18px;
+    color: $primary-400;
+    line-height: 140%;
+}
