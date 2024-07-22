@@ -1,11 +1,3 @@
-<script setup lang="ts">
-// import { connectDB, client } from '~/server/utils/db.js';
-
-//connectDB();
-
-//const movie = await client.db("sample_mflix").collection("movies").findOne({ title: "The Great Train Robbery" });
-</script>
-
 <template>
   <div>
     <h1>The catalogue of web-development tools.</h1>
@@ -14,3 +6,11 @@
     <NuxtLink to="/form">Find the best tools for my project</NuxtLink>
   </div>
 </template>
+
+<script setup lang="ts">
+
+</script>
+
+<style scoped>
+
+</style>

@@ -1,4 +1,7 @@
 <template>
+    <!-- Vercel speed insights -->
+    <SpeedInsights />
+    <!--------------------------->
     <div>
         <nav>
             <NuxtLink to="/">WebToolKit</NuxtLink>
@@ -8,6 +11,9 @@
                 </li>
                 <li>
                     <NuxtLink to="/wiki/contribute">Contribute</NuxtLink>
+                </li>
+                <li>
+                    <NuxtLink to="/dashboard">Dashboard</NuxtLink>
                 </li>
                 <li>
                     <button @click="openModal">Log In</button>
@@ -24,9 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { useModal } from '~/composables/useModal'
+// Vercel speed insights
+import { SpeedInsights } from "@vercel/speed-insights/nuxt";
+// ---------------------
 
 const { isModalOpen, openModal, closeModal } = useModal()
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>
