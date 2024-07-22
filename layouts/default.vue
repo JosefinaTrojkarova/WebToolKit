@@ -37,4 +37,6 @@ import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 const { isModalOpen, openModal, closeModal } = useModal()
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

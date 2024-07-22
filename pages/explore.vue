@@ -1,16 +1,15 @@
 <template>
   <div>
     <header>
-      <input v-model="searchQuery" type="text" placeholder="Search for tools" @input="debouncedSearch" />
+      <input v-model="searchQuery" type="text" placeholder="Search for tools" @input="performSearch" />
     </header>
     <main>
-      <!-- Loading -->
-      <p v-if="status === 'pending'">Loading...</p>
+      <!-- Loading, <p v-if="status === 'pending'">Loading...</p> add status in LazyFetch-->
 
       <!-- Error -->
-      <div v-else-if="error">
+      <div v-if="error">
         <p>Error: {{ error.message }}</p>
-        <button @click="() => refresh()">Retry</button>
+        <button @click="performSearch">Retry</button>
       </div>
 
       <!-- Data loaded -->
@@ -30,28 +29,23 @@
 </template>
 
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
 import type { ItemBasicInfo } from '~/types/types'
 
 const searchQuery = ref('')
 
-const { data, status, error, refresh } = useLazyFetch<ItemBasicInfo[]>(() => {
+const { data, error, refresh } = useLazyFetch<ItemBasicInfo[]>(() => {
   const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
-  const url = `/api/data?explore=true${searchParam}`
-  return url
+  return `/api/data?explore=true${searchParam}`
 }, {
-  watch: [searchQuery],
   immediate: true,
 })
 
-const debouncedSearch = useDebounceFn(() => {
-  console.log('Debounced search with query:', searchQuery.value)
+const performSearch = () => {
   refresh()
-}, 300)
+}
 </script>
 
 <style lang="scss" scoped>
-/* Temporary style */
 .card {
   border: 1px solid #ccc;
   border-radius: 5px;

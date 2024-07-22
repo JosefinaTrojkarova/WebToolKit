@@ -53,7 +53,10 @@ export default defineEventHandler(async (event) => {
             autocomplete: {
               query: searchQuery,
               path: "name",
-              tokenOrder: "sequential"
+              fuzzy: {
+                maxEdits: 1,
+                prefixLength: 1
+              }
             }
           }
         },
@@ -62,6 +65,8 @@ export default defineEventHandler(async (event) => {
             contribute ? { name: 1 } : {}
         }
       ];
+
+      data = await collection.aggregate(pipeline).toArray();
 
       data = await collection.aggregate(pipeline).toArray();
     } else {
