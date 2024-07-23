@@ -1,30 +1,28 @@
 <template>
-  <div>
-    <header>
-      <input v-model="searchQuery" type="text" placeholder="Search for tools" @input="performSearch" />
+  <div class="explore">
+    <header class="header">
+      <h2 class="header__title">Explore</h2>
+      <input class=""  v-model="searchQuery" type="text" placeholder="Search for tools" @input="performSearch" />
     </header>
-    <main>
+    <section>
       <!-- Loading, <p v-if="status === 'pending'">Loading...</p> add status in LazyFetch-->
-
       <!-- Error -->
-      <div v-if="error">
-        <p>Error: {{ error.message }}</p>
-        <button @click="performSearch">Retry</button>
+      <div class="error" v-if="error">
+        <p class="error__message">Error: {{ error.message }}</p>
+        <button class="btn error__btn--retry" @click="performSearch">Retry</button>
       </div>
-
       <!-- Data loaded -->
-      <template v-else-if="data">
+      <div v-else-if="data">
         <!-- Display a list of tools -->
-        <NuxtLink v-for="item in data" :key="item._id" :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`"
-          class="card">
+        <NuxtLink class="card" v-for="item in data" :key="item._id" :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`">
           <h2>{{ item.name }}</h2>
           <p>{{ item.description }}</p>
         </NuxtLink>
 
         <!-- Display a message if no tools are found -->
         <p v-if="data.length === 0">No tools found.</p>
-      </template>
-    </main>
+      </div>
+    </section>
   </div>
 </template>
 

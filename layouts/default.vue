@@ -30,7 +30,6 @@
         </main>
 
         <footer>
-            <!-- Add your footer content here -->
             <p>2024 &copy; WebToolKit s.r.o.</p>
             <p>Made by web-devs for web-devs.</p>
             <div>

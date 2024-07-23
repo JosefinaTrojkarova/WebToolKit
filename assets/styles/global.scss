@@ -5,9 +5,9 @@
 // System:
 $system-white: #FCFCFC;
 $system-bg: #EDEEEF;
-$system-error: #FCFCFC;
-$system-validation: #FCFCFC;
-$system-success: #FCFCFC;
+$system-error: #E62D2D;
+$system-validation: #FFC700;
+$system-success: #538D16;
 
 // Primary:
 $primary-100: #CCD7F8;
@@ -76,3 +76,17 @@ p {
     color: $primary-400;
     line-height: 140%;
 }
+
+
+// Spacing
+$xs: 0.25rem;
+$s: 0.5rem;
+$m: 0.75rem;
+$l: 1rem;
+$xl: 1.5rem;
+$xxl: 2rem;
+
+
+// Buttons (Primary, Secondary)
+
+// Fields (Inputs, Input+Icon, Search, Password, Text area)
