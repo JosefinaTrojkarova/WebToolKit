@@ -19,7 +19,7 @@
                     <button class="btn btn--secondary--small">
                         <NuxtLink class="link" to="/wiki/contribute">Add a Tool</NuxtLink>
                     </button>
-                    <button class="btn btn--primary--small" @click="openModal">Log In</button>
+                    <button class="btn btn--primary--small" @click="openModal">Sign In</button>
                 </div>
                 <Modal :is-open="isModalOpen" @close="closeModal">
                     <LoginForm />
@@ -104,6 +104,10 @@ const { isModalOpen, openModal, closeModal } = useModal()
 
 .layout__main {
     flex: 1 0 auto; // pushing footer to the bottom
+}
+
+.nav__item {
+    padding: 8px;
 }
 
 // Navbar
