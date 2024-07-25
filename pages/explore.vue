@@ -15,7 +15,7 @@
       <div v-else-if="data">
         <!-- Display a list of tools -->
         <NuxtLink class="card" v-for="item in data" :key="item._id" :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`">
-          <h2>{{ item.name }}</h2>
+          <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
         </NuxtLink>
 
@@ -29,6 +29,10 @@
 <script setup lang="ts">
 import type { ItemBasicInfo } from '~/types/types'
 
+// Frontend
+
+
+// Backend
 const searchQuery = ref('')
 
 const { data, error, refresh } = useLazyFetch<ItemBasicInfo[]>(() => {
@@ -44,6 +48,10 @@ const performSearch = () => {
 </script>
 
 <style lang="scss" scoped>
+.explore {
+  margin: $xxl;
+}
+
 .card {
   border: 1px solid #ccc;
   border-radius: 5px;
