@@ -38,7 +38,11 @@ $gray-500: #1A1C21;
 
 // Fonts
 $font-headings: 'Kanit', sans-serif;
-$font-paragraphs: 'Ubuntu', sans-serif;
+$font-main: 'Ubuntu', sans-serif;
+
+html {
+    font-family: $font-main;
+}
 
 // Headings:
 h1,
@@ -70,12 +74,40 @@ h4 {
 
 // Paragraphs:
 p {
-    font-family: $font-paragraphs;
     font-weight: 400;
     font-size: 1.125rem; //18px
     color: $primary-400;
     line-height: 140%;
 }
+
+.p1 {
+    font-size: 1.125rem;
+}
+
+.p2 {
+    font-size: 1rem;
+}
+
+.p3 {
+    font-size: 0.875rem;
+}
+
+.b1 {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.b2 {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.b3 {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+
 
 
 // Spacing
