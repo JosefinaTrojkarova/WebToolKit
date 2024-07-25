@@ -9,7 +9,6 @@ export default defineNuxtConfig({
 
   css: [
     '~/assets/styles/reset.css',
-    //'~/assets/styles/global.scss',
   ],
 
   vite: {
@@ -24,6 +23,9 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      style: [
+        { children: ':root { font-family: "Ubuntu", sans-serif; }' }
+      ],
       link: [
         {
           rel: 'stylesheet', // Kanit font
