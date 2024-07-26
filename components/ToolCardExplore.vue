@@ -1,7 +1,28 @@
 <template>
     <NuxtLink class="card" :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`">
-        <h3>{{ item.name }}</h3>
-        <p>{{ item.description }}</p>
+        <div>
+            <img src="" alt="">
+            <div>
+                <h3>{{ item.name }}</h3>
+                <div>
+                    <p></p>
+                    <p></p>
+                </div>
+                <div>
+                    <div class="stars"></div>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+            <input type="checkbox"">
+        </div>
+        <div>
+            <p>{{ item.description }}</p>
+        </div>
+        <div>
+            <p></p>
+            <p></p>
+        </div>
     </NuxtLink>
 </template>
 
