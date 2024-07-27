@@ -88,7 +88,6 @@ const myCategories = ref<Category[]>([
 
 const handleCategoryToggle = (category: Category) => {
   console.log(`Category "${category.name}" was toggled. Active: ${category.active}`)
-  // Category Toggling
   refresh()
 }
 

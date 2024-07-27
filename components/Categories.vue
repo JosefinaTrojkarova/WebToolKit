@@ -13,7 +13,7 @@ export default {
         categories: {
             type: Array,
             default: () => [
-                { id: 1, name: 'category 1', active: false },
+                { id: 1, name: 'Category 1', active: false },
             ]
         }
     },
@@ -43,7 +43,7 @@ export default {
     cursor: pointer;
     border-radius: $xxl;
 
-    .active {
+    &.active {
         background-color: $primary-400;
         color: $system-white;
     }

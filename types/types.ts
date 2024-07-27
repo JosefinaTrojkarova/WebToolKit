@@ -3,18 +3,23 @@ export type ItemBasicInfo = {
   name: string;
   description: string;
   logo: string;
-}
+  tag: {
+    pricing: string;
+    licensing: string;
+    rating: number;
+  };
+};
 
 export type Tool = {
   name: string;
   description: string;
-}
+};
 
 export type User = {
   id: string;
   username: string;
   email: string;
-}
+};
 
 export type ToolSuggestion = {
   suggestedBy: string;
@@ -22,4 +27,4 @@ export type ToolSuggestion = {
   description: string;
   additionalInfo?: string;
   createdAt: string;
-}
+};
