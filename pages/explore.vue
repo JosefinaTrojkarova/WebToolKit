@@ -14,22 +14,22 @@
           <div class="filters filters__categories">
             <h4 class="filters__heading">Categories</h4>
             <ul class="list categories__list">
-
+              <Categories :categories="myCategories" @category-toggled="handleCategoryToggle" />
             </ul>
           </div>
           <div class="filters filters__tags">
             <h4 class="filters__heading">Tags</h4>
             <p>Pricing</p>
             <ul class="list pricing__list">
-
+              <Tags :tags="pricingTags" variant="pricing" @tag-toggled="handleTagToggle" />
             </ul>
             <p>Licensing</p>
             <ul class="list licensing__list">
-
+              <Tags :tags="licensingTags" variant="licensing" @tag-toggled="handleTagToggle" />
             </ul>
             <p>Rating</p>
             <ul class="list rating__list">
-
+              <Tags :tags="ratingTags" variant="rating" @tag-toggled="handleTagToggle" />
             </ul>
           </div>
         </div>
@@ -58,12 +58,70 @@
 <script setup lang="ts">
 import type { ItemBasicInfo } from '~/types/types'
 
+// ???
+type Category = {
+  id: number;
+  name: string;
+  active: boolean;
+}
+
+type Tag = {
+  id: number;
+  name: string;
+  active: boolean;
+}
+
 // Frontend
+const myCategories = ref<Category[]>([
+  { id: 1, name: 'UI Design', active: false },
+  { id: 2, name: 'UX Design', active: false },
+  { id: 3, name: 'Prototyping', active: false },
+  { id: 4, name: 'JavaScript', active: false },
+  { id: 5, name: 'TypeScript', active: false },
+  { id: 6, name: 'Python', active: false },
+  { id: 7, name: 'Framework', active: false },
+  { id: 8, name: 'CSS', active: false },
+  { id: 9, name: 'Hosting', active: false },
+  { id: 10, name: 'Compiling', active: false },
+  { id: 11, name: 'HTML', active: false }
+])
+
+const handleCategoryToggle = (category: Category) => {
+  console.log(`Category "${category.name}" was toggled. Active: ${category.active}`)
+  // Category Toggling
+  refresh()
+}
+
+// Tags
+const pricingTags = ref<Tag[]>([
+  { id: 1, name: '100% Free', active: false },
+  { id: 2, name: 'Free Version', active: false },
+  { id: 3, name: 'Free Trial', active: false },
+  { id: 4, name: 'Paid', active: false }
+])
+
+const licensingTags = ref<Tag[]>([
+  { id: 1, name: 'Open Source', active: false },
+  { id: 2, name: 'Proprietary', active: false }
+])
+
+const ratingTags = ref<Tag[]>([
+  { id: 1, name: '5', active: false },
+  { id: 2, name: '4', active: false },
+  { id: 3, name: '3', active: false },
+  { id: 4, name: '2', active: false },
+  { id: 5, name: '1', active: false }
+])
+
+const handleTagToggle = (tag: Tag) => {
+  console.log(`Tag "${tag.name}" was toggled. Active: ${tag.active}`)
+  refresh()
+}
 
 // Backend
 const searchQuery = ref('')
 
-const { data, error, refresh } = useLazyFetch<ItemBasicInfo[]>(() => {
+const { data, error, refresh } = useFetch<ItemBasicInfo[]>(() => {
   const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
   return `/api/data?explore=true${searchParam}`
 }, {
