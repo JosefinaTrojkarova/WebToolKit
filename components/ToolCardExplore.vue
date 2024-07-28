@@ -6,23 +6,18 @@
                 <h3 class="card__name">{{ item.name }}</h3>
                 <div class="card__tags">
                     <div class="card__pricing tag">
-                        <Icon class="pricing__icon" name="material-symbols:attach-money-rounded" size="24" />
+                        <span class="material-symbols-rounded">attach_money</span>
                         <p class="price">{{ item.tags.pricing }}</p>
                     </div>
                     <div class="card__licensing tag">
-                        <Icon class="licensing__icon" name="material-symbols:license-rounded" size="24" />
+                        <span class="material-symbols-rounded">license</span>
                         <p class="license">{{ item.tags.licensing }}</p>
                     </div>
                 </div>
                 <div class="card__rating tag">
                     <div class="rating__stars">
-                        <span v-for="i in 5" :key="i" class="star-container">
-                            <Icon v-if="i <= Math.floor(item.rating.stars)" class="stars__icon filled"
-                                name="material-symbols:star-rounded" size="24" />
-                            <Icon v-else-if="i - 0.5 <= item.rating.stars" class="stars__icon half-filled"
-                                name="material-symbols:star-half-rounded" size="24" />
-                            <Icon v-else class="stars__icon empty" name="material-symbols:star-outline-rounded"
-                                size="24" />
+                        <span class="star-container">
+                            <span class="star-fill" :style="{ width: handleRating }"></span>
                         </span>
                     </div>
                     <p class="rating__reviews"><span class="reviews">{{ item.rating.reviews }}</span> reviews</p>
@@ -48,9 +43,15 @@
 <script setup lang="ts">
 import type { ItemBasicInfo } from '~/types/types'
 
-defineProps<{
+const props = defineProps<{
     item: ItemBasicInfo
 }>()
+
+const handleRating = computed(() => {
+    const rating = props.item.rating.stars;
+    const percentage = (rating / 5) * 100;
+    return `${percentage}%`;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -169,6 +170,24 @@ defineProps<{
 
             .stars__icon {
                 color: $secondary-400;
+            }
+
+            // Temporary styles
+            .star-container {
+                display: inline-block;
+                width: 100px;
+                height: 20px;
+                background-color: blue;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .star-fill {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                background-color: orange;
             }
         }
 

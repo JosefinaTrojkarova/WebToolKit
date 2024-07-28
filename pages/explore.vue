@@ -21,15 +21,15 @@
             <h4 class="filters__heading">Tags</h4>
             <p>Pricing</p>
             <ul class="list pricing__list">
-              <Tags :tags="pricingTags" variant="pricing" @tag-toggled="handleTagToggle" />
+              <Tags variant="pricing" />
             </ul>
             <p>Licensing</p>
             <ul class="list licensing__list">
-              <Tags :tags="licensingTags" variant="licensing" @tag-toggled="handleTagToggle" />
+              <Tags variant="licensing" />
             </ul>
             <p>Rating</p>
             <ul class="list rating__list">
-              <Tags :tags="ratingTags" variant="rating" @tag-toggled="handleTagToggle" />
+              <Tags variant="rating" />
             </ul>
           </div>
         </div>
@@ -77,29 +77,9 @@ const handleCategoryToggle = () => {
   refresh()
 }
 
-const pricingTags = ref<Tag[]>([
-  { id: 1, name: '100% Free', active: false },
-  { id: 2, name: 'Free Version', active: false },
-  { id: 3, name: 'Free Trial', active: false },
-  { id: 4, name: 'Paid', active: false }
-])
-
-const licensingTags = ref<Tag[]>([
-  { id: 1, name: 'Open Source', active: false },
-  { id: 2, name: 'Proprietary', active: false }
-])
-
-const ratingTags = ref<Tag[]>([
-  { id: 1, name: '5', active: false },
-  { id: 2, name: '4', active: false },
-  { id: 3, name: '3', active: false },
-  { id: 4, name: '2', active: false },
-  { id: 5, name: '1', active: false }
-])
-
-const handleTagToggle = () => {
-  refresh()
-}
+//const handleTagToggle = () => {
+//  refresh()
+//}
 
 const searchQuery = ref('')
 

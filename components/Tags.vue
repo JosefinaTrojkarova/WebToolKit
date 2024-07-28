@@ -1,8 +1,8 @@
 <template>
     <div class="tag-selector">
-        <button class="btn__tag" v-for="tag in tags" :key="tag.id" @click="toggleTag(tag)"
+        <button class="btn__tag" v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
             :class="['tag', variant, { active: tag.active }]">
-            <Icon :class="iconClass" :name="iconName" size="24" />
+            <span class="material-symbols-rounded">{{ iconName }}</span>
             {{ tag.name }}
         </button>
     </div>
@@ -12,16 +12,39 @@
 import type { Tag } from '~/types/types'
 
 const props = defineProps({
-    tags: {
-        type: Array as PropType<Tag[]>,
-        default: () => [
-            { id: 1, name: 'Tag 1', active: false },
-        ]
-    },
     variant: {
-        type: String,
+        type: String as PropType<'pricing' | 'licensing' | 'rating' | 'default'>,
         default: 'default',
         validator: (value: string) => ['pricing', 'licensing', 'rating', 'default'].includes(value)
+    }
+})
+
+const pricingTags: Tag[] = [
+    { id: 1, name: '100% Free', active: false },
+    { id: 2, name: 'Free Version', active: false },
+    { id: 3, name: 'Free Trial', active: false },
+    { id: 4, name: 'Paid', active: false }
+]
+
+const licensingTags: Tag[] = [
+    { id: 1, name: 'Open Source', active: false },
+    { id: 2, name: 'Proprietary', active: false }
+]
+
+const ratingTags: Tag[] = [
+    { id: 1, name: '5', active: false },
+    { id: 2, name: '4', active: false },
+    { id: 3, name: '3', active: false },
+    { id: 4, name: '2', active: false },
+    { id: 5, name: '1', active: false }
+]
+
+const computedTags = computed(() => {
+    switch (props.variant) {
+        case 'pricing': return pricingTags
+        case 'licensing': return licensingTags
+        case 'rating': return ratingTags
+        default: return [{ id: 1, name: 'Tag 1', active: false }]
     }
 })
 
@@ -31,19 +54,16 @@ const toggleTag = (tag: Tag) => {
 
 const iconName = computed(() => {
     switch (props.variant) {
-        case 'pricing':
-            return 'material-symbols:attach-money-rounded'
-        case 'licensing':
-            return 'material-symbols:license-rounded'
-        case 'rating':
-            return 'material-symbols:star-outline-rounded'
-        default:
-            return 'material-symbols:help-outline'
+        case 'pricing': return 'attach_money'
+        case 'licensing': return 'license'
+        case 'rating': return 'star'
+        default: return 'help'
     }
 })
 
 const iconClass = computed(() => `icon-${props.variant}`)
 </script>
+
 
 <style lang="scss" scoped>
 .tag-selector {
