@@ -58,7 +58,7 @@ const iconClass = computed(() => `icon-${props.variant}`)
     align-items: center;
     gap: $s;
 
-    font-size: 18px; // ??
+    font-size: 1.125rem;
     height: $xxl;
     padding: $xs $m;
     font-weight: 500;
