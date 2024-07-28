@@ -55,7 +55,7 @@ const handleRating = computed(() => {
 <style lang="scss" scoped>
 .card {
     position: relative;
-    width: 43.75rem;
+    flex-grow: 1;
     padding: $xl;
 
     border: 1px solid $primary-200;

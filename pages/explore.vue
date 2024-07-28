@@ -5,11 +5,11 @@
     </header>
     <main class="explore__main">
       <aside class="aside">
-        <div class="search-container">
-          <span class="material-symbols-rounded">search</span>
-          <input class="field--search aside__search" v-model="searchQuery" type="text" placeholder="Search for tools"
-            @input="performSearch" />
-        </div>
+        <label class="search-container" for="search-field">
+          <span class="search-icon material-symbols-rounded">search</span>
+          <input id="search-field" class="field--search aside__search" v-model="searchQuery" type="text"
+            placeholder="Search for tools" @input="performSearch" />
+        </label>
         <div class="aside__filters">
           <div class="filters filters__categories">
             <h4 class="filters__heading">Categories</h4>
@@ -112,12 +112,8 @@ const performSearch = () => {
   display: flex;
   flex-direction: column;
   gap: $m;
-  width: 25.75rem;
-
-  .aside__search {
-    box-sizing: border-box;
-    height: 3.5rem;
-  }
+  min-width: 26rem;
+  max-width: 26rem;
 
   .aside__filters {
     display: flex;
@@ -126,10 +122,12 @@ const performSearch = () => {
     .filters {
       display: flex;
       flex-direction: column;
-      gap: $s;
+      box-sizing: border-box;
 
-      width: 100%;
+      gap: $s;
+      width: 50%;
       padding: $xl;
+
       border: 1px solid $primary-200;
       border-radius: $m;
     }
@@ -137,7 +135,7 @@ const performSearch = () => {
 }
 
 .section {
-  width: 88.25rem;
+  flex-grow: 1;
 
   .tools__list {
     display: grid;

@@ -1,8 +1,8 @@
 <template>
     <div class="tag-selector">
-        <button class="btn__tag" v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
+        <button v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
             :class="['tag', variant, { active: tag.active }]">
-            <span class="material-symbols-rounded">{{ iconName }}</span>
+            <span class="material-symbols-rounded tag__icon">{{ iconName }}</span>
             {{ tag.name }}
         </button>
     </div>
@@ -66,25 +66,41 @@ const iconName = computed(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
     gap: $s;
 }
 
 .tag {
     display: flex;
     align-items: center;
-    gap: $s;
 
-    font-size: 1.125rem;
     height: $xxl;
-    padding: $xs $m;
+    width: max-content;
+
+    gap: $xs;
+    padding-right: $s;
+
+    font-size: 1rem;
     font-weight: 500;
+
+    border-radius: $s;
+
     cursor: pointer;
-    border-radius: $m;
 
     &.pricing {
         color: $system-success;
-        border: 2px solid $system-success;
         background-color: $system-white;
+
+        border: 2px solid $system-success;
+
+        .tag__icon {
+            font-variation-settings:
+                'opsz' 24,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.5rem;
+        }
 
         &.active {
             background-color: $system-success;
@@ -93,9 +109,21 @@ const iconName = computed(() => {
     }
 
     &.licensing {
+        padding-left: $xs;
+
         color: $primary-400;
-        border: 2px solid $primary-400;
         background-color: $system-white;
+
+        border: 2px solid $primary-400;
+
+        .tag__icon {
+            font-variation-settings:
+                'opsz' 20,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.25rem;
+        }
 
         &.active {
             background-color: $primary-400;
@@ -104,11 +132,24 @@ const iconName = computed(() => {
     }
 
     &.rating {
+        padding-right: $xs;
+        padding-left: $s;
+
         color: $primary-400;
-        border: 2px solid $primary-400;
         background-color: $system-white;
 
+        border: 2px solid $primary-400;
+
         flex-direction: row-reverse;
+
+        .tag__icon {
+            font-variation-settings:
+                'opsz' 20,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.5rem;
+        }
 
         &.active {
             background-color: $primary-400;

@@ -43,8 +43,8 @@ $xl: 1.5rem;
 $xxl: 2rem;
 
 // Fonts
-$font-headings: "Kanit", sans-serif;
-$font-main: "Ubuntu", sans-serif;
+$font-headings: 'Kanit', sans-serif;
+$font-main: 'Ubuntu', sans-serif;
 
 // Headings:
 h1,
@@ -213,40 +213,44 @@ p {
 //.field--input--icon {}
 
 .search-container {
-  position: relative;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
   width: 100%;
+  gap: $l;
+  padding: $l $xl $l $l;
+
+  background: $primary-100;
+  color: $primary-500;
+
+  border: 2px solid transparent;
+  border-radius: $m;
+
+  transition: 0.3s ease-in-out;
+  cursor: text;
 
   .search-icon {
-    position: absolute;
-    left: $m;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $primary-400;
+    color: $primary-500;
     pointer-events: none;
   }
 
   .field--search {
-    height: $xl;
-    width: 100%;
-    padding: $l $xl $l ($xl + $xl);
-    border-radius: $s;
-
-    background: $primary-100;
-    color: $primary-400;
-
-    border: 2px solid transparent;
+    flex-grow: 1;
+    width: auto;
 
     &::placeholder {
-      color: $primary-400;
+      color: $primary-500;
+      font-size: 1rem;
     }
+  }
 
-    &:focus {
-      outline: none;
-      border-color: $primary-300;
-      color: $primary-700;
-    }
+  &:hover {
+    border-color: $primary-200;
+  }
 
-    //&:hover {}
+  &:focus-within {
+    border-color: $primary-300;
+    color: $primary-700;
   }
 }
 

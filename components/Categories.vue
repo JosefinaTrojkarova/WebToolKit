@@ -25,7 +25,7 @@ const toggleCategory = (category: Category) => {
 }
 
 .category {
-    font-size: 18px; //??
+    font-size: 1rem;
     height: $xxl;
     padding: $xs $xl;
     color: $primary-400;
