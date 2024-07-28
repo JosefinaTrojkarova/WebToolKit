@@ -35,5 +35,5 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxt/icon", "@nuxt/test-utils/module"],
+  modules: ["@nuxt/test-utils/module"],
 });

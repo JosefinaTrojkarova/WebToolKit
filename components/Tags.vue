@@ -2,33 +2,39 @@
     <div class="tag-selector">
         <button class="btn__tag" v-for="tag in tags" :key="tag.id" @click="toggleTag(tag)"
             :class="['tag', variant, { active: tag.active }]">
-            <Icon :class="getIconClass()" :name="getIconName()" size="24" />
+            <i :class="getIconClass()" :name="getIconName()" size="24" />
             {{ tag.name }}
         </button>
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+interface Tag {
+    id: number;
+    name: string;
+    active: boolean;
+}
+
+export default defineComponent({
     props: {
         tags: {
-            type: Array,
+            type: Array as PropType<Tag[]>,
             default: () => [
                 { id: 1, name: 'Tag 1', active: false },
             ]
         },
         variant: {
-            type: String,
+            type: String as PropType<'pricing' | 'licensing' | 'rating'>,
             default: 'default',
-            validator: (value) => ['pricing', 'licensing', 'rating'].includes(value)
+            validator: (value: string) => ['pricing', 'licensing', 'rating'].includes(value)
         }
     },
     methods: {
-        toggleTag(tag) {
+        toggleTag(tag: Tag) {
             tag.active = !tag.active
             this.$emit('tag-toggled', tag)
         },
-        getIconName() {
+        getIconName(): string {
             switch (this.variant) {
                 case 'pricing':
                     return 'material-symbols:attach-money-rounded'
@@ -44,7 +50,7 @@ export default {
             return `icon-${this.variant}`
         }
     }
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -60,7 +66,7 @@ export default {
     align-items: center;
     gap: $s;
 
-    font-size: 18px; // ??
+    font-size: 1.125rem;
     height: $xxl;
     padding: $xs $m;
     font-weight: 500;
