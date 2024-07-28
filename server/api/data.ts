@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
       if (nitroApp.mongoClient) {
         return nitroApp.mongoClient;
       }
-      await new Promise(resolve => setTimeout(resolve, retryDelay));
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
       retries++;
     }
     throw new Error('MongoDB client is not available');
@@ -34,7 +34,11 @@ export default defineEventHandler(async (event) => {
     const searchQuery = query.search as string;
 
     // check if the data is already cached and return it
-    const cachedData = cache.get(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full') + (searchQuery ? `_${searchQuery}` : ''));
+    const cachedData = cache.get(
+      cacheKey +
+        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
+        (searchQuery ? `_${searchQuery}` : '')
+    );
     if (cachedData) {
       return cachedData;
     }
@@ -49,35 +53,68 @@ export default defineEventHandler(async (event) => {
       const pipeline = [
         {
           $search: {
-            index: "ToolsSearch",
+            index: 'ToolsSearch',
             autocomplete: {
               query: searchQuery,
-              path: "name",
+              path: 'name',
               fuzzy: {
                 maxEdits: 1,
-                prefixLength: 1
-              }
-            }
-          }
+                prefixLength: 1,
+              },
+            },
+          },
         },
         {
-          $project: explore ? { name: 1, description: 1, logo: 1 } :
-            contribute ? { name: 1 } : {}
-        }
+          $project: explore
+            ? {
+                name: 1,
+                description: 1,
+                logo: 1,
+                categories: 1,
+                tags: {
+                  pricing: 1,
+                  licensing: 1,
+                },
+                rating: {
+                  stars: 1,
+                  reviws: 1,
+                  saves: 1,
+                },
+              }
+            : contribute
+            ? { name: 1 }
+            : {},
+        },
       ];
-
-      data = await collection.aggregate(pipeline).toArray();
 
       data = await collection.aggregate(pipeline).toArray();
     } else {
       // Regular query when there's no search
-      const projection = explore ? { name: 1, description: 1, logo: 1 } :
-        contribute ? { name: 1 } : {};
+      const projection = explore
+        ? {
+            name: 1,
+            description: 1,
+            logo: 1,
+            categories: 1,
+            'tags.pricing': 1,
+            'tags.licensing': 1,
+            'rating.stars': 1,
+            'rating.reviews': 1,
+            'rating.saves': 1,
+          }
+        : contribute
+        ? { name: 1 }
+        : {};
 
       data = await collection.find({}, { projection }).toArray();
     }
 
-    cache.set(cacheKey + (explore ? '_explore' : contribute ? '_contribute' : '_full') + (searchQuery ? `_${searchQuery}` : ''), data);
+    cache.set(
+      cacheKey +
+        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
+        (searchQuery ? `_${searchQuery}` : ''),
+      data
+    );
 
     return data;
   } catch (error) {

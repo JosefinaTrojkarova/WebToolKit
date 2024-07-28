@@ -7,7 +7,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "vitest"
   },
   "dependencies": {
     "@types/mongodb": "^4.0.7",
@@ -17,16 +18,21 @@
     "mongodb": "^6.8.0",
     "node-cache": "^5.1.2",
     "nuxt": "^3.12.3",
-    "vue": "^3.4.31",
+    "vue": "^3.4.34",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^3.14.0",
     "@nuxt/types": "^2.18.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20.14.10",
+    "@types/node": "^22.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^14.12.3",
+    "playwright-core": "^1.45.3",
     "sass": "^1.77.7",
-    "typescript": "^5.5.3",
-    "vue-tsc": "^2.0.26"
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.4",
+    "vue-tsc": "^2.0.29"
   }
 }
