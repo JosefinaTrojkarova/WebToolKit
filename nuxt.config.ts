@@ -40,4 +40,12 @@ export default defineNuxtConfig({
   },
 
   modules: ["@nuxt/test-utils/module"],
+
+  typescript: {
+    typeCheck: true,
+    strict: true
+  },
+  imports: {
+    dirs: ['types']
+  }
 });

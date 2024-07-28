@@ -41,8 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ItemBasicInfo } from '~/types/types'
-
 const props = defineProps<{
     item: ItemBasicInfo
 }>()

@@ -9,8 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Tag } from '~/types/types'
-
 const props = defineProps({
     variant: {
         type: String as PropType<'pricing' | 'licensing' | 'rating' | 'default'>,
@@ -19,31 +17,31 @@ const props = defineProps({
     }
 })
 
-const pricingTags: Tag[] = [
+const pricingTags = ref<Tag[]>([
     { id: 1, name: '100% Free', active: false },
     { id: 2, name: 'Free Version', active: false },
     { id: 3, name: 'Free Trial', active: false },
     { id: 4, name: 'Paid', active: false }
-]
+])
 
-const licensingTags: Tag[] = [
+const licensingTags = ref<Tag[]>([
     { id: 1, name: 'Open Source', active: false },
     { id: 2, name: 'Proprietary', active: false }
-]
+])
 
-const ratingTags: Tag[] = [
+const ratingTags = ref<Tag[]>([
     { id: 1, name: '5', active: false },
     { id: 2, name: '4', active: false },
     { id: 3, name: '3', active: false },
     { id: 4, name: '2', active: false },
     { id: 5, name: '1', active: false }
-]
+])
 
 const computedTags = computed(() => {
     switch (props.variant) {
-        case 'pricing': return pricingTags
-        case 'licensing': return licensingTags
-        case 'rating': return ratingTags
+        case 'pricing': return pricingTags.value
+        case 'licensing': return licensingTags.value
+        case 'rating': return ratingTags.value
         default: return [{ id: 1, name: 'Tag 1', active: false }]
     }
 })
@@ -60,8 +58,6 @@ const iconName = computed(() => {
         default: return 'help'
     }
 })
-
-const iconClass = computed(() => `icon-${props.variant}`)
 </script>
 
 
