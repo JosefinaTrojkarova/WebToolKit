@@ -7,22 +7,15 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        categories: {
-            type: Array,
-            default: () => [
-                { id: 1, name: 'Category 1', active: false },
-            ]
-        }
-    },
-    methods: {
-        toggleCategory(category) {
-            category.active = !category.active
-            this.$emit('category-toggled', category)
-        }
-    }
+<script setup lang="ts">
+import type { Category } from '~/types/types'
+
+const props = defineProps<{
+    categories: Category[]
+}>()
+
+const toggleCategory = (category: Category) => {
+    category.active = !category.active
 }
 </script>
 

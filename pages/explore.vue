@@ -73,8 +73,7 @@ const myCategories = ref<Category[]>([
   { id: 11, name: 'HTML', active: false }
 ])
 
-const handleCategoryToggle = (category: Category) => {
-  console.log(`Category "${category.name}" was toggled. Active: ${category.active}`)
+const handleCategoryToggle = () => {
   refresh()
 }
 
@@ -98,8 +97,7 @@ const ratingTags = ref<Tag[]>([
   { id: 5, name: '1', active: false }
 ])
 
-const handleTagToggle = (tag: Tag) => {
-  console.log(`Tag "${tag.name}" was toggled. Active: ${tag.active}`)
+const handleTagToggle = () => {
   refresh()
 }
 

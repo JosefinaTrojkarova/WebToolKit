@@ -45,7 +45,7 @@
     </NuxtLink>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { ItemBasicInfo } from '~/types/types'
 
 defineProps<{

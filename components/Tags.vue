@@ -2,49 +2,47 @@
     <div class="tag-selector">
         <button class="btn__tag" v-for="tag in tags" :key="tag.id" @click="toggleTag(tag)"
             :class="['tag', variant, { active: tag.active }]">
-            <Icon :class="getIconClass()" :name="getIconName()" size="24" />
+            <Icon :class="iconClass" :name="iconName" size="24" />
             {{ tag.name }}
         </button>
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        tags: {
-            type: Array,
-            default: () => [
-                { id: 1, name: 'Tag 1', active: false },
-            ]
-        },
-        variant: {
-            type: String,
-            default: 'default',
-            validator: (value) => ['pricing', 'licensing', 'rating'].includes(value)
-        }
+<script setup lang="ts">
+import type { Tag } from '~/types/types'
+
+const props = defineProps({
+    tags: {
+        type: Array as PropType<Tag[]>,
+        default: () => [
+            { id: 1, name: 'Tag 1', active: false },
+        ]
     },
-    methods: {
-        toggleTag(tag) {
-            tag.active = !tag.active
-            this.$emit('tag-toggled', tag)
-        },
-        getIconName() {
-            switch (this.variant) {
-                case 'pricing':
-                    return 'material-symbols:attach-money-rounded'
-                case 'licensing':
-                    return 'material-symbols:license-rounded'
-                case 'rating':
-                    return 'material-symbols:star-outline-rounded'
-                default:
-                    return 'material-symbols:help-outline'
-            }
-        },
-        getIconClass() {
-            return `icon-${this.variant}`
-        }
+    variant: {
+        type: String,
+        default: 'default',
+        validator: (value: string) => ['pricing', 'licensing', 'rating', 'default'].includes(value)
     }
+})
+
+const toggleTag = (tag: Tag) => {
+    tag.active = !tag.active
 }
+
+const iconName = computed(() => {
+    switch (props.variant) {
+        case 'pricing':
+            return 'material-symbols:attach-money-rounded'
+        case 'licensing':
+            return 'material-symbols:license-rounded'
+        case 'rating':
+            return 'material-symbols:star-outline-rounded'
+        default:
+            return 'material-symbols:help-outline'
+    }
+})
+
+const iconClass = computed(() => `icon-${props.variant}`)
 </script>
 
 <style lang="scss" scoped>
