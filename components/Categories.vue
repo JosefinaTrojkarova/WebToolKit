@@ -34,6 +34,7 @@ export default {
 }
 
 .category {
+    font-size: 18px; //??
     height: $xxl;
     padding: $xs $xl;
     color: $primary-400;

@@ -2,7 +2,7 @@
     <div class="tag-selector">
         <button class="btn__tag" v-for="tag in tags" :key="tag.id" @click="toggleTag(tag)"
             :class="['tag', variant, { active: tag.active }]">
-            <Icon :class="getIconClass()" :name="getIconName()" size="18" />
+            <Icon :class="getIconClass()" :name="getIconName()" size="24" />
             {{ tag.name }}
         </button>
     </div>
@@ -60,6 +60,7 @@ export default {
     align-items: center;
     gap: $s;
 
+    font-size: 18px; // ??
     height: $xxl;
     padding: $xs $m;
     font-weight: 500;

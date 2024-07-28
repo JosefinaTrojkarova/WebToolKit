@@ -4,33 +4,43 @@
             <img class="card__logo" :src="item.logo" :alt="item.name">
             <div>
                 <h3 class="card__name">{{ item.name }}</h3>
-                <div v-if="item.tag">
-                    <div>
-                        <Icon class="pricing__icon" name="material-symbols:attach-money-rounded" size="18" />
-                        <p>{{ item.tag.pricing }}</p>
+                <div class="card__tags">
+                    <div class="card__pricing tag">
+                        <Icon class="pricing__icon" name="material-symbols:attach-money-rounded" size="24" />
+                        <p class="price">{{ item.tags.pricing }}</p>
                     </div>
-                    <div>
-                        <Icon class="licensing__icon" name="material-symbols:license-rounded" size="18" />
-                        <p>{{ item.tag.licensing }}</p>
+                    <div class="card__licensing tag">
+                        <Icon class="licensing__icon" name="material-symbols:license-rounded" size="24" />
+                        <p class="license">{{ item.tags.licensing }}</p>
                     </div>
                 </div>
-                <div v-if="item.tag && item.tag.rating !== undefined">
-                    <div class="stars">
-                        <span v-for="i in 5" :key="i" :class="{ 'filled': i <= Math.round(item.tag.rating) }">★</span>
+                <div class="card__rating tag">
+                    <div class="rating__stars">
+                        <span v-for="i in 5" :key="i" class="star-container">
+                            <Icon v-if="i <= Math.floor(item.rating.stars)" class="stars__icon filled"
+                                name="material-symbols:star-rounded" size="24" />
+                            <Icon v-else-if="i - 0.5 <= item.rating.stars" class="stars__icon half-filled"
+                                name="material-symbols:star-half-rounded" size="24" />
+                            <Icon v-else class="stars__icon empty" name="material-symbols:star-outline-rounded"
+                                size="24" />
+                        </span>
                     </div>
-                    <p>{{ item.tag.rating }}</p>
+                    <p class="rating__reviews"><span class="reviews">{{ item.rating.reviews }}</span> reviews</p>
+                    <p class="rating__saves"><span class="saves">{{ item.rating.saves }}</span> saves</p>
                 </div>
             </div>
             <label class="select" @click.stop>
-                <input type="checkbox">
+                <input class="select__checkbox" type="checkbox">
                 <span class="checkbox-container"></span>
             </label>
         </div>
         <div class="card__main">
             <p>{{ item.description }}</p>
         </div>
-        <div class="card__tags">
-            <!-- Add any additional tags here if needed -->
+        <div class="card__categories">
+            <span v-for="category in item.categories" :key="category" class="category">
+                {{ category }}
+            </span>
         </div>
     </NuxtLink>
 </template>
@@ -52,11 +62,15 @@ defineProps<{
     border: 1px solid $primary-200;
     border-radius: $m;
     text-decoration: none;
-    color: inherit;
-    display: block;
+
+    display: flex;
+    flex-direction: column;
+    gap: $m;
+
 
     .card__heading {
         display: flex;
+        gap: $m;
 
         .select {
             position: absolute;
@@ -106,14 +120,83 @@ defineProps<{
                 display: block;
             }
         }
+
+        .card__logo {
+            width: 6.25rem;
+            height: 6.25rem;
+            border: 1px solid $primary-200;
+            border-radius: $xl;
+
+        }
+
+        .tag {
+            display: flex;
+            align-items: center;
+            gap: $s;
+        }
+
+        .card__tags {
+            display: flex;
+            gap: $l;
+
+            .card__pricing {
+                color: $system-success;
+
+                .price {
+                    color: inherit;
+                    font-weight: 500;
+                }
+            }
+
+            .card__licensing {
+                color: $primary-400;
+
+                .license {
+                    color: inherit;
+                    font-weight: 500;
+                }
+            }
+
+        }
+
+        .card__rating {
+            gap: $m;
+
+            .reviews,
+            .saves {
+                font-weight: 700;
+            }
+
+            .stars__icon {
+                color: $secondary-400;
+            }
+        }
+
     }
+}
 
-    .card__logo {
-        width: 6.25rem;
-        height: 6.25rem;
-        border: 1px solid $primary-200;
-        border-radius: $xl;
 
+
+.card__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $s;
+
+
+    .category {
+        font-size: 18px; //??
+        padding: $xs+0.0625rem $xl;
+        color: $primary-400;
+        font-weight: 500;
+        border: 2px solid $primary-400;
+        background-color: $system-white;
+        cursor: pointer;
+        border-radius: $xxl;
+
+        &.active {
+            background-color: $primary-400;
+            color: $system-white;
+        }
     }
 }
 </style>

@@ -2,6 +2,7 @@
 
 import { MongoClient } from "mongodb";
 import NodeCache from "node-cache";
+import Categories from "~/components/Categories.vue";
 
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 });
 
@@ -70,10 +71,15 @@ export default defineEventHandler(async (event) => {
                 name: 1,
                 description: 1,
                 logo: 1,
-                tag: {
+                categories: 1,
+                tags: {
                   pricing: 1,
                   licensing: 1,
-                  rating: 1,
+                },
+                rating: {
+                  stars: 1,
+                  reviws: 1,
+                  saves: 1,
                 },
               }
             : contribute
@@ -90,9 +96,12 @@ export default defineEventHandler(async (event) => {
             name: 1,
             description: 1,
             logo: 1,
-            "tag.pricing": 1,
-            "tag.licensing": 1,
-            "tag.rating": 1,
+            categories: 1,
+            "tags.pricing": 1,
+            "tags.licensing": 1,
+            "rating.stars": 1,
+            "rating.reviews": 1,
+            "rating.saves": 1,
           }
         : contribute
         ? { name: 1 }

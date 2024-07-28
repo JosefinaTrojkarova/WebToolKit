@@ -3,10 +3,15 @@ export type ItemBasicInfo = {
   name: string;
   description: string;
   logo: string;
-  tag: {
+  categories: string[];
+  tags: {
     pricing: string;
     licensing: string;
-    rating: number;
+  };
+  rating: {
+    stars: number;
+    reviews: number;
+    saves: number;
   };
 };
 
