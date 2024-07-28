@@ -2,7 +2,6 @@
 
 import { MongoClient } from "mongodb";
 import NodeCache from "node-cache";
-import Categories from "~/components/Categories.vue";
 
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 });
 

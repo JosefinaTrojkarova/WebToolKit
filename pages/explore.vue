@@ -56,22 +56,9 @@
 </template>
 
 <script setup lang="ts">
-import type { ItemBasicInfo } from '~/types/types'
+import type { ItemBasicInfo, Category, Tag } from '~/types/types'
 
-// ???
-type Category = {
-  id: number;
-  name: string;
-  active: boolean;
-}
-
-type Tag = {
-  id: number;
-  name: string;
-  active: boolean;
-}
-
-// Frontend
+// Categories and Tags data
 const myCategories = ref<Category[]>([
   { id: 1, name: 'UI Design', active: false },
   { id: 2, name: 'UX Design', active: false },
@@ -91,7 +78,6 @@ const handleCategoryToggle = (category: Category) => {
   refresh()
 }
 
-// Tags
 const pricingTags = ref<Tag[]>([
   { id: 1, name: '100% Free', active: false },
   { id: 2, name: 'Free Version', active: false },
@@ -117,7 +103,6 @@ const handleTagToggle = (tag: Tag) => {
   refresh()
 }
 
-// Backend
 const searchQuery = ref('')
 
 const { data, error, refresh } = useFetch<ItemBasicInfo[]>(() => {
