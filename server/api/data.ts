@@ -1,7 +1,7 @@
 // Purpose: API endpoint to get basic data about all the tools from the database.
 
-import { MongoClient } from "mongodb";
-import NodeCache from "node-cache";
+import { MongoClient } from 'mongodb';
+import NodeCache from 'node-cache';
 
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 });
 
@@ -21,30 +21,30 @@ export default defineEventHandler(async (event) => {
       await new Promise((resolve) => setTimeout(resolve, retryDelay));
       retries++;
     }
-    throw new Error("MongoDB client is not available");
+    throw new Error('MongoDB client is not available');
   }
 
   try {
     const mongoClient = await getMongoClient();
 
-    const cacheKey = "toolsData";
+    const cacheKey = 'toolsData';
     const query = getQuery(event);
-    const explore = query.explore === "true";
-    const contribute = query.contribute === "true";
+    const explore = query.explore === 'true';
+    const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
 
     // check if the data is already cached and return it
     const cachedData = cache.get(
       cacheKey +
-        (explore ? "_explore" : contribute ? "_contribute" : "_full") +
-        (searchQuery ? `_${searchQuery}` : "")
+        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
+        (searchQuery ? `_${searchQuery}` : '')
     );
     if (cachedData) {
       return cachedData;
     }
 
-    const database = mongoClient.db("Tools");
-    const collection = database.collection("Main");
+    const database = mongoClient.db('Tools');
+    const collection = database.collection('Main');
 
     let data;
 
@@ -53,10 +53,10 @@ export default defineEventHandler(async (event) => {
       const pipeline = [
         {
           $search: {
-            index: "ToolsSearch",
+            index: 'ToolsSearch',
             autocomplete: {
               query: searchQuery,
-              path: "name",
+              path: 'name',
               fuzzy: {
                 maxEdits: 1,
                 prefixLength: 1,
@@ -96,11 +96,11 @@ export default defineEventHandler(async (event) => {
             description: 1,
             logo: 1,
             categories: 1,
-            "tags.pricing": 1,
-            "tags.licensing": 1,
-            "rating.stars": 1,
-            "rating.reviews": 1,
-            "rating.saves": 1,
+            'tags.pricing': 1,
+            'tags.licensing': 1,
+            'rating.stars': 1,
+            'rating.reviews': 1,
+            'rating.saves': 1,
           }
         : contribute
         ? { name: 1 }
@@ -111,8 +111,8 @@ export default defineEventHandler(async (event) => {
 
     cache.set(
       cacheKey +
-        (explore ? "_explore" : contribute ? "_contribute" : "_full") +
-        (searchQuery ? `_${searchQuery}` : ""),
+        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
+        (searchQuery ? `_${searchQuery}` : ''),
       data
     );
 
@@ -121,7 +121,7 @@ export default defineEventHandler(async (event) => {
     console.error(error);
     throw createError({
       statusCode: 500,
-      statusMessage: "Internal Server Error",
+      statusMessage: 'Internal Server Error',
     });
   }
 });

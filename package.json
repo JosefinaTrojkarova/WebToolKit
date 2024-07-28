@@ -17,12 +17,11 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "node-cache": "^5.1.2",
-    "nuxt": "^3.12.2",
+    "nuxt": "^3.12.3",
     "vue": "^3.4.34",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
-    "@iconify-json/material-symbols": "^1.1.85",
     "@nuxt/test-utils": "^3.14.0",
     "@nuxt/types": "^2.18.1",
     "@types/bcrypt": "^5.0.2",
