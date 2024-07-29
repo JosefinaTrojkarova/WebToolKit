@@ -8,8 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Category } from '~/types/types'
-
 const props = defineProps<{
     categories: Category[]
 }>()

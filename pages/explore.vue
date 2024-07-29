@@ -6,7 +6,7 @@
     <main class="explore__main">
       <aside class="aside">
         <div class="search-container">
-          <Icon class="search-icon" name="material-symbols:search-rounded" size="24" />
+          <span class="material-symbols-rounded">search</span>
           <input class="field--search aside__search" v-model="searchQuery" type="text" placeholder="Search for tools"
             @input="performSearch" />
         </div>
@@ -56,8 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ItemBasicInfo, Category, Tag } from '~/types/types'
-
 // Categories and Tags data
 const myCategories = ref<Category[]>([
   { id: 1, name: 'UI Design', active: false },
