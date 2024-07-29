@@ -1,32 +1,35 @@
 <template>
     <NuxtLink class="card" :to="`/tool/${item.name.toLowerCase().replace(/\s+/g, '-')}`">
-        <div class="card__heading">
-            <img class="card__logo" :src="item.logo" :alt="item.name">
-            <div>
-                <h3 class="card__name">{{ item.name }}</h3>
-                <div class="card__tags">
-                    <div class="card__pricing tag">
-                        <span class="material-symbols-rounded">attach_money</span>
-                        <p class="price">{{ item.tags.pricing }}</p>
+        <div class="heading">
+            <img class="logo" :src="item.logo" :alt="item.name">
+            <div class="content-wrapper">
+                <h3 class="tool-name">{{ item.name }}</h3>
+                <div class="tags">
+                    <div class="tag tag--pricing">
+                        <span class="icon material-symbols-rounded">attach_money</span>
+                        <p class="text p2">{{ item.tags.pricing }}</p>
                     </div>
-                    <div class="card__licensing tag">
-                        <span class="material-symbols-rounded">license</span>
-                        <p class="license">{{ item.tags.licensing }}</p>
+                    <div class="tag tag--licensing">
+                        <span class="icon material-symbols-rounded">license</span>
+                        <p class="text p2">{{ item.tags.licensing }}</p>
                     </div>
                 </div>
-                <div class="card__rating tag">
-                    <div class="rating__stars">
-                        <span class="star-container">
-                            <span class="star-fill" :style="{ width: handleRating }"></span>
+                <div class="rating">
+                    <span class="star-container">
+                        <span class="star-fill" :style="{ width: handleRating }">
+                            <span v-for="i in 5" :key="i" class="star material-symbols-rounded">star_rate</span>
                         </span>
-                    </div>
-                    <p class="rating__reviews"><span class="reviews">{{ item.rating.reviews }}</span> reviews</p>
-                    <p class="rating__saves"><span class="saves">{{ item.rating.saves }}</span> saves</p>
+                        <span v-for="i in 5" :key="i" class="star material-symbols-rounded">star_rate</span>
+                    </span>
+                    <p class="p2"><span class="b2">{{ item.rating.reviews }}</span> reviews</p>
+                    <p class="p2"><span class="b2">{{ item.rating.saves }}</span> saves</p>
                 </div>
             </div>
             <label class="select" @click.stop>
                 <input class="select__checkbox" type="checkbox">
-                <span class="checkbox-container"></span>
+                <span class="checkbox-container">
+                    <span class="material-symbols-rounded check-icon">check</span>
+                </span>
             </label>
         </div>
         <div class="card__main">
@@ -47,168 +50,294 @@ const props = defineProps<{
 
 const handleRating = computed(() => {
     const rating = props.item.rating.stars;
-    const percentage = (rating / 5) * 100;
-    return `${percentage}%`;
+    const starWidth = 19.6; // Each star takes up 18.75% of the total width
+    const gapWidth = 0.5; // Each gap is 1.25% of the total width
+
+    // Calculate how many full stars we have
+    const fullStars = Math.floor(rating);
+
+    // Calculate the percentage of the last partially filled star
+    const partialStar = rating - fullStars;
+
+    // Calculate the total width including gaps up to the current rating
+    let totalWidth = (fullStars * starWidth) + (fullStars * gapWidth);
+
+    // Add the partial star width if there is one, but don't add an extra gap after the partial star
+    if (partialStar > 0) {
+        totalWidth += (partialStar * starWidth);
+    }
+
+    // Remove the last gap if we've filled all stars
+    if (rating === 5) {
+        totalWidth -= gapWidth;
+    }
+
+    // Ensure we don't exceed 100%
+    totalWidth = Math.min(totalWidth, 100);
+
+    return `${totalWidth}%`;
 });
 </script>
 
 <style lang="scss" scoped>
 .card {
     position: relative;
+    display: flex;
+    flex-direction: column;
+
     flex-grow: 1;
+
+    gap: $m;
     padding: $xl;
+
+    text-decoration: none;
 
     border: 1px solid $primary-200;
     border-radius: $m;
-    text-decoration: none;
 
-    display: flex;
-    flex-direction: column;
-    gap: $m;
-
-
-    .card__heading {
+    .heading {
         display: flex;
         gap: $m;
 
+        .logo {
+            width: 6.25rem;
+            height: 6.25rem;
+            border: 1px solid $primary-200;
+            border-radius: $xl;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .tags {
+                display: flex;
+
+                gap: $l;
+
+                .tag {
+                    display: flex;
+                    align-items: center;
+
+                    gap: $xs;
+
+                    &--pricing {
+                        color: $system-success;
+
+                        .text {
+                            color: inherit;
+                            font-weight: 600;
+                            height: 1.3rem;
+                        }
+
+                        .icon {
+                            font-size: 1.5rem;
+                        }
+                    }
+
+                    &--licensing {
+                        color: $primary-400;
+
+                        .text {
+                            color: inherit;
+                            font-weight: 600;
+                            height: 1.3rem;
+                        }
+
+                        .icon {
+                            font-size: 1.25rem;
+                        }
+                    }
+
+                    .icon {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        width: 1rem;
+
+                        font-variation-settings:
+                            'opsz' 20,
+                            'wght' 400,
+                            'FILL' 0,
+                            'GRAD' 100;
+                    }
+                }
+            }
+
+            .rating {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                gap: $m;
+
+                .star-container {
+                    position: relative;
+                    display: inline-flex;
+
+                    width: 8rem;
+
+                    .star-fill {
+                        display: flex;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+
+                        height: 100%;
+
+                        overflow: hidden;
+                        white-space: nowrap;
+
+                        .star {
+                            color: $secondary-400;
+                        }
+                    }
+
+                    .star {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        width: 1.6rem;
+
+                        color: $primary-100;
+
+                        font-variation-settings:
+                            'opsz' 40,
+                            'wght' 400,
+                            'FILL' 1,
+                            'GRAD' 100;
+                        font-size: 2rem;
+                    }
+                }
+            }
+        }
+
         .select {
             position: absolute;
+            display: block;
+            overflow: hidden;
+
             top: $xl;
             right: $xl;
 
-            display: block;
+            height: $xl;
+            width: 6.5rem;
+
             cursor: pointer;
 
             input[type="checkbox"] {
-                visibility: hidden;
+                display: none;
             }
 
             .checkbox-container {
                 position: absolute;
                 top: 0;
-                left: 0;
+                right: 0;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                box-sizing: border-box;
+
                 height: $xl;
                 width: $xl;
+
                 background-color: $primary-100;
-                border: 1px solid $primary-200;
-                border-radius: $s;
-            }
 
-            /* Hover effect 
-            &:hover input~.checkbox-container {}
+                border: 0.0625rem solid $primary-200;
+                border-radius: $xs;
 
-            Active effect
-            input:active~.checkbox-container {}
+                transition: border 0.1s ease-out;
 
-            Checked effect
-            input:checked~.checkbox-container {}
-            change*/
-            .checkbox-container::after {
-                content: "";
-                position: absolute;
-                display: none;
-                left: 0.4rem;
-                width: 0.5rem;
-                height: 1rem;
-                border: solid black;
-                border-width: 0 0.2rem 0.2rem 0;
-                transform: rotate(45deg);
-            }
+                .check-icon {
+                    opacity: 0;
+                    visibility: hidden;
 
-            input:checked~.checkbox-container::after {
-                display: block;
-            }
-        }
+                    color: $system-white;
+                    font-size: 0rem;
 
-        .card__logo {
-            width: 6.25rem;
-            height: 6.25rem;
-            border: 1px solid $primary-200;
-            border-radius: $xl;
-
-        }
-
-        .tag {
-            display: flex;
-            align-items: center;
-            gap: $s;
-        }
-
-        .card__tags {
-            display: flex;
-            gap: $l;
-
-            .card__pricing {
-                color: $system-success;
-
-                .price {
-                    color: inherit;
-                    font-weight: 500;
+                    transition: font-size 0.2s ease-out, opacity 0.2s ease-out, visibility 0.2s ease-out;
                 }
             }
 
-            .card__licensing {
+            &::before {
+                content: "Compare";
+
+                position: absolute;
+                top: $xs;
+                right: -2.7rem;
+
                 color: $primary-400;
 
-                .license {
-                    color: inherit;
-                    font-weight: 500;
+                transition: right 0.2s ease-out;
+            }
+
+            &:hover::before {
+                right: 2rem;
+                transition: right 0.3s ease-out;
+            }
+
+            input:checked~ {
+                .checkbox-container .check-icon {
+                    opacity: 1;
+                    visibility: visible;
+
+                    font-size: 1.3rem;
+
+                    transition-delay: 0.1s;
                 }
             }
 
-        }
+            input:checked~.checkbox-container {
+                border: 0.8rem solid $primary-400;
 
-        .card__rating {
-            gap: $m;
-
-            .reviews,
-            .saves {
-                font-weight: 700;
+                transition: border 0.2s ease-out;
+                animation: shrink-bounce 200ms cubic-bezier(.4, .0, .23, 1);
             }
 
-            .stars__icon {
-                color: $secondary-400;
+            // Optional: Add hover and active states
+            &:hover .checkbox-container {
+                border: 0.0625rem solid $primary-300;
             }
 
-            // Temporary styles
-            .star-container {
-                display: inline-block;
-                width: 100px;
-                height: 20px;
-                background-color: blue;
-                position: relative;
-                overflow: hidden;
-            }
+            @keyframes shrink-bounce {
+                0% {
+                    transform: scale(1);
+                }
 
-            .star-fill {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                background-color: orange;
+                33% {
+                    transform: scale(.9);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
             }
         }
-
     }
 }
-
-
 
 .card__categories {
     display: flex;
     flex-wrap: wrap;
+
     gap: $s;
 
-
     .category {
-        font-size: 18px; //??
-        padding: $xs+0.0625rem $xl;
+        padding: 0.3125rem $xl;
         color: $primary-400;
-        font-weight: 500;
+
+        font-size: 1rem;
+        font-weight: 650;
+
         border: 2px solid $primary-400;
-        background-color: $system-white;
-        cursor: pointer;
         border-radius: $xxl;
+
+        cursor: pointer;
 
         &.active {
             background-color: $primary-400;

@@ -117,7 +117,6 @@ const { isModalOpen, openModal, closeModal } = useModal()
     align-items: center;
     gap: $xl;
     padding: $xxl;
-    margin-bottom: $xxl;
     border-bottom: 1px solid $primary-100;
 }
 

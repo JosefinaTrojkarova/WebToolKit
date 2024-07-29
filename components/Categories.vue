@@ -21,19 +21,24 @@ const toggleCategory = (category: Category) => {
 .category-selector {
     display: flex;
     flex-wrap: wrap;
+
     gap: $s;
 }
 
 .category {
-    font-size: 1rem;
     height: $xxl;
+
     padding: $xs $xl;
+
     color: $primary-400;
-    font-weight: 500;
+
+    font-size: 1rem;
+    font-weight: 600;
+
     border: 2px solid $primary-400;
-    background-color: $system-white;
-    cursor: pointer;
     border-radius: $xxl;
+
+    cursor: pointer;
 
     &.active {
         background-color: $primary-400;

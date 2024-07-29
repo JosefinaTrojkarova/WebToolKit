@@ -21,8 +21,17 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      style: [{ children: ':root { font-family: "Ubuntu", sans-serif; }' }],
+      style: [{ children: ':root { font-family: "Ubuntu Sans", sans-serif; background-color: #edeeef; }' }],
       link: [
+        {
+          rel: "preconnect", // Google Fonts
+          href: "https://fonts.googleapis.com"
+        },
+        {
+          rel: "preconnect", // Google Fonts
+          href: "https://fonts.gstatic.com",
+          crossorigin: "anonymous"
+        },
         {
           rel: "stylesheet", // Material Symbols Rounded font
           href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
@@ -33,7 +42,7 @@ export default defineNuxtConfig({
         },
         {
           rel: "stylesheet", // Ubuntu font
-          href: "https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap",
         },
       ],
     },
