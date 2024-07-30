@@ -1,10 +1,10 @@
 <template>
     <div class="tag-selector">
-        <button class="btn__tag" v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
+        <label v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
             :class="['tag', variant, { active: tag.active }]">
-            <span class="material-symbols-rounded">{{ iconName }}</span>
-            {{ tag.name }}
-        </button>
+            <span class="material-symbols-rounded tag-icon">{{ iconName }}</span>
+            <p class="p2">{{ tag.name }}</p>
+        </label>
     </div>
 </template>
 
@@ -47,7 +47,7 @@ const computedTags = computed(() => {
 })
 
 const toggleTag = (tag: Tag) => {
-    tag.active = !tag.active
+    tag.active = !tag.active;
 }
 
 const iconName = computed(() => {
@@ -66,54 +66,166 @@ const iconName = computed(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
     gap: $s;
 }
 
 .tag {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: $s;
+    justify-content: flex-start;
+    box-sizing: border-box;
 
-    font-size: 1.125rem;
     height: $xxl;
-    padding: $xs $m;
-    font-weight: 500;
+    width: max-content;
+
+    gap: $xs;
+    padding-right: $s;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    border-radius: $s;
+
     cursor: pointer;
-    border-radius: $m;
+    user-select: none;
+    transform: rotateX(0deg);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out, background-color 0s linear 0.1s, color 0s linear 0.1s;
+
+    p {
+        font-weight: 600;
+
+        transform: rotateX(0deg);
+        transition: transform 0s linear 0.1s, color 0s linear 0.1s;
+    }
+
+    .tag-icon {
+        transform: rotateX(0deg);
+        transition: transform 0s linear 0.1s, font-variation-settings 0s linear 0.1s;
+    }
 
     &.pricing {
-        color: $system-success;
         border: 2px solid $system-success;
-        background-color: $system-white;
+
+        color: $system-success;
+
+        .tag-icon {
+            font-variation-settings:
+                'opsz' 24,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.5rem;
+        }
+
+        p {
+            color: $system-success;
+        }
 
         &.active {
-            background-color: $system-success;
             color: $system-white;
+            background-color: $system-success;
+            transform: rotateX(180deg);
+
+            .tag-icon {
+                transform: rotateX(180deg);
+            }
+
+            p {
+                color: $system-white;
+                transform: rotateX(180deg);
+            }
+        }
+
+        .circle {
+            background-color: $system-success;
         }
     }
 
     &.licensing {
+        padding-left: $xs;
+
         color: $primary-400;
+
         border: 2px solid $primary-400;
-        background-color: $system-white;
+
+        .tag-icon {
+            font-variation-settings:
+                'opsz' 20,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.25rem;
+        }
 
         &.active {
             background-color: $primary-400;
             color: $system-white;
+            transform: rotateX(180deg);
+
+            .tag-icon {
+                transform: rotateX(180deg);
+            }
+
+            p {
+                color: $system-white;
+                transform: rotateX(180deg);
+            }
+        }
+
+        .circle {
+            background-color: $primary-400;
         }
     }
 
     &.rating {
+        padding-right: $xs;
+        padding-left: $s;
+
         color: $primary-400;
+
         border: 2px solid $primary-400;
-        background-color: $system-white;
 
         flex-direction: row-reverse;
+
+        .tag-icon {
+            font-variation-settings:
+                'opsz' 20,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.5rem;
+        }
 
         &.active {
             background-color: $primary-400;
             color: $system-white;
+            transform: rotateX(180deg);
+
+            .tag-icon {
+                font-variation-settings:
+                    'opsz' 20,
+                    'wght' 400,
+                    'FILL' 1,
+                    'GRAD' 100;
+
+                transform: rotateX(180deg);
+            }
+
+            p {
+                color: $system-white;
+                transform: rotateX(180deg);
+            }
         }
+
+        .circle {
+            background-color: $primary-400;
+        }
+    }
+
+    &:hover {
+        opacity: 70%;
     }
 }
 </style>

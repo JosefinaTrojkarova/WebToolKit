@@ -40,6 +40,17 @@ export default defineNuxtConfig({
         {
           rel: 'stylesheet', // Material Symbols Rounded font
           href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
+          rel: 'preconnect', // Google Fonts
+          href: 'https://fonts.googleapis.com',
+        },
+        {
+          rel: 'preconnect', // Google Fonts
+          href: 'https://fonts.gstatic.com',
+          crossorigin: 'anonymous',
+        },
+        {
+          rel: 'stylesheet', // Material Symbols Rounded font
+          href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
         },
         {
           rel: 'stylesheet', // Kanit font

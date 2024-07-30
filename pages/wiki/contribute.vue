@@ -33,8 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ItemBasicInfo, User } from '~/types/types'
-
 const { isModalOpen, openModal, closeModal } = useModal()
 const router = useRouter()
 
