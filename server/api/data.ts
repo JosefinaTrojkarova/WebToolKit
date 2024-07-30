@@ -54,13 +54,29 @@ export default defineEventHandler(async (event) => {
         {
           $search: {
             index: 'ToolsSearch',
-            autocomplete: {
-              query: searchQuery,
-              path: 'name',
-              fuzzy: {
-                maxEdits: 1,
-                prefixLength: 1,
-              },
+            compound: {
+              should: [
+                {
+                  autocomplete: {
+                    query: searchQuery,
+                    path: 'name',
+                    tokenOrder: 'sequential',
+                  },
+                },
+                {
+                  wildcard: {
+                    query: `*${searchQuery}*`,
+                    path: 'name',
+                    allowAnalyzedField: true,
+                  },
+                },
+                {
+                  text: {
+                    query: searchQuery,
+                    path: 'name',
+                  },
+                },
+              ],
             },
           },
         },
@@ -77,7 +93,7 @@ export default defineEventHandler(async (event) => {
                 },
                 rating: {
                   stars: 1,
-                  reviws: 1,
+                  reviews: 1,
                   saves: 1,
                 },
               }

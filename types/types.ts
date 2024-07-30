@@ -15,21 +15,45 @@ export type ItemBasicInfo = {
   };
 };
 
+export type Tool = {
+  _id: string;
+  name: string;
+  shortDescription: string;
+  description: string;
+  video: string;
+  logo: string;
+  categories: string[];
+  tags: {
+    pricing: string;
+    licensing: string;
+  };
+  rating: {
+    stars: number;
+    reviews: number;
+    saves: number;
+  };
+  resources: string[];
+  pros: string[];
+  cons: string[];
+  alternatives: string[];
+};
+
 export type Category = {
   id: number;
   name: string;
   active: boolean;
 };
 
+export type CategoryDatabase = {
+  id: number;
+  name: string;
+  tools: string[];
+};
+
 export type Tag = {
   id: number;
   name: string;
   active: boolean;
-};
-
-export type Tool = {
-  name: string;
-  description: string;
 };
 
 export type User = {
