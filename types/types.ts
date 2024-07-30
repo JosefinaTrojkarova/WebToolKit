@@ -44,6 +44,12 @@ export type Category = {
   active: boolean;
 };
 
+export type CategoryDatabase = {
+  id: number;
+  name: string;
+  tools: string[];
+};
+
 export type Tag = {
   id: number;
   name: string;

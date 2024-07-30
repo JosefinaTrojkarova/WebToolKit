@@ -1,4 +1,4 @@
-// Purpouse: API endpoint to get all the data about categories from the database.
+// Purpose: API endpoint to get all the data about categories from the database.
 
 import { MongoClient } from 'mongodb';
 import NodeCache from 'node-cache';

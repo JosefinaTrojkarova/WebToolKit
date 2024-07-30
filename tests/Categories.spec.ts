@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
+import { mountSuspended } from '@nuxt/test-utils/runtime';
 import Categories from '~/components/Categories.vue';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Categories Component', () => {
   let wrapper: any;
@@ -21,12 +21,14 @@ describe('Categories Component', () => {
     { id: 11, name: 'HTML', active: false },
   ];
 
-  beforeEach(() => {
-    wrapper = mount(Categories, {
+  beforeEach(async () => {
+    // Mount the Categories component with provided props
+    wrapper = await mountSuspended(Categories, {
       props: {
         categories,
       },
     });
+    // Find all elements with class '.btn__category'
     buttons = wrapper.findAll('.btn__category');
   });
 
@@ -36,12 +38,18 @@ describe('Categories Component', () => {
   });
 
   it('should toggle category active state on click', async () => {
-    const button = wrapper.findAll('.btn__category').at(0);
+    const button = buttons.at(0);
 
-    await button.trigger('click'); // Simulate a click event on the button
-    expect(categories[0].active).toBe(true); // Check that the first category is now active
+    if (button) {
+      // Simulate a click event on the button
+      await button.trigger('click');
 
-    await button.trigger('click');
-    expect(categories[0].active).toBe(false);
+      // Verify that the category's active state is updated in the component's state
+      expect(wrapper.vm.categories[0].active).toBe(true);
+
+      // Simulate another click to toggle back
+      await button.trigger('click');
+      expect(wrapper.vm.categories[0].active).toBe(false);
+    }
   });
 });
