@@ -2,7 +2,7 @@
     <div class="category-selector">
         <button class="btn__category" v-for="category in categories" :key="category.id"
             @click="toggleCategory(category)" :class="['category', { active: category.active }]">
-            {{ category.name }}
+            <p class="p2">{{ category.name }}</p>
         </button>
     </div>
 </template>
@@ -30,8 +30,6 @@ const toggleCategory = (category: Category) => {
 
     padding: $xs $xl;
 
-    color: $primary-400;
-
     font-size: 1rem;
     font-weight: 600;
 
@@ -39,10 +37,27 @@ const toggleCategory = (category: Category) => {
     border-radius: $xxl;
 
     cursor: pointer;
+    transform: rotateX(0deg);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out, background-color 0s linear 0.1s;
+
+    p {
+        font-weight: 600;
+        transform: rotateX(0deg);
+        transition: transform 0s linear 0.1s, color 0s linear 0.1s;
+    }
 
     &.active {
         background-color: $primary-400;
-        color: $system-white;
+        transform: rotateX(180deg);
+
+        p {
+            color: $system-white;
+            transform: rotateX(180deg);
+        }
+    }
+
+    &:hover {
+        opacity: 0.8;
     }
 }
 </style>

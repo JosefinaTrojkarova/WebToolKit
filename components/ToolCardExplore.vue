@@ -26,16 +26,16 @@
                 </div>
             </div>
             <label class="select" @click.stop>
-                <input class="select__checkbox" type="checkbox">
-                <span class="checkbox-container">
+                <input class="checkbox-default" type="checkbox">
+                <span class="checkbox">
                     <span class="material-symbols-rounded check-icon">check</span>
                 </span>
             </label>
         </div>
-        <div class="card__main">
-            <p>{{ item.description }}</p>
+        <div class="main">
+            <p class="item-description">{{ item.description }}</p>
         </div>
-        <div class="card__categories">
+        <div class="categories">
             <span v-for="category in item.categories" :key="category" class="category">
                 {{ category }}
             </span>
@@ -95,13 +95,20 @@ const handleRating = computed(() => {
     border: 1px solid $primary-200;
     border-radius: $m;
 
+    transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
     .heading {
         display: flex;
         gap: $m;
 
         .logo {
+            box-sizing: border-box;
+
             width: 6.25rem;
             height: 6.25rem;
+
+            padding: $s;
+
             border: 1px solid $primary-200;
             border-radius: $xl;
         }
@@ -232,7 +239,7 @@ const handleRating = computed(() => {
                 display: none;
             }
 
-            .checkbox-container {
+            .checkbox {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -282,7 +289,7 @@ const handleRating = computed(() => {
             }
 
             input:checked~ {
-                .checkbox-container .check-icon {
+                .checkbox .check-icon {
                     opacity: 1;
                     visibility: visible;
 
@@ -292,7 +299,7 @@ const handleRating = computed(() => {
                 }
             }
 
-            input:checked~.checkbox-container {
+            input:checked~.checkbox {
                 border: 0.8rem solid $primary-400;
 
                 transition: border 0.2s ease-out;
@@ -300,7 +307,7 @@ const handleRating = computed(() => {
             }
 
             // Optional: Add hover and active states
-            &:hover .checkbox-container {
+            &:hover .checkbox {
                 border: 0.0625rem solid $primary-300;
             }
 
@@ -319,30 +326,46 @@ const handleRating = computed(() => {
             }
         }
     }
-}
 
-.card__categories {
-    display: flex;
-    flex-wrap: wrap;
-
-    gap: $s;
-
-    .category {
-        padding: 0.3125rem $xl;
-        color: $primary-400;
-
-        font-size: 1rem;
-        font-weight: 650;
-
-        border: 2px solid $primary-400;
-        border-radius: $xxl;
-
-        cursor: pointer;
-
-        &.active {
-            background-color: $primary-400;
-            color: $system-white;
+    .main {
+        .item-description {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+    }
+
+    .categories {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: $s;
+
+        .category {
+            padding: 0.3125rem $xl;
+            color: $primary-400;
+
+            font-size: 1rem;
+            font-weight: 650;
+
+            border: 2px solid $primary-400;
+            border-radius: $xxl;
+
+            cursor: pointer;
+
+            &.active {
+                background-color: $primary-400;
+                color: $system-white;
+            }
+        }
+    }
+
+    &:hover {
+        box-shadow: $shadow-300;
+        transform: translateY(-0.3rem);
     }
 }
 </style>
