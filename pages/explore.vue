@@ -5,32 +5,38 @@
     </header>
     <main class="explore__main">
       <aside class="aside">
-        <div class="search-container">
-          <Icon class="search-icon" name="material-symbols:search-rounded" size="24" />
-          <input class="field--search aside__search" v-model="searchQuery" type="text" placeholder="Search for tools"
-            @input="performSearch" />
-        </div>
+        <label class="search-container" for="search-field">
+          <span class="search-icon material-symbols-rounded">search</span>
+          <input id="search-field" class="field--search aside__search" v-model="searchQuery" type="text"
+            placeholder="Search for tools" @input="performSearch" />
+        </label>
         <div class="aside__filters">
-          <div class="filters filters__categories">
-            <h4 class="filters__heading">Categories</h4>
-            <ul class="list categories__list">
+          <div class="filter filter--categories">
+            <h4 class="filter__heading">Categories</h4>
+            <ul class="filter__list">
               <Categories :categories="myCategories" @category-toggled="handleCategoryToggle" />
             </ul>
           </div>
-          <div class="filters filters__tags">
-            <h4 class="filters__heading">Tags</h4>
-            <p>Pricing</p>
-            <ul class="list pricing__list">
-              <Tags :tags="pricingTags" variant="pricing" @tag-toggled="handleTagToggle" />
-            </ul>
-            <p>Licensing</p>
-            <ul class="list licensing__list">
-              <Tags :tags="licensingTags" variant="licensing" @tag-toggled="handleTagToggle" />
-            </ul>
-            <p>Rating</p>
-            <ul class="list rating__list">
-              <Tags :tags="ratingTags" variant="rating" @tag-toggled="handleTagToggle" />
-            </ul>
+          <div class="filter filter--tags">
+            <h4 class="filter__heading">Tags</h4>
+            <div class="filter__wrapper">
+              <p>Pricing</p>
+              <ul class="filter__list">
+                <Tags variant="pricing" />
+              </ul>
+            </div>
+            <div class="filter__wrapper">
+              <p>Licensing</p>
+              <ul class="filter__list">
+                <Tags variant="licensing" />
+              </ul>
+            </div>
+            <div class="filter__wrapper">
+              <p>Rating</p>
+              <ul class="filter__list">
+                <Tags variant="rating" />
+              </ul>
+            </div>
           </div>
         </div>
       </aside>
@@ -56,8 +62,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ItemBasicInfo, Category, Tag } from '~/types/types'
-
 // Categories and Tags data
 const myCategories = ref<Category[]>([
   { id: 1, name: 'UI Design', active: false },
@@ -74,30 +78,6 @@ const myCategories = ref<Category[]>([
 ])
 
 const handleCategoryToggle = () => {
-  refresh()
-}
-
-const pricingTags = ref<Tag[]>([
-  { id: 1, name: '100% Free', active: false },
-  { id: 2, name: 'Free Version', active: false },
-  { id: 3, name: 'Free Trial', active: false },
-  { id: 4, name: 'Paid', active: false }
-])
-
-const licensingTags = ref<Tag[]>([
-  { id: 1, name: 'Open Source', active: false },
-  { id: 2, name: 'Proprietary', active: false }
-])
-
-const ratingTags = ref<Tag[]>([
-  { id: 1, name: '5', active: false },
-  { id: 2, name: '4', active: false },
-  { id: 3, name: '3', active: false },
-  { id: 4, name: '2', active: false },
-  { id: 5, name: '1', active: false }
-])
-
-const handleTagToggle = () => {
   refresh()
 }
 
@@ -133,38 +113,52 @@ const performSearch = () => {
 .aside {
   display: flex;
   flex-direction: column;
-  gap: $m;
-  width: 25.75rem;
 
-  .aside__search {
-    box-sizing: border-box;
-    height: 3.5rem;
-  }
+  min-width: 26rem;
+  max-width: 26rem;
+
+  gap: $m;
 
   .aside__filters {
     display: flex;
+
     gap: $m;
 
-    .filters {
+    .filter {
       display: flex;
       flex-direction: column;
-      gap: $s;
+      box-sizing: border-box;
 
-      width: 100%;
+      width: 50%;
+
+      gap: $s;
       padding: $xl;
+
       border: 1px solid $primary-200;
       border-radius: $m;
+
+      .filter__wrapper {
+        display: flex;
+        flex-direction: column;
+
+        gap: $xs;
+
+        &:not(:last-child) {
+          margin-bottom: $s;
+        }
+      }
     }
   }
 }
 
 .section {
-  width: 88.25rem;
+  flex-grow: 1;
 
   .tools__list {
     display: grid;
-    gap: $m;
     grid-template-columns: repeat(2, 1fr);
+
+    gap: $m;
   }
 }
 </style>

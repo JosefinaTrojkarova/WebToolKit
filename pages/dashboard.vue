@@ -18,8 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import type { User } from '~/types/types'
-
 const user = ref<User | null>(null)
 const error = ref<string | null>(null)
 

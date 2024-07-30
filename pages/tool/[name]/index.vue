@@ -15,8 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Tool } from '~/types/types'
-
 const route = useRoute()
 const { name } = route.params
 
