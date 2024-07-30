@@ -60,6 +60,7 @@ export default defineEventHandler(async (event) => {
                   autocomplete: {
                     query: searchQuery,
                     path: 'name',
+                    tokenOrder: 'sequential',
                   },
                 },
                 {
