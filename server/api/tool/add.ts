@@ -1,7 +1,7 @@
 // Purpose: API endpoint to submit a new tool suggestion.
 
 import { MongoClient, Collection } from 'mongodb';
-import type { ToolSuggestion } from '~/types/types';
+import type { ToolSuggestion } from '~~/types/types';
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);

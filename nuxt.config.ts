@@ -1,7 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  compatibilityDate: '2024-07-09',
+
+  future: {
+    compatibilityVersion: 4,
+  },
 
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
@@ -62,13 +65,15 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@nuxt/test-utils/module'],
+  modules: [
+    '@nuxt/test-utils/module',
+    '~~/modules/auto-import-types',
+  ],
 
   typescript: {
     typeCheck: true,
     strict: true,
   },
-  imports: {
-    dirs: ['types'],
-  },
+
+  compatibilityDate: '2024-07-31',
 });

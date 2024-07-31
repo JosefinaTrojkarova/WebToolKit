@@ -32,7 +32,9 @@
     </div>
 </template>
 
-<script setup lang="ts">
+
+
+<script lang="ts" setup>
 const { isModalOpen, openModal, closeModal } = useModal()
 const router = useRouter()
 
@@ -88,7 +90,9 @@ const selectExistingTool = (name: string) => {
 }
 
 // Fetch data for existing tools
-const { data, refresh } = useLazyFetch<ItemBasicInfo[]>('/api/data?contribute=true')
+const { data, refresh } = useLazyFetch<ItemBasicInfo[]>('/api/data?contribute=true', {
+    deep: true
+})
 
 const retry = () => {
     refresh()
@@ -102,6 +106,8 @@ const filteredData = computed(() => {
     )
 })
 </script>
+
+
 
 <style scoped>
 .tool-item {
