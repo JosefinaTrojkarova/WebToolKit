@@ -52,7 +52,7 @@ export type Tool = {
   alternatives: string[];
 };
 
-export type Alternatives = {
+export type Alternative = {
   _id: string;
   name: string;
   categories: string[];
@@ -74,6 +74,15 @@ export type Alternatives = {
     name: string;
     votes: string;
   }[];
+};
+
+export type Review = {
+  _id: string;
+  tool: string;
+  user: string;
+  comment: string;
+  rating: number;
+  date: string;
 };
 
 export type Category = {
