@@ -18,11 +18,45 @@ export type ItemBasicInfo = {
 export type Tool = {
   _id: string;
   name: string;
-  shortDescription: string;
-  description: string;
-  video: string;
-  logo: string;
   categories: string[];
+  description: string;
+  logo: string;
+  tags: {
+    pricing: string;
+    licensing: string;
+  };
+  rating: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+    stars: number;
+    reviews: number;
+    saves: number;
+  };
+  shortDescription: string;
+  resources: {
+    link: string;
+    type: string;
+  }[];
+  video: string;
+  pros: {
+    name: string;
+    votes: string;
+  }[];
+  cons: {
+    name: string;
+    votes: string;
+  }[];
+  alternatives: string[];
+};
+
+export type Alternatives = {
+  _id: string;
+  name: string;
+  categories: string[];
+  logo: string;
   tags: {
     pricing: string;
     licensing: string;
@@ -30,12 +64,16 @@ export type Tool = {
   rating: {
     stars: number;
     reviews: number;
-    saves: number;
   };
-  resources: string[];
-  pros: string[];
-  cons: string[];
-  alternatives: string[];
+  shortDescription: string;
+  pros: {
+    name: string;
+    votes: string;
+  }[];
+  cons: {
+    name: string;
+    votes: string;
+  }[];
 };
 
 export type Category = {
