@@ -91,7 +91,7 @@
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, alternatives, reviews, retryFetch } = useTool(name as string)
+const { data, error, alternatives, reviews, retryFetch } = useFetchToolpage(name as string)
 </script>
 
 

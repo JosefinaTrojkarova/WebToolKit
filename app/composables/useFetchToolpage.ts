@@ -1,4 +1,4 @@
-export function useTool(name: string) {
+export function useFetchToolpage(name: string) {
   const { data, error, refresh } = useFetch<Tool>(`/api/tool/${name}`, {
     key: `tool-${name}`,
     default: () => ({ alternatives: [], _id: '' }),
