@@ -4,15 +4,11 @@ export function useFetchAlternatives(toolData: Ref<Tool | null>) {
   const fetchAlternatives = async () => {
     if (toolData.value && toolData.value.alternatives.length > 0) {
       try {
-        const { data: altData, error } = await useFetch<Alternative[]>(
-          '/api/tool/alternatives',
-          {
-            method: 'POST',
-            body: { ids: toolData.value.alternatives },
-          }
-        );
-        if (error.value) throw error.value;
-        alternatives.value = altData.value || [];
+        const data = await $fetch('/api/tool/alternatives', {
+          method: 'POST',
+          body: { ids: toolData.value.alternatives },
+        });
+        alternatives.value = data || [];
       } catch (e) {
         console.error('Failed to fetch alternatives:', e);
       }

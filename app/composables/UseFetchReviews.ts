@@ -4,14 +4,10 @@ export function useFetchReviews(toolData: Ref<Tool | null>) {
   const fetchReviews = async () => {
     if (toolData.value && toolData.value._id) {
       try {
-        const { data: reviewData, error } = await useFetch<Review[]>(
-          '/api/tool/reviews',
-          {
-            params: { toolId: toolData.value._id },
-          }
-        );
-        if (error.value) throw error.value;
-        reviews.value = reviewData.value || [];
+        const data = await $fetch('/api/tool/reviews', {
+          params: { toolId: toolData.value._id },
+        });
+        reviews.value = data || [];
       } catch (e) {
         console.error('Failed to fetch reviews:', e);
       }
