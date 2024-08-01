@@ -18,11 +18,9 @@
             <p><strong>Licensing:</strong> {{ data.tags?.licensing || 'Not available' }}</p>
             <h3>Rating:</h3>
             <ul>
-                <li><strong>1 Star:</strong> {{ data.rating ? data.rating[1] : 'No data' }}</li>
-                <li><strong>2 Stars:</strong> {{ data.rating ? data.rating[2] : 'No data' }}</li>
-                <li><strong>3 Stars:</strong> {{ data.rating ? data.rating[3] : 'No data' }}</li>
-                <li><strong>4 Stars:</strong> {{ data.rating ? data.rating[4] : 'No data' }}</li>
-                <li><strong>5 Stars:</strong> {{ data.rating ? data.rating[5] : 'No data' }}</li>
+                <li v-for="star in [1, 2, 3, 4, 5]" :key="star">
+                    <strong>{{ star }} Star:</strong> {{ data.rating ? data.rating[star] : 'No data' }}
+                </li>
                 <li><strong>Average Stars:</strong> {{ data.rating ? data.rating.stars : 'No data' }}</li>
                 <li><strong>Reviews:</strong> {{ data.rating ? data.rating.reviews : 'No data' }}</li>
                 <li><strong>Saves:</strong> {{ data.rating ? data.rating.saves : 'No data' }}</li>
@@ -92,7 +90,7 @@
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
+const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string);
 const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data || {})
 const { reviews, retryFetch: retryReviews } = useFetchReviews(data || {})
 
