@@ -5,6 +5,8 @@ export default defineNuxtModule({
     const types = [
       'ItemBasicInfo',
       'Tool',
+      'ToolMain',
+      'ToolHeader',
       'Alternative',
       'Review',
       'Category',

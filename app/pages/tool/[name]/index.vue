@@ -12,19 +12,18 @@
             <p><strong>Description:</strong> {{ data.description }}</p>
             <p><strong>Video:</strong> <a :href="data.video">{{ data.video }}</a></p>
             <p><strong>Logo:</strong> <img :src="data.logo" alt="Logo" /></p>
-            <p><strong>Categories:</strong> {{ data.categories.join(', ') }}</p>
-            <p><strong>Pricing:</strong> {{ data.tags.pricing }}</p>
-            <p><strong>Licensing:</strong> {{ data.tags.licensing }}</p>
+            <p><strong>Categories:</strong> {{ data.categories ? data.categories.join(', ') : 'No categories available'
+                }}</p>
+            <p><strong>Pricing:</strong> {{ data.tags?.pricing || 'Not available' }}</p>
+            <p><strong>Licensing:</strong> {{ data.tags?.licensing || 'Not available' }}</p>
             <h3>Rating:</h3>
             <ul>
-                <li><strong>1 Star:</strong> {{ data.rating[1] }}</li>
-                <li><strong>2 Stars:</strong> {{ data.rating[2] }}</li>
-                <li><strong>3 Stars:</strong> {{ data.rating[3] }}</li>
-                <li><strong>4 Stars:</strong> {{ data.rating[4] }}</li>
-                <li><strong>5 Stars:</strong> {{ data.rating[5] }}</li>
-                <li><strong>Average Stars:</strong> {{ data.rating.stars }}</li>
-                <li><strong>Reviews:</strong> {{ data.rating.reviews }}</li>
-                <li><strong>Saves:</strong> {{ data.rating.saves }}</li>
+                <li v-for="star in [1, 2, 3, 4, 5]" :key="star">
+                    <strong>{{ star }} Star:</strong> {{ data.rating ? data.rating[star] : 'No data' }}
+                </li>
+                <li><strong>Average Stars:</strong> {{ data.rating ? data.rating.stars : 'No data' }}</li>
+                <li><strong>Reviews:</strong> {{ data.rating ? data.rating.reviews : 'No data' }}</li>
+                <li><strong>Saves:</strong> {{ data.rating ? data.rating.saves : 'No data' }}</li>
             </ul>
             <p><strong>Resources:</strong></p>
             <ul>
@@ -91,9 +90,9 @@
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data)
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data)
+const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string, 'header');
+const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data || {})
+const { reviews, retryFetch: retryReviews } = useFetchReviews(data || {})
 
 const retryFetch = () => {
     retryToolData()
