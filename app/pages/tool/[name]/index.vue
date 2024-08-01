@@ -90,7 +90,7 @@
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string);
+const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string, 'header');
 const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data || {})
 const { reviews, retryFetch: retryReviews } = useFetchReviews(data || {})
 

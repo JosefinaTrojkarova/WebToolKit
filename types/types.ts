@@ -30,6 +30,7 @@ export type ToolMain = {
   _id: string;
   categories: string[];
   description: string;
+  logo: string;
   tags: {
     pricing: string;
     licensing: string;

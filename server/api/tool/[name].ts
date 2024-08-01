@@ -61,6 +61,7 @@ export default defineEventHandler(async (event) => {
         }
       : {
           categories: 1,
+          logo: 1,
           description: 1,
           tags: {
             pricing: 1,
