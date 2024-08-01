@@ -1,11 +1,12 @@
 <template>
-    <div>
-        <h1>{{ name }}</h1>
+    <NuxtLayout name="tool">
+        <!-- Error state -->
         <div v-if="error">
             <p>Error: {{ error.message }}</p>
             <button @click="retryFetch">Retry</button>
         </div>
-        <div v-else-if="data">
+        <!-- Working state -->
+        <div v-else-if="isMounted && data">
             <p><strong>ID:</strong> {{ data._id.$oid }}</p>
             <p><strong>Name:</strong> {{ data.name }}</p>
             <p><strong>Short Description:</strong> {{ data.shortDescription }}</p>
@@ -81,16 +82,26 @@
                     </ul>
                 </li>
             </ul>
+            <NuxtLink :to="`/tool/${name}/edit`">Edit</NuxtLink>
         </div>
-        <NuxtLink v-if="data" :to="`/tool/${name}/edit`">Edit</NuxtLink>
-    </div>
+        <!-- Loading state -->
+        <div v-else>
+            <p>Loading...</p>
+        </div>
+    </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+// Hydration mismatch prevention
+const isMounted = ref(false)
+onMounted(() => {
+    isMounted.value = true
+})
+
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string, 'header');
+const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string);
 const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data || {})
 const { reviews, retryFetch: retryReviews } = useFetchReviews(data || {})
 
