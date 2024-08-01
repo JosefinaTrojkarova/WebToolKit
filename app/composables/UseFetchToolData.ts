@@ -1,8 +1,11 @@
-export function useFetchToolData(name: string) {
-  const { data, error, refresh } = useFetch<Tool>(`/api/tool/${name}`, {
-    key: `tool-${name}`,
-    default: () => ({ alternatives: [], _id: '' }),
-  });
+export function useFetchToolData(name: string, type?: string) {
+  const isHeader = type === 'header';
+  const { data, error, refresh } = useFetch<ToolMain>(
+    `/api/tool/${name}?header=${isHeader}`,
+    {
+      key: `tool-${name}`,
+    }
+  );
 
   const retryFetch = () => {
     refresh();
