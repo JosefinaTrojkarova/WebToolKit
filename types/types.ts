@@ -59,11 +59,6 @@ export type ToolMain = {
   alternatives: string[];
 };
 
-export type ToolQueryParams = {
-  main: boolean;
-  header: boolean;
-};
-
 export type Tool = {
   _id: string;
   name: string;

@@ -7,7 +7,6 @@ export default defineNuxtModule({
       'Tool',
       'ToolMain',
       'ToolHeader',
-      'ToolQueryParams',
       'Alternative',
       'Review',
       'Category',
