@@ -83,12 +83,56 @@ const handleCategoryToggle = () => {
 
 const searchQuery = ref('')
 
+const nuxtApp = useNuxtApp()
+const cacheKey = 'explore-data'
+
+// Fetching data
 const { data, error, refresh } = useFetch<ItemBasicInfo[]>(() => {
-  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
-  return `/api/data?explore=true${searchParam}`
+  // Construct the search parameter string
+  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : '';
+  // Return the API endpoint URL
+  return `/api/data?explore=true${searchParam}`;
 }, {
-  immediate: true,
-})
+  key: cacheKey,
+
+  // Retrieve cached data
+  getCachedData: (key) => {
+    try {
+      // Check if data is in Nuxt payload during SSR hydration
+      if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
+        return nuxtApp.payload.data[key];
+      }
+      // Check if data is in the static cache
+      if (nuxtApp.static?.data?.[key]) {
+        return nuxtApp.static.data[key];
+      }
+    } catch (err) {
+      console.error(`Error retrieving cached data for key ${key}:`, err);
+    }
+    return null;
+  },
+
+  // Transform and cache the response
+  transform: (response) => {
+    try {
+      // Store the fetched data in the static cache
+      if (nuxtApp.static?.data) {
+        nuxtApp.static.data[cacheKey] = response;
+      }
+    } catch (err) {
+      console.error(`Error caching data for key ${cacheKey}:`, err);
+    }
+    return response;
+  }
+});
+
+// Watch for errors
+watch(error, (err) => {
+  if (err) {
+    console.error('An error occurred:', err);
+    alert('Failed to fetch explore data. Please try again later.');
+  }
+});
 
 const performSearch = () => {
   refresh()

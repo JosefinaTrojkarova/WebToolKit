@@ -18,10 +18,10 @@ export default defineNuxtModule({
 
     types.forEach((type) => {
       addImports({
-        from: '~~/types', // Assuming your types.ts file is in the root of your project
+        from: '~~/types',
         name: type,
         as: type,
-        type: true, // This indicates it's a type import
+        type: true,
       });
     });
   },

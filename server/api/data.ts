@@ -1,14 +1,11 @@
-// Purpose: API endpoint to get basic data about all the tools from the database.
+// Purpose: API endpoint to get basic data about all the tools from the database. Used in app\pages\explore.vue
 
 import { MongoClient } from 'mongodb';
-import NodeCache from 'node-cache';
-
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 });
 
 export default defineEventHandler(async (event) => {
   const nitroApp = useNitroApp();
 
-  // function to get the mongo query
+  // Function to get the MongoDB client with retry logic
   async function getMongoClient(): Promise<MongoClient> {
     let retries = 0;
     const maxRetries = 10;
@@ -21,35 +18,28 @@ export default defineEventHandler(async (event) => {
       await new Promise((resolve) => setTimeout(resolve, retryDelay));
       retries++;
     }
+    // Throw an error if the MongoDB client is not available after max retries
     throw new Error('MongoDB client is not available');
   }
 
   try {
+    // Get the MongoDB client
     const mongoClient = await getMongoClient();
 
-    const cacheKey = 'toolsData';
+    // Parse query parameters from the request
     const query = getQuery(event);
     const explore = query.explore === 'true';
     const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
 
-    // check if the data is already cached and return it
-    const cachedData = cache.get(
-      cacheKey +
-        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
-        (searchQuery ? `_${searchQuery}` : '')
-    );
-    if (cachedData) {
-      return cachedData;
-    }
-
+    // Connect to the 'Tools' database and the 'Main' collection
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 
     let data;
 
     if (searchQuery) {
-      // Atlas Search
+      // Define the aggregation pipeline for Atlas Search
       const pipeline = [
         {
           $search: {
@@ -81,6 +71,7 @@ export default defineEventHandler(async (event) => {
           },
         },
         {
+          // Define the fields to include in the search results
           $project: explore
             ? {
                 name: 1,
@@ -103,6 +94,7 @@ export default defineEventHandler(async (event) => {
         },
       ];
 
+      // Execute the aggregation pipeline and get the results
       data = await collection.aggregate(pipeline).toArray();
     } else {
       // Regular query when there's no search
@@ -122,19 +114,14 @@ export default defineEventHandler(async (event) => {
         ? { name: 1 }
         : {};
 
+      // Execute the regular query and get the results
       data = await collection.find({}, { projection }).toArray();
     }
-
-    cache.set(
-      cacheKey +
-        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
-        (searchQuery ? `_${searchQuery}` : ''),
-      data
-    );
 
     return data;
   } catch (error) {
     console.error(error);
+    // Throw a 500 Internal Server Error if an error occurs
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

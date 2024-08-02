@@ -1,4 +1,6 @@
-import { MongoClient, ObjectId } from 'mongodb';
+// Purpose: API endpoint to get the reviews of specific tool.
+
+import { MongoClient } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   const nitroApp = useNitroApp();
