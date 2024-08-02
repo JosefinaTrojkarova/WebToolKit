@@ -20,6 +20,7 @@ export type ToolHeader = {
   name: string;
   logo: string;
   shortDescription: string;
+  website: string;
   rating: {
     stars: number;
     saves: number;

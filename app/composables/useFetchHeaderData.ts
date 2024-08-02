@@ -1,5 +1,5 @@
 // Fetch header data for the current tool and store it in the tool store
-export const useToolHeaderData = () => {
+export const useFetchHeaderData = () => {
   const route = useRoute()
   const store = useToolStore()
 

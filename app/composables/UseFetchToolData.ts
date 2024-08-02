@@ -1,6 +1,5 @@
 export function useFetchToolData(name: string) {
-  const { data, error, refresh } = useFetch<ToolMain>(
-    `/api/tool/${name}`,
+  const { data, error, refresh } = useFetch<ToolMain>(`/api/tool/${name}`,
     {
       key: `tool-${name}`,
     }

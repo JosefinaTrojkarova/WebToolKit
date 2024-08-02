@@ -86,14 +86,17 @@ p {
 
 .p1 {
   font-size: 1.125rem;
+  font-weight: 500;
 }
 
 .p2 {
   font-size: 1rem;
+  font-weight: 500;
 }
 
 .p3 {
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .b1 {
@@ -118,18 +121,20 @@ p {
   white-space: nowrap;
 
   height: 3.5rem;
-  padding: $l $xxl;
+  padding: 0 $xxl;
 
   border-radius: $xxl;
   background-color: $secondary-400;
   color: $system-white;
   cursor: pointer;
-  font-size: $l;
+  font-size: 1.125rem;
   border: 2px solid $secondary-400;
   font-weight: 500;
 
   //&:hover {}
 }
+
+/* .btn--primary--large--icon {} */
 
 .btn--primary--small {
   display: inline-flex;
@@ -137,7 +142,7 @@ p {
   white-space: nowrap;
 
   height: 3rem;
-  padding: $m $xl;
+  padding: 0 $xl;
 
   border-radius: $xxl;
   background-color: $secondary-400;
@@ -150,20 +155,56 @@ p {
   //&:hover {}
 }
 
+/* .btn--primary--small--icon {} */
+
 .btn--secondary--large {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
 
   height: 3.5rem;
-  padding: $l $xxl;
 
-  border-radius: $xxl;
+  padding: 0 $xxl;
+
   color: $primary-400;
-  cursor: pointer;
-  font-size: $l;
-  border: 2px solid $primary-400;
+  font-size: 1.125rem;
   font-weight: 500;
+
+  border: 2px solid $primary-400;
+  border-radius: $xxl;
+
+  cursor: pointer;
+
+  //&:hover {}
+}
+
+.btn--secondary--large--icon {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+
+  height: 3.5rem;
+
+  padding: 0 $xxl 0 $xl;
+  gap: $m;
+
+  color: $primary-400;
+  font-size: 1.125rem;
+  font-weight: 500;
+
+  border: 2px solid $primary-400;
+  border-radius: $xxl;
+
+  cursor: pointer;
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-variation-settings: 'opsz' 40, 'wght' 400, 'FILL' 0, 'GRAD' 100;
+    font-size: 2rem;
+  }
 
   //&:hover {}
 }
@@ -174,7 +215,7 @@ p {
   white-space: nowrap;
 
   height: 3rem;
-  padding: $m $xl;
+  padding: 0 $xl;
 
   border-radius: $xxl;
   color: $primary-400;
@@ -184,6 +225,61 @@ p {
   font-weight: 500;
 
   //&:hover {}
+}
+
+.btn--tertiary--large {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+
+  height: 3.5rem;
+
+  padding: 0 $xxl;
+
+  color: $primary-400;
+  font-size: 1.125rem;
+  font-weight: 500;
+
+  border: 2px solid transparent;
+  border-radius: $xxl;
+
+  cursor: pointer;
+
+  //&:hover {}
+}
+
+.btn--tertiary--large--icon {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+
+  height: 3.5rem;
+
+  padding: 0 $xxl 0 $xl;
+  gap: $m;
+
+  color: $primary-400;
+  font-size: 1.125rem;
+  font-weight: 500;
+
+  border: 2px solid transparent;
+  border-radius: $xxl;
+
+  cursor: pointer;
+  transition: border 0.2s ease-out;
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-variation-settings: 'opsz' 20, 'wght' 400, 'FILL' 0, 'GRAD' 100;
+    font-size: 1.8rem;
+  }
+
+  &:hover {
+    border: 2px solid $primary-400;
+  }
 }
 
 // Fields

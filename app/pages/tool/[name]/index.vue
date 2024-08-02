@@ -7,9 +7,6 @@
         </div>
         <!-- Working state -->
         <div v-else-if="isMounted && data">
-            <p><strong>ID:</strong> {{ data._id.$oid }}</p>
-            <p><strong>Name:</strong> {{ data.name }}</p>
-            <p><strong>Short Description:</strong> {{ data.shortDescription }}</p>
             <p><strong>Description:</strong> {{ data.description }}</p>
             <p><strong>Video:</strong> <a :href="data.video">{{ data.video }}</a></p>
             <p><strong>Logo:</strong> <img :src="data.logo" alt="Logo" /></p>
@@ -113,4 +110,8 @@ const retryFetch = () => {
 </script>
 
 
-<style scoped></style>
+<style scoped lang="scss">
+div {
+    margin: 1rem;
+}
+</style>
