@@ -14,7 +14,7 @@
           <div class="filter filter--categories">
             <h4 class="filter__heading">Categories</h4>
             <ul class="filter__list">
-              <Categories :categories="myCategories" @category-toggled="handleCategoryToggle" />
+              <Categories :categories="categories" @category-toggled="handleCategoryToggle" />
             </ul>
           </div>
           <div class="filter filter--tags">
@@ -62,77 +62,85 @@
 </template>
 
 <script setup lang="ts">
-// Categories and Tags data
-const myCategories = ref<Category[]>([
-  { id: 1, name: 'UI Design', active: false },
-  { id: 2, name: 'UX Design', active: false },
-  { id: 3, name: 'Prototyping', active: false },
-  { id: 4, name: 'JavaScript', active: false },
-  { id: 5, name: 'TypeScript', active: false },
-  { id: 6, name: 'Python', active: false },
-  { id: 7, name: 'Framework', active: false },
-  { id: 8, name: 'CSS', active: false },
-  { id: 9, name: 'Hosting', active: false },
-  { id: 10, name: 'Compiling', active: false },
-  { id: 11, name: 'HTML', active: false }
-])
+// Initialize categories state using useState, providing a key 'categories' and an initial empty array
+const categories = useState<Category[]>('categories', () => [])
 
-const handleCategoryToggle = () => {
-  refresh()
+// Fetch categories
+const { data: categoriesData, error: categoriesError, refresh: refreshCategories } = useFetch<any[]>('/api/tool/categories', {
+  key: 'categories',
+  transform: (response) => {
+    return response.map((category: any) => ({ ...category, active: false }))
+  },
+  onResponse: ({ response }) => {
+    if (response.ok) {
+      categories.value = response._data // Assign the transformed data to the categories state
+    }
+  },
+  // Handle request errors
+  onRequestError: ({ error }) => {
+    console.error('Error fetching categories:', error)
+  }
+})
+
+// Function to handle the toggling of a category's active state
+const handleCategoryToggle = (category: Category) => {
+  console.log(`Category toggled: ${category.name}`)
 }
 
-const searchQuery = ref('')
+// Fetch categories when the component mounts
+onMounted(() => {
+  refreshCategories()
+})
 
+const searchQuery = ref('')
 const nuxtApp = useNuxtApp()
 const cacheKey = 'explore-data'
 
-// Fetching data
+// Fetching explore data
 const { data, error, refresh } = useFetch<ItemBasicInfo[]>(() => {
-  // Construct the search parameter string
-  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : '';
-  // Return the API endpoint URL
-  return `/api/data?explore=true${searchParam}`;
+  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
+  return `/api/data?explore=true${searchParam}`
 }, {
   key: cacheKey,
-
-  // Retrieve cached data
   getCachedData: (key) => {
     try {
-      // Check if data is in Nuxt payload during SSR hydration
       if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
-        return nuxtApp.payload.data[key];
+        return nuxtApp.payload.data[key]
       }
-      // Check if data is in the static cache
       if (nuxtApp.static?.data?.[key]) {
-        return nuxtApp.static.data[key];
+        return nuxtApp.static.data[key]
       }
     } catch (err) {
-      console.error(`Error retrieving cached data for key ${key}:`, err);
+      console.error(`Error retrieving cached data for key ${key}:`, err)
     }
-    return null;
+    return null
   },
-
-  // Transform and cache the response
   transform: (response) => {
     try {
-      // Store the fetched data in the static cache
       if (nuxtApp.static?.data) {
-        nuxtApp.static.data[cacheKey] = response;
+        nuxtApp.static.data[cacheKey] = response
       }
     } catch (err) {
-      console.error(`Error caching data for key ${cacheKey}:`, err);
+      console.error(`Error caching data for key ${cacheKey}:`, err)
     }
-    return response;
+    return response
   }
-});
+})
 
 // Watch for errors
 watch(error, (err) => {
   if (err) {
-    console.error('An error occurred:', err);
-    alert('Failed to fetch explore data. Please try again later.');
+    console.error('An error occurred:', err)
+    alert('Failed to fetch explore data. Please try again later.')
   }
-});
+})
+
+watch(categoriesError, (err) => {
+  if (err) {
+    console.error('An error occurred while fetching categories:', err)
+    alert('Failed to fetch categories. Please try again later.')
+  }
+})
 
 const performSearch = () => {
   refresh()

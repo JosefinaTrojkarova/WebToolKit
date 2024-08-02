@@ -1,6 +1,6 @@
 <template>
     <div class="category-selector">
-        <button class="btn__category" v-for="category in categories" :key="category.id"
+        <button class="btn__category" v-for="category in categories" :key="category._id"
             @click="toggleCategory(category)" :class="['category', { active: category.active }]">
             <p class="p2">{{ category.name }}</p>
         </button>
@@ -8,12 +8,16 @@
 </template>
 
 <script setup lang="ts">
+
 const props = defineProps<{
     categories: Category[]
 }>()
 
+const emit = defineEmits(['category-toggled'])
+
 const toggleCategory = (category: Category) => {
     category.active = !category.active
+    emit('category-toggled', category)
 }
 </script>
 
@@ -37,6 +41,7 @@ const toggleCategory = (category: Category) => {
     border-radius: $xxl;
 
     cursor: pointer;
+    user-select: none;
     transform: rotateX(0deg);
     transition: opacity 0.2s ease-out, transform 0.2s ease-out, background-color 0s linear 0.1s;
 
