@@ -83,6 +83,7 @@ export default defineEventHandler(async (event) => {
           type: 1,
         },
         video: 1,
+        pricingLink: 1,
         pros: {
           name: 1,
           votes: 1,

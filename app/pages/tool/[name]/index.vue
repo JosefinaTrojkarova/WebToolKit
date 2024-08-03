@@ -19,13 +19,13 @@
                             <h4>Rankings</h4>
                             <h3>#1 in Sex</h3>
                         </div>
-                        <div class="pricing">
+                        <NuxtLink :to="data.pricingLink" target="_blank" class="pricing">
                             <h4>Pricing <span class="material-symbols-rounded">captive_portal</span></h4>
                             <button class="tag--static--pricing">
                                 <span class="material-symbols-rounded">attach_money</span>
                                 <p>{{ data.tags?.pricing || 'Not available' }}</p>
                             </button>
-                        </div>
+                        </NuxtLink>
                         <div class="licensing">
                             <h4>Licensing</h4>
                             <button class="tag--static--licensing">
@@ -53,7 +53,7 @@
             </section>
             <section class="resources">
                 <h3>Resources</h3>
-                <ul>
+                <ul class="resources-wrapper" @wheel.prevent="onScroll">
                     <ResourceCard v-for="(resource, index) in data.resources" :key="index" :link="resource.link"
                         :type="resource.type">
                     </ResourceCard>
@@ -64,26 +64,66 @@
             </section>
             <section class="user-sentiment">
                 <h3>User Sentiment</h3>
-                <div class="sentiment">
-                    <div class="rating">
-                        <div class="stats"></div>
-                        <div class="stars"></div>
-                    </div>
-                    <div class="pros-and-cons">
-                        <div class="pros"></div>
-                        <div class="cons"></div>
+                <div class="user-sentiment-wrapper">
+                    <div class="sentiment">
+                        <div class="rating">
+                            <div class="stats">
+                                <p>Excellent</p>
+                                <div class="bar-background">
+                                    <div class="bar"
+                                        :style="`width: ${calculateBarWidth(data.rating['5'], data.rating.reviews)};`">
+                                    </div>
+                                </div>
+                                <p>{{ data.rating['5'] }}</p>
+                                <p>Very good</p>
+                                <div class="bar-background">
+                                    <div class="bar"
+                                        :style="`width: ${calculateBarWidth(data.rating['4'], data.rating.reviews)};`">
+                                    </div>
+                                </div>
+                                <p>{{ data.rating['4'] }}</p>
+                                <p>Average</p>
+                                <div class="bar-background">
+                                    <div class="bar"
+                                        :style="`width: ${calculateBarWidth(data.rating['3'], data.rating.reviews)};`">
+                                    </div>
+                                </div>
+                                <p>{{ data.rating['3'] }}</p>
+                                <p>Poor</p>
+                                <div class="bar-background">
+                                    <div class="bar"
+                                        :style="`width: ${calculateBarWidth(data.rating['2'], data.rating.reviews)};`">
+                                    </div>
+                                </div>
+                                <p>{{ data.rating['2'] }}</p>
+                                <p>Terrible</p>
+                                <div class="bar-background">
+                                    <div class="bar"
+                                        :style="`width: ${calculateBarWidth(data.rating['1'], data.rating.reviews)};`">
+                                    </div>
+                                </div>
+                                <p>{{ data.rating['1'] }}</p>
+                            </div>
+                            <div class="stars"></div>
+                        </div>
+                        <div class="pros-and-cons">
+                            <div class="pros"></div>
+                            <div class="cons"></div>
+                        </div>
                         <button>Contribute</button>
                     </div>
-                </div>
-                <div class="reviews">
-                    <ul>
-                        <li v-for="review in reviews" :key="review._id">
-                            <p><strong>{{ review.user }}</strong> - {{ new Date(review.date).toLocaleDateString() }}</p>
-                            <p>Rating: {{ review.rating }}/5</p>
-                            <p>{{ review.comment }}</p>
-                        </li>
-                    </ul>
-                    <button>View All</button>
+                    <div class="reviews">
+                        <ul>
+                            <li v-for="review in reviews" :key="review._id">
+                                <p><strong>{{ review.user }}</strong> - {{ new
+                                    Date(review.date).toLocaleDateString() }}
+                                </p>
+                                <p>Rating: {{ review.rating }}/5</p>
+                                <p>{{ review.comment }}</p>
+                            </li>
+                        </ul>
+                        <button>View All</button>
+                    </div>
                 </div>
             </section>
             <section class="alternatives">
@@ -150,10 +190,11 @@ onMounted(() => {
     isMounted.value = true
 })
 
+// Setup the route and data fetching
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string);
+const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
 const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data || {})
 const { reviews, retryFetch: retryReviews } = useFetchReviews(data || {})
 
@@ -161,6 +202,16 @@ const retryFetch = () => {
     retryToolData()
     retryAlternatives()
     retryReviews()
+}
+
+const onScroll = (event: WheelEvent): void => {
+    const target = event.currentTarget as HTMLElement;
+    target.scrollLeft += event.deltaY;
+}
+
+const calculateBarWidth = (rating: number, totalReviews: number) => {
+    const percentage = (rating / totalReviews) * 100
+    return `${percentage}%`
 }
 </script>
 
@@ -172,6 +223,8 @@ main {
 
     gap: $xxl;
     padding: 0 $xxl;
+
+    overflow: hidden;
 
     .general {
         display: flex;
@@ -227,6 +280,10 @@ main {
 
                     border: 1px solid $primary-200;
                     border-radius: $m;
+                }
+
+                .pricing {
+                    transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
                     h4 {
                         display: flex;
@@ -237,6 +294,11 @@ main {
                         span {
                             transform: rotateY(180deg);
                         }
+                    }
+
+                    &:hover {
+                        box-shadow: $shadow-300;
+                        transform: translateY(-0.3rem);
                     }
                 }
 
@@ -287,9 +349,16 @@ main {
 
         gap: $m;
 
-        ul {
+        .resources-wrapper {
             display: flex;
             flex-direction: row;
+            width: 100%;
+
+            gap: $m;
+
+            overflow-x: scroll;
+            overflow-y: visible;
+            scrollbar-width: none;
         }
 
         button {
@@ -303,6 +372,72 @@ main {
 
             border: 1px solid $primary-200;
             border-radius: $m;
+        }
+    }
+
+    .user-sentiment {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+
+        gap: $m;
+
+        .user-sentiment-wrapper {
+            display: flex;
+            flex-direction: row;
+
+            width: 100%;
+
+            gap: $xxl;
+
+            .sentiment {
+                display: flex;
+                flex-direction: column;
+
+                gap: $m;
+
+                .rating {
+                    display: flex;
+                    flex-direction: row;
+
+                    gap: $m;
+
+                    .stats {
+                        display: grid;
+                        grid-template-columns: max-content auto max-content;
+
+                        flex-grow: 1;
+
+                        padding: $xl;
+                        gap: $s;
+
+                        border: 1px solid $primary-200;
+                        border-radius: $m;
+
+                        .bar-background {
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: flex-start;
+
+                            height: 0.5rem;
+                            width: 30rem;
+
+                            background-color: $primary-100;
+
+                            border-radius: 1rem;
+
+                            .bar {
+                                height: 100%;
+
+                                background-color: $secondary-400;
+
+                                border-radius: 1rem;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

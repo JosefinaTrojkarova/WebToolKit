@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
+    youtubeApiKey: process.env.YOUTUBE_API_KEY
   },
 
   css: ['~/assets/styles/reset.css'],

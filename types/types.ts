@@ -49,6 +49,7 @@ export type ToolMain = {
     type: string;
   }[];
   video: string;
+  pricingLink: string;
   pros: {
     name: string;
     votes: string;
