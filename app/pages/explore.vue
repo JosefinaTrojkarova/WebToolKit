@@ -8,7 +8,7 @@
         <label class="search-container" for="search-field">
           <span class="search-icon material-symbols-rounded">search</span>
           <input id="search-field" class="field--search aside__search" v-model="searchQuery" type="text"
-            placeholder="Search for tools" @input="performSearch" />
+            placeholder="Search for tools" />
         </label>
         <div class="aside__filters">
           <div class="filter filter--categories">
@@ -45,16 +45,12 @@
         <!-- Error -->
         <div class="error" v-if="error">
           <p class="error__message">Error: {{ error.message }}</p>
-          <button class="btn error__btn--retry" @click="performSearch">Retry</button>
           <!-- change classes -->
         </div>
         <!-- Data loaded -->
-        <div class="tools__list" v-else-if="data">
-          <!-- Display a list of tools -->
-          <ToolCardExplore v-for="item in data" :key="item._id" :item="item" />
-
-          <!-- Display a message if no tools are found -->
-          <p v-if="data.length === 0">No tools found.</p>
+        <div class="tools__list" v-else-if="filteredTools">
+          <ToolCardExplore v-for="item in filteredTools" :key="item._id" :item="item" />
+          <p v-if="filteredTools.length === 0">No tools found.</p>
         </div>
       </section>
     </main>
@@ -62,90 +58,98 @@
 </template>
 
 <script setup lang="ts">
-// Initialize categories state using useState, providing a key 'categories' and an initial empty array
-const categories = useState<Category[]>('categories', () => [])
+// Initialize categories state
+const categories = useState<Category[]>('categories', () => []);
 
 // Fetch categories
 const { data: categoriesData, error: categoriesError, refresh: refreshCategories } = useFetch<any[]>('/api/tool/categories', {
   key: 'categories',
-  transform: (response) => {
-    return response.map((category: any) => ({ ...category, active: false }))
-  },
+  transform: (response) => response.map((category: any) => ({ ...category, active: false })),
   onResponse: ({ response }) => {
     if (response.ok) {
-      categories.value = response._data // Assign the transformed data to the categories state
+      categories.value = response._data;
     }
   },
-  // Handle request errors
   onRequestError: ({ error }) => {
-    console.error('Error fetching categories:', error)
+    console.error('Error fetching categories:', error);
   }
-})
+});
 
-// Function to handle the toggling of a category's active state
+const activeCategories = ref<string[]>([]);
+
+// Handle category toggle
 const handleCategoryToggle = (category: Category) => {
-  console.log(`Category toggled: ${category.name}`)
-}
+  if (category.active) {
+    activeCategories.value.push(category.name);
+  } else {
+    activeCategories.value = activeCategories.value.filter(c => c !== category.name);
+  }
+};
 
-// Fetch categories when the component mounts
+// Fetch categories on component mount
 onMounted(() => {
-  refreshCategories()
-})
+  refreshCategories();
+});
 
-const searchQuery = ref('')
-const nuxtApp = useNuxtApp()
-const cacheKey = 'explore-data'
+const searchQuery = ref('');
+const nuxtApp = useNuxtApp();
+const cacheKey = 'explore-data';
 
-// Fetching explore data
-const { data, error, refresh } = useFetch<ItemBasicInfo[]>(() => {
-  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
-  return `/api/data?explore=true${searchParam}`
+// Fetch explore data
+const { data, error } = useFetch<ItemBasicInfo[]>(() => {
+  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : '';
+  const categoriesParam = activeCategories.value.length > 0 ? `&categories=${encodeURIComponent(activeCategories.value.join(','))}` : '';
+  return `/api/data?explore=true${searchParam}${categoriesParam}`;
 }, {
   key: cacheKey,
   getCachedData: (key) => {
     try {
       if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
-        return nuxtApp.payload.data[key]
+        return nuxtApp.payload.data[key];
       }
       if (nuxtApp.static?.data?.[key]) {
-        return nuxtApp.static.data[key]
+        return nuxtApp.static.data[key];
       }
     } catch (err) {
-      console.error(`Error retrieving cached data for key ${key}:`, err)
+      console.error(`Error retrieving cached data for key ${key}:`, err);
     }
-    return null
+    return null;
   },
   transform: (response) => {
     try {
       if (nuxtApp.static?.data) {
-        nuxtApp.static.data[cacheKey] = response
+        nuxtApp.static.data[cacheKey] = response;
       }
     } catch (err) {
-      console.error(`Error caching data for key ${cacheKey}:`, err)
+      console.error(`Error caching data for key ${cacheKey}:`, err);
     }
-    return response
+    return response;
   }
-})
+});
+
+// Computed property to filter tools
+const filteredTools = computed(() => {
+  if (!data.value) return [];
+  if (activeCategories.value.length === 0) return data.value;
+  return data.value.filter(tool => tool.categories.some((category: string) => activeCategories.value.includes(category)));
+});
 
 // Watch for errors
 watch(error, (err) => {
   if (err) {
-    console.error('An error occurred:', err)
-    alert('Failed to fetch explore data. Please try again later.')
+    console.error('An error occurred:', err);
+    alert('Failed to fetch explore data. Please try again later.');
   }
-})
+});
 
 watch(categoriesError, (err) => {
   if (err) {
-    console.error('An error occurred while fetching categories:', err)
-    alert('Failed to fetch categories. Please try again later.')
+    console.error('An error occurred while fetching categories:', err);
+    alert('Failed to fetch categories. Please try again later.');
   }
-})
-
-const performSearch = () => {
-  refresh()
-}
+});
 </script>
+
 
 <style lang="scss" scoped>
 .explore {

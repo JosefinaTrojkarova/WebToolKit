@@ -31,6 +31,9 @@ export default defineEventHandler(async (event) => {
     const explore = query.explore === 'true';
     const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
+    const categories = query.categories
+      ? (query.categories as string).split(',')
+      : [];
 
     // Connect to the 'Tools' database and the 'Main' collection
     const database = mongoClient.db('Tools');
@@ -38,7 +41,7 @@ export default defineEventHandler(async (event) => {
 
     let data;
 
-    if (searchQuery) {
+    if (searchQuery || categories.length > 0) {
       // Define the aggregation pipeline for Atlas Search
       const pipeline = [
         {
@@ -46,26 +49,40 @@ export default defineEventHandler(async (event) => {
             index: 'ToolsSearch',
             compound: {
               should: [
-                {
-                  autocomplete: {
-                    query: searchQuery,
-                    path: 'name',
-                    tokenOrder: 'sequential',
-                  },
-                },
-                {
-                  wildcard: {
-                    query: `*${searchQuery}*`,
-                    path: 'name',
-                    allowAnalyzedField: true,
-                  },
-                },
-                {
-                  text: {
-                    query: searchQuery,
-                    path: 'name',
-                  },
-                },
+                ...(searchQuery
+                  ? [
+                      {
+                        autocomplete: {
+                          query: searchQuery,
+                          path: 'name',
+                          tokenOrder: 'sequential',
+                        },
+                      },
+                      {
+                        wildcard: {
+                          query: `*${searchQuery}*`,
+                          path: 'name',
+                          allowAnalyzedField: true,
+                        },
+                      },
+                      {
+                        text: {
+                          query: searchQuery,
+                          path: 'name',
+                        },
+                      },
+                    ]
+                  : []),
+                ...(categories.length > 0
+                  ? [
+                      {
+                        text: {
+                          query: categories,
+                          path: 'categories',
+                        },
+                      },
+                    ]
+                  : []),
               ],
             },
           },
@@ -115,13 +132,21 @@ export default defineEventHandler(async (event) => {
         : {};
 
       // Execute the regular query and get the results
-      data = await collection.find({}, { projection }).toArray();
+      data = await collection
+        .find(
+          {
+            ...(categories.length > 0
+              ? { categories: { $in: categories } }
+              : {}),
+          },
+          { projection }
+        )
+        .toArray();
     }
 
     return data;
   } catch (error) {
-    console.error(error);
-    // Throw a 500 Internal Server Error if an error occurs
+    console.error('Detailed error:', error);
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',
