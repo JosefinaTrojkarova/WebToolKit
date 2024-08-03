@@ -31,9 +31,12 @@ export default defineEventHandler(async (event) => {
     const explore = query.explore === 'true';
     const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
+
+    // Categories and Tags
     const categories = query.categories
       ? (query.categories as string).split(',')
       : [];
+    const tags = query.tags ? (query.tags as string).split(',') : [];
 
     // Connect to the 'Tools' database and the 'Main' collection
     const database = mongoClient.db('Tools');
@@ -41,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
     let data;
 
-    if (searchQuery || categories.length > 0) {
+    if (searchQuery && categories.length >= 0 && tags.length >= 0) {
       // Define the aggregation pipeline for Atlas Search
       const pipeline = [
         {
@@ -76,9 +79,31 @@ export default defineEventHandler(async (event) => {
                 ...(categories.length > 0
                   ? [
                       {
-                        text: {
-                          query: categories,
-                          path: 'categories',
+                        compound: {
+                          must: categories.map((category) => ({
+                            text: {
+                              query: category,
+                              path: 'categories',
+                            },
+                          })),
+                        },
+                      },
+                    ]
+                  : []),
+                ...(tags.length > 0
+                  ? [
+                      {
+                        compound: {
+                          must: tags.map((tag) => ({
+                            text: {
+                              query: tag,
+                              path: [
+                                'tags.pricing',
+                                'tags.licensing',
+                                'rating',
+                              ],
+                            },
+                          })),
                         },
                       },
                     ]
@@ -131,16 +156,23 @@ export default defineEventHandler(async (event) => {
         ? { name: 1 }
         : {};
 
+      const conditions = [];
+      if (categories.length > 0) {
+        conditions.push({ categories: { $all: categories } });
+      }
+      if (tags.length > 0) {
+        conditions.push({
+          $or: [
+            { 'tags.pricing': { $in: tags } },
+            { 'tags.licensing': { $in: tags } },
+            { 'rating.stars': { $in: tags } },
+          ],
+        });
+      }
+
       // Execute the regular query and get the results
       data = await collection
-        .find(
-          {
-            ...(categories.length > 0
-              ? { categories: { $in: categories } }
-              : {}),
-          },
-          { projection }
-        )
+        .find(conditions.length > 0 ? { $and: conditions } : {}, { projection })
         .toArray();
     }
 

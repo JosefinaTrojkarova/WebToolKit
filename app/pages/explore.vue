@@ -22,19 +22,19 @@
             <div class="filter__wrapper">
               <p>Pricing</p>
               <ul class="filter__list">
-                <Tags variant="pricing" />
+                <Tags variant="pricing" @tag-toggled="handleTagToggle" />
               </ul>
             </div>
             <div class="filter__wrapper">
               <p>Licensing</p>
               <ul class="filter__list">
-                <Tags variant="licensing" />
+                <Tags variant="licensing" @tag-toggled="handleTagToggle" />
               </ul>
             </div>
             <div class="filter__wrapper">
               <p>Rating</p>
               <ul class="filter__list">
-                <Tags variant="rating" />
+                <Tags variant="rating" @tag-toggled="handleTagToggle" />
               </ul>
             </div>
           </div>
@@ -86,6 +86,20 @@ const handleCategoryToggle = (category: Category) => {
   }
 };
 
+const activeTags = ref<string[]>([]);
+
+// Handle tag toggle
+const handleTagToggle = (event: { variant: string, tag: Tag }) => {
+  const tagName = `${event.variant}:${event.tag.name}`;
+  if (event.tag.active) {
+    if (!activeTags.value.includes(tagName)) {
+      activeTags.value.push(tagName);
+    }
+  } else {
+    activeTags.value = activeTags.value.filter(t => t !== tagName);
+  }
+};
+
 // Fetch categories on component mount
 onMounted(() => {
   refreshCategories();
@@ -99,7 +113,8 @@ const cacheKey = 'explore-data';
 const { data, error } = useFetch<ItemBasicInfo[]>(() => {
   const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : '';
   const categoriesParam = activeCategories.value.length > 0 ? `&categories=${encodeURIComponent(activeCategories.value.join(','))}` : '';
-  return `/api/data?explore=true${searchParam}${categoriesParam}`;
+  const tagsParam = activeTags.value.length > 0 ? `&tags=${encodeURIComponent(activeTags.value.join(','))}` : '';
+  return `/api/data?explore=true${searchParam}${categoriesParam}${tagsParam}`;
 }, {
   key: cacheKey,
   getCachedData: (key) => {
@@ -130,10 +145,19 @@ const { data, error } = useFetch<ItemBasicInfo[]>(() => {
 // Computed property to filter tools
 const filteredTools = computed(() => {
   if (!data.value) return [];
-  if (activeCategories.value.length === 0) return data.value;
-  return data.value.filter(tool => tool.categories.some((category: string) => activeCategories.value.includes(category)));
-});
+  return data.value.filter(tool => {
+    const categoryMatch = activeCategories.value.length === 0 ||
+      tool.categories.some((category: string) => activeCategories.value.includes(category));
 
+    const tagMatch = activeTags.value.length === 0 ||
+      activeTags.value.some(tag => {
+        const [variant, tagName] = tag.split(':');
+        return tool.tags[variant]?.includes(tagName);
+      });
+
+    return categoryMatch && tagMatch;
+  });
+});
 // Watch for errors
 watch(error, (err) => {
   if (err) {
