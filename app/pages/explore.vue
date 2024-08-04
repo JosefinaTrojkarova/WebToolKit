@@ -41,11 +41,9 @@
         </div>
       </aside>
       <section class="section tools">
-        <!-- Loading, <p v-if="status === 'pending'">Loading...</p> add status in LazyFetch-->
         <!-- Error -->
         <div class="error" v-if="error">
           <p class="error__message">Error: {{ error.message }}</p>
-          <!-- change classes -->
         </div>
         <!-- Data loaded -->
         <div class="tools__list" v-else-if="filteredTools">
@@ -58,120 +56,20 @@
 </template>
 
 <script setup lang="ts">
-// Initialize categories state
-const categories = useState<Category[]>('categories', () => []);
-
-// Fetch categories
-const { data: categoriesData, error: categoriesError, refresh: refreshCategories } = useFetch<any[]>('/api/tool/categories', {
-  key: 'categories',
-  transform: (response) => response.map((category: any) => ({ ...category, active: false })),
-  onResponse: ({ response }) => {
-    if (response.ok) {
-      categories.value = response._data;
-    }
-  },
-  onRequestError: ({ error }) => {
-    console.error('Error fetching categories:', error);
-  }
-});
-
-const activeCategories = ref<string[]>([]);
-
-// Handle category toggle
-const handleCategoryToggle = (category: Category) => {
-  if (category.active) {
-    activeCategories.value.push(category.name);
-  } else {
-    activeCategories.value = activeCategories.value.filter(c => c !== category.name);
-  }
-};
-
-const activeTags = ref<string[]>([]);
-
-// Handle tag toggle
-const handleTagToggle = (event: { variant: string, tag: Tag }) => {
-  const tagName = `${event.variant}:${event.tag.name}`;
-  if (event.tag.active) {
-    if (!activeTags.value.includes(tagName)) {
-      activeTags.value.push(tagName);
-    }
-  } else {
-    activeTags.value = activeTags.value.filter(t => t !== tagName);
-  }
-};
+const {
+  categories,
+  searchQuery,
+  refreshCategories,
+  handleCategoryToggle,
+  handleTagToggle,
+  error,
+  filteredTools
+} = useExplore()
 
 // Fetch categories on component mount
 onMounted(() => {
-  refreshCategories();
-});
-
-const searchQuery = ref('');
-const nuxtApp = useNuxtApp();
-const cacheKey = 'explore-data';
-
-// Fetch explore data
-const { data, error } = useFetch<ItemBasicInfo[]>(() => {
-  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : '';
-  const categoriesParam = activeCategories.value.length > 0 ? `&categories=${encodeURIComponent(activeCategories.value.join(','))}` : '';
-  const tagsParam = activeTags.value.length > 0 ? `&tags=${encodeURIComponent(activeTags.value.join(','))}` : '';
-  return `/api/data?explore=true${searchParam}${categoriesParam}${tagsParam}`;
-}, {
-  key: cacheKey,
-  getCachedData: (key) => {
-    try {
-      if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
-        return nuxtApp.payload.data[key];
-      }
-      if (nuxtApp.static?.data?.[key]) {
-        return nuxtApp.static.data[key];
-      }
-    } catch (err) {
-      console.error(`Error retrieving cached data for key ${key}:`, err);
-    }
-    return null;
-  },
-  transform: (response) => {
-    try {
-      if (nuxtApp.static?.data) {
-        nuxtApp.static.data[cacheKey] = response;
-      }
-    } catch (err) {
-      console.error(`Error caching data for key ${cacheKey}:`, err);
-    }
-    return response;
-  }
-});
-
-// Computed property to filter tools
-const filteredTools = computed(() => {
-  if (!data.value) return [];
-  return data.value.filter(tool => {
-    const categoryMatch = activeCategories.value.length === 0 ||
-      tool.categories.some((category: string) => activeCategories.value.includes(category));
-
-    const tagMatch = activeTags.value.length === 0 ||
-      activeTags.value.some(tag => {
-        const [variant, tagName] = tag.split(':');
-        return tool.tags[variant]?.includes(tagName);
-      });
-
-    return categoryMatch && tagMatch;
-  });
-});
-// Watch for errors
-watch(error, (err) => {
-  if (err) {
-    console.error('An error occurred:', err);
-    alert('Failed to fetch explore data. Please try again later.');
-  }
-});
-
-watch(categoriesError, (err) => {
-  if (err) {
-    console.error('An error occurred while fetching categories:', err);
-    alert('Failed to fetch categories. Please try again later.');
-  }
-});
+  refreshCategories()
+})
 </script>
 
 

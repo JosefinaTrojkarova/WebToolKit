@@ -1,4 +1,4 @@
-// Purpose: API endpoint to get basic data about all the tools from the database. Used in app\pages\explore.vue
+// Purpose: API endpoint to get basic data about all the tools from the database. Used in app\pages\explore.vue amd app\pages\wiki\contribute
 
 import { MongoClient } from 'mongodb';
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
     let data;
 
-    if (searchQuery && categories.length >= 0 && tags.length >= 0) {
+    if (searchQuery && categories && tags) {
       // Define the aggregation pipeline for Atlas Search
       const pipeline = [
         {
@@ -55,6 +55,7 @@ export default defineEventHandler(async (event) => {
                 ...(searchQuery
                   ? [
                       {
+                        // searches for sequential tokens
                         autocomplete: {
                           query: searchQuery,
                           path: 'name',
@@ -62,6 +63,7 @@ export default defineEventHandler(async (event) => {
                         },
                       },
                       {
+                        // searches anywhere in the word
                         wildcard: {
                           query: `*${searchQuery}*`,
                           path: 'name',
@@ -69,41 +71,10 @@ export default defineEventHandler(async (event) => {
                         },
                       },
                       {
+                        // full-text search
                         text: {
                           query: searchQuery,
                           path: 'name',
-                        },
-                      },
-                    ]
-                  : []),
-                ...(categories.length > 0
-                  ? [
-                      {
-                        compound: {
-                          must: categories.map((category) => ({
-                            text: {
-                              query: category,
-                              path: 'categories',
-                            },
-                          })),
-                        },
-                      },
-                    ]
-                  : []),
-                ...(tags.length > 0
-                  ? [
-                      {
-                        compound: {
-                          must: tags.map((tag) => ({
-                            text: {
-                              query: tag,
-                              path: [
-                                'tags.pricing',
-                                'tags.licensing',
-                                'rating',
-                              ],
-                            },
-                          })),
                         },
                       },
                     ]
@@ -136,7 +107,7 @@ export default defineEventHandler(async (event) => {
         },
       ];
 
-      // Execute the aggregation pipeline and get the results
+      // Execute the aggregation pipeline and store the results
       data = await collection.aggregate(pipeline).toArray();
     } else {
       // Regular query when there's no search
@@ -170,10 +141,11 @@ export default defineEventHandler(async (event) => {
         });
       }
 
-      // Execute the regular query and get the results
-      data = await collection
-        .find(conditions.length > 0 ? { $and: conditions } : {}, { projection })
-        .toArray();
+      // Construct the final query
+      const query = conditions.length > 0 ? { $and: conditions } : {};
+
+      // Execute the regular query with the constructed conditions and projection
+      data = await collection.find(query, { projection }).toArray();
     }
 
     return data;
