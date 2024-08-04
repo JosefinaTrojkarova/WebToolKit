@@ -37,11 +37,13 @@ export type ToolMain = {
     licensing: string;
   };
   rating: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
+    stats: {
+      1: number;
+      2: number;
+      3: number;
+      4: number;
+      5: number;
+    };
     reviews: number;
   };
   resources: {

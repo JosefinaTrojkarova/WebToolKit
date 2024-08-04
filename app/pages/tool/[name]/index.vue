@@ -68,61 +68,90 @@
                     <div class="sentiment">
                         <div class="rating">
                             <div class="stats">
-                                <p>Excellent</p>
-                                <div class="bar-background">
-                                    <div class="bar"
-                                        :style="`width: ${calculateBarWidth(data.rating['5'], data.rating.reviews)};`">
+                                <div v-for="(count, rating) in data.rating.stats" :key="rating" class="rating-row">
+                                    <p class="label">{{ getLabelForRating(rating) }}</p>
+                                    <div class="bar-background">
+                                        <div class="bar"
+                                            :style="{ width: calculateBarWidth(count, data.rating.reviews) }"></div>
                                     </div>
+                                    <p class="count">{{ count }}</p>
                                 </div>
-                                <p>{{ data.rating['5'] }}</p>
-                                <p>Very good</p>
-                                <div class="bar-background">
-                                    <div class="bar"
-                                        :style="`width: ${calculateBarWidth(data.rating['4'], data.rating.reviews)};`">
-                                    </div>
-                                </div>
-                                <p>{{ data.rating['4'] }}</p>
-                                <p>Average</p>
-                                <div class="bar-background">
-                                    <div class="bar"
-                                        :style="`width: ${calculateBarWidth(data.rating['3'], data.rating.reviews)};`">
-                                    </div>
-                                </div>
-                                <p>{{ data.rating['3'] }}</p>
-                                <p>Poor</p>
-                                <div class="bar-background">
-                                    <div class="bar"
-                                        :style="`width: ${calculateBarWidth(data.rating['2'], data.rating.reviews)};`">
-                                    </div>
-                                </div>
-                                <p>{{ data.rating['2'] }}</p>
-                                <p>Terrible</p>
-                                <div class="bar-background">
-                                    <div class="bar"
-                                        :style="`width: ${calculateBarWidth(data.rating['1'], data.rating.reviews)};`">
-                                    </div>
-                                </div>
-                                <p>{{ data.rating['1'] }}</p>
                             </div>
-                            <div class="stars"></div>
+                            <div class="stars">
+                                <h1>{{ data.rating.stars.toFixed(1) }}</h1>
+                                <span class="star-container">
+                                    <span class="star-fill" :style="{ width: useCalculateRating(data.rating.stars) }">
+                                        <span v-for="i in 5" :key="i"
+                                            class="star material-symbols-rounded">star_rate</span>
+                                    </span>
+                                    <span v-for="i in 5" :key="i" class="star material-symbols-rounded">star_rate</span>
+                                </span>
+                                <p>{{ data.rating.reviews }} reviews</p>
+                            </div>
                         </div>
                         <div class="pros-and-cons">
-                            <div class="pros"></div>
-                            <div class="cons"></div>
+                            <div class="pros">
+                                <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
+                                </p>
+                                <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
+                                    <p>{{ pro.name }}</p>
+                                    <div class="votes-wrapper">
+                                        <span class="material-symbols-rounded">arrow_upward_alt</span>
+                                        <p>{{ pro.votes }}</p>
+                                        <span class="material-symbols-rounded">arrow_downward_alt</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cons">
+                                <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
+                                </p>
+                                <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
+                                    <p>{{ con.name }}</p>
+                                    <div class="votes-wrapper">
+                                        <span class="material-symbols-rounded">arrow_upward_alt</span>
+                                        <p>{{ con.votes }}</p>
+                                        <span class="material-symbols-rounded">arrow_downward_alt</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="contribute-btn">
+                                <p>Contribute</p>
+                            </button>
                         </div>
-                        <button>Contribute</button>
                     </div>
                     <div class="reviews">
-                        <ul>
-                            <li v-for="review in reviews" :key="review._id">
-                                <p><strong>{{ review.user }}</strong> - {{ new
-                                    Date(review.date).toLocaleDateString() }}
-                                </p>
-                                <p>Rating: {{ review.rating }}/5</p>
-                                <p>{{ review.comment }}</p>
+                        <div class="review-cta">
+                            <p>Got something to say about {{ data.name }}? Leave a review!</p>
+                            <button class="btn--secondary--small">Leave a Review</button>
+                        </div>
+                        <ul class="review-wrapper">
+                            <li v-for="review in reviews" :key="review._id" class="review">
+                                <div class="review-content-wrapper">
+                                    <div class="comment-header">
+                                        <div class="user-info">
+                                            <img src="https://play-lh.googleusercontent.com/4kjW5ZzvqS0qt207RCG8mCmKei_spnyX5Ctt0GJrECwVXqafdWetYioQrkAAFPLOd_I=w2560-h1440-rw"
+                                                alt="pfp" class="user-pfp">
+                                            <div class="user-details">
+                                                <p class="b1">{{ review.user }}</p>
+                                                <p class="p3">15 contributions</p>
+                                            </div>
+                                        </div>
+                                        <span class="material-symbols-rounded report-btn">report</span>
+                                    </div>
+                                    <div class="star-rating">
+                                        <span v-for="star in 5" :key="star" class="material-symbols-rounded"
+                                            :class="{ 'filled': star <= review.rating, 'empty': star > review.rating }">
+                                            star_rate
+                                        </span>
+                                    </div>
+                                    <p>{{ review.comment }}</p>
+                                </div>
+                                <p class="date p3">{{ new Date(review.date).toLocaleDateString() }}</p>
                             </li>
                         </ul>
-                        <button>View All</button>
+                        <button class="view-reviews-btn">
+                            <p>View All</p>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -209,9 +238,30 @@ const onScroll = (event: WheelEvent): void => {
     target.scrollLeft += event.deltaY;
 }
 
+const getLabelForRating = (rating: number) => {
+    const labels: { [key: number]: string } = {
+        5: 'Excellent',
+        4: 'Very good',
+        3: 'Average',
+        2: 'Poor',
+        1: 'Terrible'
+    }
+    return labels[rating] || 'Unknown'
+}
+
 const calculateBarWidth = (rating: number, totalReviews: number) => {
     const percentage = (rating / totalReviews) * 100
     return `${percentage}%`
+}
+
+type Opinion = {
+    name: string
+    votes: string
+}
+const sortAndLimitItems = (items: Opinion[]) => {
+    return items
+        .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
+        .slice(0, 4);
 }
 </script>
 
@@ -294,6 +344,10 @@ main {
                         span {
                             transform: rotateY(180deg);
                         }
+                    }
+
+                    .tag--static--pricing {
+                        cursor: pointer;
                     }
 
                     &:hover {
@@ -386,6 +440,7 @@ main {
         .user-sentiment-wrapper {
             display: flex;
             flex-direction: row;
+            box-sizing: border-box;
 
             width: 100%;
 
@@ -404,8 +459,8 @@ main {
                     gap: $m;
 
                     .stats {
-                        display: grid;
-                        grid-template-columns: max-content auto max-content;
+                        display: flex;
+                        flex-direction: column-reverse;
 
                         flex-grow: 1;
 
@@ -415,26 +470,313 @@ main {
                         border: 1px solid $primary-200;
                         border-radius: $m;
 
-                        .bar-background {
+                        .rating-row {
                             display: flex;
-                            justify-content: flex-start;
-                            align-items: flex-start;
+                            flex-direction: row;
+                            align-items: center;
 
-                            height: 0.5rem;
-                            width: 30rem;
+                            gap: $m;
 
-                            background-color: $primary-100;
+                            .label {
+                                width: 5.5rem;
+                            }
 
-                            border-radius: 1rem;
+                            .bar-background {
+                                display: flex;
+                                justify-content: flex-start;
+                                align-items: flex-start;
 
-                            .bar {
-                                height: 100%;
+                                height: 0.5rem;
+                                flex-grow: 1;
 
-                                background-color: $secondary-400;
+                                background-color: $primary-100;
 
                                 border-radius: 1rem;
+
+                                .bar {
+                                    height: 100%;
+
+                                    background-color: $secondary-400;
+
+                                    border-radius: 1rem;
+                                }
+                            }
+
+                            .count {
+                                width: 2.5rem;
                             }
                         }
+                    }
+
+                    .stars {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+
+                        padding: $xl;
+                        gap: $xs;
+
+                        aspect-ratio: 1 / 1;
+
+                        border: 1px solid $primary-200;
+                        border-radius: $m;
+
+                        h1 {
+                            height: 5.3rem;
+                        }
+
+                        .star-container {
+                            position: relative;
+                            display: inline-flex;
+
+                            width: 8rem;
+
+                            .star-fill {
+                                display: flex;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+
+                                height: 100%;
+
+                                overflow: hidden;
+                                white-space: nowrap;
+
+                                .star {
+                                    color: $secondary-400;
+                                }
+                            }
+
+                            .star {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+
+                                width: 1.6rem;
+
+                                color: $primary-100;
+
+                                font-variation-settings:
+                                    'opsz' 40,
+                                    'wght' 400,
+                                    'FILL' 1,
+                                    'GRAD' 100;
+                                font-size: 2rem;
+                            }
+                        }
+                    }
+                }
+
+                .pros-and-cons {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+
+                    width: 100%;
+
+                    gap: $m;
+
+                    .pros,
+                    .cons {
+                        display: flex;
+                        flex-direction: column;
+
+                        padding: $xl;
+                        gap: $s;
+
+                        border: 1px solid $primary-200;
+                        border-radius: $m;
+
+                        .pros-header,
+                        .cons-header {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+
+                            gap: $s;
+                        }
+
+                        .opinion-row {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+
+                            gap: $m;
+
+                            .votes-wrapper {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+
+                                gap: $xs;
+                            }
+                        }
+                    }
+
+                    .contribute-btn {
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        grid-column: span 2;
+
+                        padding: $m;
+
+                        border: 1px solid $primary-200;
+                        border-radius: $m;
+
+                        cursor: pointer;
+                        transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+                        &:hover {
+                            box-shadow: $shadow-300;
+                            transform: translateY(-0.3rem);
+                        }
+                    }
+                }
+            }
+
+            .reviews {
+                display: flex;
+                flex-direction: column;
+
+                flex-grow: 1;
+
+                gap: $m;
+
+                .review-cta {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    box-sizing: border-box;
+
+                    width: 100%;
+
+                    padding: $xl;
+
+                    border: 1px solid $primary-200;
+                    border-radius: $m;
+                }
+
+                .review-wrapper {
+                    display: flex;
+                    flex-direction: row;
+
+                    width: 100%;
+                    flex-grow: 1;
+
+                    gap: $m;
+
+                    .review {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+
+                        flex-grow: 1;
+
+                        padding: $xl;
+
+                        border: 1px solid $primary-200;
+                        border-radius: $m;
+
+                        .review-content-wrapper {
+                            display: flex;
+                            flex-direction: column;
+
+                            gap: $xs;
+
+                            .comment-header {
+                                display: flex;
+                                flex-direction: row;
+                                justify-content: space-between;
+                                align-items: flex-start;
+
+                                gap: $s;
+                                padding-bottom: $s;
+
+                                .user-info {
+                                    display: flex;
+                                    flex-direction: row;
+                                    align-items: center;
+
+                                    gap: $m;
+
+                                    .user-pfp {
+                                        width: 3rem;
+                                        height: 3rem;
+
+                                        border-radius: 50%;
+                                    }
+
+                                    .user-details {
+                                        display: flex;
+                                        flex-direction: column;
+
+                                        .p3 {
+                                            color: $primary-300;
+                                        }
+                                    }
+                                }
+
+                                .report-btn {
+                                    color: $primary-400;
+                                    cursor: pointer;
+
+                                    font-size: 2rem;
+                                    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+                                }
+                            }
+
+                            .star-rating {
+                                display: inline-flex;
+
+                                gap: 0.2rem;
+
+                                .material-symbols-rounded {
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+
+                                    width: 1.1rem;
+                                    height: 1.1rem;
+
+                                    font-size: 1.6rem;
+                                    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+
+                                    &.filled {
+                                        color: $secondary-400;
+                                    }
+
+                                    &.empty {
+                                        color: $primary-100;
+                                    }
+                                }
+                            }
+                        }
+
+                        .date {
+                            color: $gray-50;
+                        }
+                    }
+                }
+
+                .view-reviews-btn {
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    padding: $m;
+
+                    border: 1px solid $primary-200;
+                    border-radius: $m;
+
+                    cursor: pointer;
+                    transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+                    &:hover {
+                        box-shadow: $shadow-300;
+                        transform: translateY(-0.3rem);
                     }
                 }
             }

@@ -71,11 +71,14 @@ export default defineEventHandler(async (event) => {
           licensing: 1,
         },
         rating: {
-          1: 1,
-          2: 1,
-          3: 1,
-          4: 1,
-          5: 1,
+          stats: {
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1,
+            5: 1,
+          },
+          stars: 1,
           reviews: 1,
         },
         resources: {
