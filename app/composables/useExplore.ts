@@ -9,11 +9,9 @@ export function useExplore() {
   const cacheKey = 'explore-data'; // key for caching explore data
 
   // Fetch categories
-  const {
-    data: categoriesData,
-    error: categoriesError,
-    refresh: refreshCategories,
-  } = useFetch<any[]>('/api/tool/categories', {
+  const { error: categoriesError, refresh: refreshCategories } = useFetch<
+    CategoryDatabase[]
+  >('/api/tool/categories', {
     transform: (response) =>
       response.map((category: any) => ({ ...category, active: false })),
     onResponse: ({ response }) => {
@@ -41,10 +39,8 @@ export function useExplore() {
   // Handle tag toggle
   const handleTagToggle = (event: { variant: string; tag: Tag }) => {
     const tagName = `${event.variant}:${event.tag.name}`;
-    if (event.tag.active) {
-      if (!activeTags.value.includes(tagName)) {
-        activeTags.value.push(tagName); // add a tag
-      }
+    if (!activeTags.value.includes(tagName)) {
+      activeTags.value = [...activeTags.value, tagName]; // add a tag
     } else {
       activeTags.value = activeTags.value.filter((t) => t !== tagName); // remove a tag
     }
@@ -56,17 +52,7 @@ export function useExplore() {
       const searchParam = searchQuery.value
         ? `&search=${encodeURIComponent(searchQuery.value)}`
         : '';
-      const categoriesParam =
-        activeCategories.value.length > 0
-          ? `&categories=${encodeURIComponent(
-              activeCategories.value.join(',')
-            )}`
-          : '';
-      const tagsParam =
-        activeTags.value.length > 0
-          ? `&tags=${encodeURIComponent(activeTags.value.join(','))}`
-          : '';
-      return `/api/data?explore=true${searchParam}${categoriesParam}${tagsParam}`;
+      return `/api/data?explore=true${searchParam}`;
     },
     {
       // caching data
@@ -105,8 +91,10 @@ export function useExplore() {
       // Check if tool matches selected categories
       const categoryMatch =
         activeCategories.value.length === 0 ||
-        tool.categories.some((category: string) =>
-          activeCategories.value.includes(category)
+        activeCategories.value.every(
+          (
+            category // match only if all selected categories match
+          ) => tool.categories.includes(category)
         );
 
       // Check if tool matches selected pricing tags
@@ -130,11 +118,16 @@ export function useExplore() {
       // Check if tool matches selected rating tags
       const ratingTags = activeTags.value
         .filter((tag) => tag.startsWith('rating:'))
-        .map((tag) => tag.split(':')[1]); // Extract tag names
+        .map((tag) => {
+          const parts = tag.split(':');
+          return parts[1] !== undefined ? parseFloat(parts[1]) : NaN;
+        }); // Extract tag names + Convert tag names to numbers
 
       const ratingTagMatch =
         ratingTags.length === 0 ||
-        ratingTags.some((tagName) => tool.tags.rating?.includes(tagName)); // rating need to be fixed
+        ratingTags.some(
+          (tagValue) => Math.abs(tool.rating.stars - tagValue) <= 0.5
+        ); // Compare with 0.5 tolerance
 
       // Return true if all tag matches are satisfied
       return (

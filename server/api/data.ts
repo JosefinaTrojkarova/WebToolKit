@@ -1,5 +1,4 @@
 // Purpose: API endpoint to get basic data about all the tools from the database. Used in app\pages\explore.vue amd app\pages\wiki\contribute
-
 import { MongoClient } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
@@ -32,19 +31,13 @@ export default defineEventHandler(async (event) => {
     const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
 
-    // Categories and Tags
-    const categories = query.categories
-      ? (query.categories as string).split(',')
-      : [];
-    const tags = query.tags ? (query.tags as string).split(',') : [];
-
     // Connect to the 'Tools' database and the 'Main' collection
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 
     let data;
 
-    if (searchQuery && categories && tags) {
+    if (searchQuery) {
       // Define the aggregation pipeline for Atlas Search
       const pipeline = [
         {
@@ -60,6 +53,17 @@ export default defineEventHandler(async (event) => {
                           query: searchQuery,
                           path: 'name',
                           tokenOrder: 'sequential',
+                          fuzzy: {
+                            maxEdits: 1,
+                          },
+                        },
+                      },
+                      {
+                        // searches for sequential tokens without correction
+                        autocomplete: {
+                          query: searchQuery,
+                          path: 'name',
+                          tokenOrder: 'sequential',
                         },
                       },
                       {
@@ -68,13 +72,6 @@ export default defineEventHandler(async (event) => {
                           query: `*${searchQuery}*`,
                           path: 'name',
                           allowAnalyzedField: true,
-                        },
-                      },
-                      {
-                        // full-text search
-                        text: {
-                          query: searchQuery,
-                          path: 'name',
                         },
                       },
                     ]
@@ -127,25 +124,8 @@ export default defineEventHandler(async (event) => {
         ? { name: 1 }
         : {};
 
-      const conditions = [];
-      if (categories.length > 0) {
-        conditions.push({ categories: { $all: categories } });
-      }
-      if (tags.length > 0) {
-        conditions.push({
-          $or: [
-            { 'tags.pricing': { $in: tags } },
-            { 'tags.licensing': { $in: tags } },
-            { 'rating.stars': { $in: tags } },
-          ],
-        });
-      }
-
-      // Construct the final query
-      const query = conditions.length > 0 ? { $and: conditions } : {};
-
-      // Execute the regular query with the constructed conditions and projection
-      data = await collection.find(query, { projection }).toArray();
+      // Execute the regular query and store the results
+      data = await collection.find({}, { projection }).toArray();
     }
 
     return data;
