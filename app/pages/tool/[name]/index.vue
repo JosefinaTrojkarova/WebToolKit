@@ -58,9 +58,9 @@
                         :type="resource.type">
                     </ResourceCard>
                 </ul>
-                <button>
+                <NuxtLink :to="`${data.name}/resources`" class="view-resources-btn">
                     <p>View All</p>
-                </button>
+                </NuxtLink>
             </section>
             <section class="user-sentiment">
                 <h3>User Sentiment</h3>
@@ -96,9 +96,9 @@
                                 <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
                                     <p>{{ pro.name }}</p>
                                     <div class="votes-wrapper">
-                                        <span class="material-symbols-rounded">arrow_upward_alt</span>
+                                        <span class="material-symbols-rounded upvote">shift</span>
                                         <p>{{ pro.votes }}</p>
-                                        <span class="material-symbols-rounded">arrow_downward_alt</span>
+                                        <span class="material-symbols-rounded downvote">shift</span>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +108,15 @@
                                 <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
                                     <p>{{ con.name }}</p>
                                     <div class="votes-wrapper">
-                                        <span class="material-symbols-rounded">arrow_upward_alt</span>
+                                        <span class="material-symbols-rounded upvote">shift</span>
                                         <p>{{ con.votes }}</p>
-                                        <span class="material-symbols-rounded">arrow_downward_alt</span>
+                                        <span class="material-symbols-rounded downvote">shift</span>
                                     </div>
                                 </div>
                             </div>
-                            <button class="contribute-btn">
+                            <NuxtLink :to="`${data.name}/reviews`" class="contribute-btn">
                                 <p>Contribute</p>
-                            </button>
+                            </NuxtLink>
                         </div>
                     </div>
                     <div class="reviews">
@@ -129,7 +129,7 @@
                                 <div class="review-content-wrapper">
                                     <div class="comment-header">
                                         <div class="user-info">
-                                            <img src="https://play-lh.googleusercontent.com/4kjW5ZzvqS0qt207RCG8mCmKei_spnyX5Ctt0GJrECwVXqafdWetYioQrkAAFPLOd_I=w2560-h1440-rw"
+                                            <img src="https://play-lh.googleusercontent.com/L5OfSFUWZlLLgBrexrjWyIbKgFAzzuepGEmO6erE-9766GFA3hxRahjF2oshJZrHFw=w1400-h720"
                                                 alt="pfp" class="user-pfp">
                                             <div class="user-details">
                                                 <p class="b1">{{ review.user }}</p>
@@ -149,9 +149,9 @@
                                 <p class="date p3">{{ new Date(review.date).toLocaleDateString() }}</p>
                             </li>
                         </ul>
-                        <button class="view-reviews-btn">
+                        <NuxtLink :to="`${data.name}/reviews`" class="view-reviews-btn">
                             <p>View All</p>
-                        </button>
+                        </NuxtLink>
                     </div>
                 </div>
             </section>
@@ -333,6 +333,7 @@ main {
                 }
 
                 .pricing {
+                    user-select: none;
                     transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
                     h4 {
@@ -415,7 +416,7 @@ main {
             scrollbar-width: none;
         }
 
-        button {
+        .view-resources-btn {
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -426,6 +427,14 @@ main {
 
             border: 1px solid $primary-200;
             border-radius: $m;
+
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+            &:hover {
+                box-shadow: $shadow-300;
+                transform: translateY(-0.3rem);
+            }
         }
     }
 
@@ -522,6 +531,8 @@ main {
                         border: 1px solid $primary-200;
                         border-radius: $m;
 
+                        user-select: none;
+
                         h1 {
                             height: 5.3rem;
                         }
@@ -531,6 +542,8 @@ main {
                             display: inline-flex;
 
                             width: 8rem;
+
+                            user-select: none;
 
                             .star-fill {
                                 display: flex;
@@ -594,6 +607,10 @@ main {
                             align-items: center;
 
                             gap: $s;
+
+                            .material-symbols-rounded {
+                                user-select: none;
+                            }
                         }
 
                         .opinion-row {
@@ -609,6 +626,33 @@ main {
                                 align-items: center;
 
                                 gap: $xs;
+
+                                user-select: none;
+
+                                .upvote {
+                                    color: $primary-200;
+                                    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' -25, 'opsz' 24;
+                                    transition: color 0.2s ease-out;
+                                    cursor: pointer;
+
+                                    &:hover {
+                                        color: $secondary-400;
+                                        font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' -25, 'opsz' 24;
+                                    }
+                                }
+
+                                .downvote {
+                                    color: $primary-200;
+                                    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' -25, 'opsz' 24;
+                                    transition: color 0.2s ease-out;
+                                    cursor: pointer;
+                                    transform: rotateX(180deg);
+
+                                    &:hover {
+                                        color: $primary-400;
+                                        font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' -25, 'opsz' 24;
+                                    }
+                                }
                             }
                         }
                     }
@@ -680,6 +724,9 @@ main {
                         border: 1px solid $primary-200;
                         border-radius: $m;
 
+                        cursor: pointer;
+                        transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
                         .review-content-wrapper {
                             display: flex;
                             flex-direction: column;
@@ -722,6 +769,7 @@ main {
                                 .report-btn {
                                     color: $primary-400;
                                     cursor: pointer;
+                                    user-select: none;
 
                                     font-size: 2rem;
                                     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
@@ -733,6 +781,8 @@ main {
 
                                 gap: 0.2rem;
 
+                                user-select: none;
+
                                 .material-symbols-rounded {
                                     display: flex;
                                     justify-content: center;
@@ -743,6 +793,8 @@ main {
 
                                     font-size: 1.6rem;
                                     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+
+                                    user-select: none;
 
                                     &.filled {
                                         color: $secondary-400;
@@ -757,6 +809,11 @@ main {
 
                         .date {
                             color: $gray-50;
+                        }
+
+                        &:hover {
+                            box-shadow: $shadow-300;
+                            transform: translateY(-0.3rem);
                         }
                     }
                 }
