@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Tags Component', () => {
   let wrapper: any;
-  let buttons: any;
+  let tags: any;
 
   // Array of variant configurations to test different types of tags
   const variants = [
@@ -22,21 +22,21 @@ describe('Tags Component', () => {
             variant: variant.name as 'pricing' | 'licensing' | 'rating',
           },
         });
-        // Find all buttons with the class '.btn__tag'
-        buttons = wrapper.findAll('.btn__tag');
+        // Find all tags
+        tags = wrapper.findAll('label');
       });
 
       it('should render the correct number of tags', () => {
-        // Check that the number of buttons matches the expected length for the current variant
-        expect(buttons.length).toBe(variant.expectedLength);
+        // Check that the number of tags matches the expected length for the current variant
+        expect(tags.length).toBe(variant.expectedLength);
       });
 
       it('should toggle tag active state on click', async () => {
-        for (let i = 0; i < buttons.length; i++) {
-          const button = buttons[i];
+        for (let i = 0; i < tags.length; i++) {
+          const button = tags[i];
 
           if (button) {
-            // Get the tag associated with the button and ensure it's initially inactive
+            // Get the tag and ensure it's initially inactive
             const tag = wrapper.vm.computedTags[i];
             expect(tag.active).toBe(false);
 

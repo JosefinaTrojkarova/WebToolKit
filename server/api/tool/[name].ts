@@ -109,14 +109,15 @@ export default defineEventHandler(async (event) => {
     return data;
   } catch (error) {
     console.error(error);
-    if (
-      error instanceof Error &&
-      error.message === 'MongoDB client is not available'
-    ) {
-      throw createError({
-        statusCode: 503,
-        statusMessage: 'Service Temporarily Unavailable',
-      });
+    if (error instanceof Error) {
+      if (error.message === 'MongoDB client is not available') {
+        throw createError({
+          statusCode: 503,
+          statusMessage: 'Service Temporarily Unavailable',
+        });
+      } else if (error.message === 'Tool not found') {
+        throw error;
+      }
     }
     throw createError({
       statusCode: 500,

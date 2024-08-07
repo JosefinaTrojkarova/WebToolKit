@@ -28,8 +28,8 @@ describe('Categories Component', () => {
         categories,
       },
     });
-    // Find all elements with class '.btn__category'
-    buttons = wrapper.findAll('.btn__category');
+    // Find all categories
+    buttons = wrapper.findAll('button');
   });
 
   it('should render the correct number of categories', () => {
