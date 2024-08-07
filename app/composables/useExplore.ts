@@ -2,21 +2,49 @@
 
 export function useExplore() {
   const categories = useState<Category[]>('categories', () => []); // list of all categories fetched from the server
+
   const activeCategories = ref<string[]>([]); // currently selected categories
   const activeTags = ref<string[]>([]); // currently selected tags
   const searchQuery = ref(''); //  current search query
-  const nuxtApp = useNuxtApp(); // nuxt application instance for accessing nuxt caching
-  const cacheKey = 'explore-data'; // key for caching explore data
 
-  // Fetch categories
+  const nuxtApp = useNuxtApp(); // nuxt application instance for accessing nuxt caching
+
+  const cacheKey = 'explore-data'; // key for caching explore data
+  const categoriesCacheKey = 'categories-data'; // key for caching categories data
+
+  // Fetch categories and cache
   const { error: categoriesError, refresh: refreshCategories } = useFetch<
     CategoryDatabase[]
   >('/api/tool/categories', {
+    key: categoriesCacheKey,
     transform: (response) =>
       response.map((category: any) => ({ ...category, active: false })),
+    getCachedData: (key) => {
+      try {
+        if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
+          return nuxtApp.payload.data[key];
+        }
+        if (nuxtApp.static?.data?.[key]) {
+          return nuxtApp.static.data[key];
+        }
+      } catch (err) {
+        console.error(`Error retrieving cached data for key ${key}:`, err);
+      }
+      return null;
+    },
     onResponse: ({ response }) => {
       if (response.ok) {
         categories.value = response._data;
+        try {
+          if (nuxtApp.static?.data) {
+            nuxtApp.static.data[categoriesCacheKey] = response._data;
+          }
+        } catch (err) {
+          console.error(
+            `Error caching data for key ${categoriesCacheKey}:`,
+            err
+          );
+        }
       }
     },
     onRequestError: ({ error }) => {

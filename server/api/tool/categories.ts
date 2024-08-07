@@ -1,8 +1,5 @@
 // Purpose: API endpoint to get data about categories from the database.
 import { MongoClient } from 'mongodb';
-import NodeCache from 'node-cache';
-
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 });
 
 export default defineEventHandler(async (event) => {
   const nitroApp = useNitroApp();
@@ -25,22 +22,11 @@ export default defineEventHandler(async (event) => {
 
   try {
     const mongoClient = await getMongoClient();
-    const cacheKey = 'categoriesData';
-
-    // Check if the data is already cached and return it
-    const cachedData = cache.get(cacheKey);
-    if (cachedData) {
-      return cachedData;
-    }
-
     const database = mongoClient.db('Tools');
     const collection = database.collection('Categories');
 
     // Fetch all categories from the collection
     const data = await collection.find({}).toArray();
-
-    // Cache the data
-    cache.set(cacheKey, data);
 
     return data;
   } catch (error) {
