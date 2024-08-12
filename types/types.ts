@@ -112,6 +112,7 @@ export type Alternative = {
   rating: {
     stars: number;
     reviews: number;
+    saves: number;
   };
   shortDescription: string;
   pros: {

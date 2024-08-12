@@ -45,7 +45,11 @@ export default defineEventHandler(async (event) => {
             categories: 1,
             logo: 1,
             tags: 1,
-            rating: { stars: 1, reviews: 1 },
+            rating: {
+              stars: 1,
+              reviews: 1,
+              saves: 1
+            },
             shortDescription: 1,
             pros: 1,
             cons: 1,

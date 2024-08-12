@@ -21,17 +21,17 @@
                         </div>
                         <NuxtLink :to="data.pricingLink" target="_blank" class="pricing">
                             <h4>Pricing <span class="material-symbols-rounded">captive_portal</span></h4>
-                            <button class="tag--static--pricing">
+                            <div class="tag--static--pricing">
                                 <span class="material-symbols-rounded">attach_money</span>
                                 <p>{{ data.tags?.pricing || 'Not available' }}</p>
-                            </button>
+                            </div>
                         </NuxtLink>
                         <div class="licensing">
                             <h4>Licensing</h4>
-                            <button class="tag--static--licensing">
+                            <div class="tag--static--licensing">
                                 <span class="material-symbols-rounded">license</span>
                                 <p>{{ data.tags?.licensing || 'Not available' }}</p>
-                            </button>
+                            </div>
                         </div>
                         <div class="categories">
                             <h4>Categories</h4>
@@ -53,7 +53,7 @@
             </section>
             <section class="resources">
                 <h3>Resources</h3>
-                <ul class="resources-wrapper" @wheel.prevent="onScroll">
+                <ul class="resources-wrapper">
                     <ResourceCard v-for="(resource, index) in data.resources.slice(0, 5)" :key="index"
                         :link="resource.link" :type="resource.type">
                     </ResourceCard>
@@ -79,13 +79,7 @@
                             </div>
                             <div class="stars">
                                 <h1>{{ data.rating.stars.toFixed(1) }}</h1>
-                                <span class="star-container">
-                                    <span class="star-fill" :style="{ width: useCalculateRating(data.rating.stars) }">
-                                        <span v-for="i in 5" :key="i"
-                                            class="star material-symbols-rounded">star_rate</span>
-                                    </span>
-                                    <span v-for="i in 5" :key="i" class="star material-symbols-rounded">star_rate</span>
-                                </span>
+                                <Stars :rating="data.rating.stars" />
                                 <p>{{ data.rating.reviews }} reviews</p>
                             </div>
                         </div>
@@ -158,52 +152,8 @@
             <section class="alternatives">
                 <h3>Popular Alternatives</h3>
                 <div class="content">
-                    <div class="alternative" id="current-tool">
-                        <img :src="data.logo" :alt="data.name" width="20" height="20" />
-                        {{ data.name }} - {{ data.shortDescription }}
-                        <Categories :categories="data.categories" />
-                        <br>
-                        Pricing: {{ data.tags.pricing }}, Licensing: {{ data.tags.licensing }}
-                        <br>
-                        Rating: {{ data.rating.stars }} stars ({{ data.rating.reviews }} reviews)
-                        <br>
-                        <p>Pros:</p>
-                        <ul>
-                            <li v-for="(pro, index) in data.pros" :key="index">
-                                {{ pro.name }} ({{ pro.votes }} votes)
-                            </li>
-                        </ul>
-                        <p>Cons:</p>
-                        <ul>
-                            <li v-for="(con, index) in data.cons" :key="index">
-                                {{ con.name }} ({{ con.votes }} votes)
-                            </li>
-                        </ul>
-                    </div>
-                    <!--<NuxtLink class="alternative" v-for="alt in alternatives.slice(0, 3)" :key="alt._id"
-                        :to="`/tool/${alt.name.toLowerCase()}`">
-                        <img :src="alt.logo" :alt="alt.name" width="20" height="20" />
-                        {{ alt.name }} - {{ alt.shortDescription }}
-                        <Categories :categories="alt.categories" />
-                        <br>
-                        Pricing: {{ alt.tags.pricing }}, Licensing: {{ alt.tags.licensing }}
-                        <br>
-                        Rating: {{ alt.rating.stars }} stars ({{ alt.rating.reviews }} reviews)
-                        <br>
-                        <p>Pros:</p>
-                        <ul>
-                            <li v-for="(pro, index) in alt.pros" :key="index">
-                                {{ pro.name }} ({{ pro.votes }} votes)
-                            </li>
-                        </ul>
-                        <p>Cons:</p>
-                        <ul>
-                            <li v-for="(con, index) in alt.cons" :key="index">
-                                {{ con.name }} ({{ con.votes }} votes)
-                            </li>
-                        </ul>
-                    </NuxtLink>-->
-                    <ToolCardCompare v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :item="alt" />
+                    <ToolCard :data="data" />
+                    <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
                 </div>
                 <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
                     <p>View All</p>
@@ -236,11 +186,6 @@ const retryFetch = () => {
     retryToolData()
     retryAlternatives()
     retryReviews()
-}
-
-const onScroll = (event: WheelEvent): void => {
-    const target = event.currentTarget as HTMLElement;
-    target.scrollLeft += event.deltaY;
 }
 
 const getLabelForRating = (rating: number) => {
@@ -375,7 +320,7 @@ main {
 
                     .wrapper {
                         display: flex;
-                        flex-wrap: wrap;
+                        flex-wrap: wrap-reverse;
 
                         gap: $s;
                     }
@@ -535,48 +480,6 @@ main {
 
                         h1 {
                             height: 5.3rem;
-                        }
-
-                        .star-container {
-                            position: relative;
-                            display: inline-flex;
-
-                            width: 8rem;
-
-                            user-select: none;
-
-                            .star-fill {
-                                display: flex;
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-
-                                height: 100%;
-
-                                overflow: hidden;
-                                white-space: nowrap;
-
-                                .star {
-                                    color: $secondary-400;
-                                }
-                            }
-
-                            .star {
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-
-                                width: 1.6rem;
-
-                                color: $primary-100;
-
-                                font-variation-settings:
-                                    'opsz' 40,
-                                    'wght' 400,
-                                    'FILL' 1,
-                                    'GRAD' 100;
-                                font-size: 2rem;
-                            }
                         }
                     }
                 }
@@ -849,26 +752,6 @@ main {
             display: grid;
             grid-template-columns: repeat(4, minmax(20rem, 1fr));
             gap: $m;
-
-            .alternative {
-                display: flex;
-                flex-direction: column;
-                box-sizing: border-box;
-
-                padding: $xl;
-
-                border: 1px solid $primary-200;
-                border-radius: $m;
-
-                transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
-
-                &:not(#current-tool) {
-                    &:hover {
-                        box-shadow: $shadow-300;
-                        transform: translateY(-0.3rem);
-                    }
-                }
-            }
         }
 
         .view-alternatives-btn {
