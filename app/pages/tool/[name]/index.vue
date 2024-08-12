@@ -54,8 +54,8 @@
             <section class="resources">
                 <h3>Resources</h3>
                 <ul class="resources-wrapper" @wheel.prevent="onScroll">
-                    <ResourceCard v-for="(resource, index) in data.resources" :key="index" :link="resource.link"
-                        :type="resource.type">
+                    <ResourceCard v-for="(resource, index) in data.resources.slice(0, 5)" :key="index"
+                        :link="resource.link" :type="resource.type">
                     </ResourceCard>
                 </ul>
                 <NuxtLink :to="`${data.name}/resources`" class="view-resources-btn">
@@ -157,8 +157,8 @@
             </section>
             <section class="alternatives">
                 <h3>Popular Alternatives</h3>
-                <ul>
-                    <li class="current-tool">
+                <div class="content">
+                    <div class="alternative" id="current-tool">
                         <img :src="data.logo" :alt="data.name" width="20" height="20" />
                         {{ data.name }} - {{ data.shortDescription }}
                         <Categories :categories="data.categories" />
@@ -179,8 +179,9 @@
                                 {{ con.name }} ({{ con.votes }} votes)
                             </li>
                         </ul>
-                    </li>
-                    <li v-for="alt in alternatives" :key="alt._id">
+                    </div>
+                    <NuxtLink class="alternative" v-for="alt in alternatives.slice(0, 3)" :key="alt._id"
+                        :to="`/tool/${alt.name.toLowerCase()}`">
                         <img :src="alt.logo" :alt="alt.name" width="20" height="20" />
                         {{ alt.name }} - {{ alt.shortDescription }}
                         <Categories :categories="alt.categories" />
@@ -201,8 +202,11 @@
                                 {{ con.name }} ({{ con.votes }} votes)
                             </li>
                         </ul>
-                    </li>
-                </ul>
+                    </NuxtLink>
+                </div>
+                <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
+                    <p>View All</p>
+                </NuxtLink>
             </section>
         </main>
         <!-- Loading state -->
@@ -273,8 +277,6 @@ main {
 
     gap: $xxl;
     padding: 0 $xxl;
-
-    overflow: hidden;
 
     .general {
         display: flex;
@@ -405,21 +407,18 @@ main {
         gap: $m;
 
         .resources-wrapper {
-            display: flex;
-            flex-direction: row;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(20rem, 1fr));
             width: 100%;
 
             gap: $m;
-
-            overflow-x: scroll;
-            overflow-y: visible;
-            scrollbar-width: none;
         }
 
         .view-resources-btn {
             display: inline-flex;
             justify-content: center;
             align-items: center;
+            box-sizing: border-box;
 
             width: 100%;
 
@@ -836,6 +835,57 @@ main {
                         transform: translateY(-0.3rem);
                     }
                 }
+            }
+        }
+    }
+
+    .alternatives {
+        display: flex;
+        flex-direction: column;
+        gap: $m;
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(20rem, 1fr));
+            gap: $m;
+
+            .alternative {
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+
+                padding: $xl;
+
+                border: 1px solid $primary-200;
+                border-radius: $m;
+
+                transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+                &:not(#current-tool) {
+                    &:hover {
+                        box-shadow: $shadow-300;
+                        transform: translateY(-0.3rem);
+                    }
+                }
+            }
+        }
+
+        .view-alternatives-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: $m;
+
+            border: 1px solid $primary-200;
+            border-radius: $m;
+
+            cursor: pointer;
+            transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+            &:hover {
+                box-shadow: $shadow-300;
+                transform: translateY(-0.3rem);
             }
         }
     }

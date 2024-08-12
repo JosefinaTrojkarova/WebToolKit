@@ -1,6 +1,6 @@
 // API to retrieve the preview data for a resource - TEMPORARY SOLUTION, NEEDS IMPROVEMENT
 import { defineEventHandler, H3Event } from 'h3'
-import cheerio from 'cheerio'
+import { load } from 'cheerio';
 import { getVideoDurationFromYouTube } from '~~/server/utils/youtube'
 import { getRedditDiscussionInfo } from '~~/server/utils/reddit'
 
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
           response = await fetch(url)
           html = await response.text()
-          $ = cheerio.load(html)
+          $ = load(html)
 
           title = $('meta[property="og:title"]').attr('content') || $('title').text() || ''
           description = $('meta[property="og:description"]').attr('content') || $('meta[name="description"]').attr('content') || ''
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event: H3Event) => {
     } else {
       response = await fetch(url)
       html = await response.text()
-      $ = cheerio.load(html)
+      $ = load(html)
 
       title = $('meta[property="og:title"]').attr('content') || $('title').text() || ''
       description = $('meta[property="og:description"]').attr('content') || $('meta[name="description"]').attr('content') || ''
