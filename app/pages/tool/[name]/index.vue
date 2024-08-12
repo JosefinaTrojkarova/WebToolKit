@@ -17,7 +17,7 @@
                     <div class="info-cards">
                         <div class="rankings">
                             <h4>Rankings</h4>
-                            <h3>#1 in Sex</h3>
+                            <h3>#1 in Nevhodne Slovo</h3>
                         </div>
                         <NuxtLink :to="data.pricingLink" target="_blank" class="pricing">
                             <h4>Pricing <span class="material-symbols-rounded">captive_portal</span></h4>
@@ -180,7 +180,7 @@
                             </li>
                         </ul>
                     </div>
-                    <NuxtLink class="alternative" v-for="alt in alternatives.slice(0, 3)" :key="alt._id"
+                    <!--<NuxtLink class="alternative" v-for="alt in alternatives.slice(0, 3)" :key="alt._id"
                         :to="`/tool/${alt.name.toLowerCase()}`">
                         <img :src="alt.logo" :alt="alt.name" width="20" height="20" />
                         {{ alt.name }} - {{ alt.shortDescription }}
@@ -202,7 +202,8 @@
                                 {{ con.name }} ({{ con.votes }} votes)
                             </li>
                         </ul>
-                    </NuxtLink>
+                    </NuxtLink>-->
+                    <ToolCardCompare v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :item="alt" />
                 </div>
                 <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
                     <p>View All</p>
