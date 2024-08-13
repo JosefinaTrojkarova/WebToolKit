@@ -1,5 +1,55 @@
 <template>
-  <NuxtLink :to="`/tool/${data.name.toLowerCase().replace(/\s+/g, '-')}`">
+  <div v-if="main" class="alternative" id="main">
+    <img class="logo" :src="data.logo" :alt="data.name" />
+    <div class="info">
+      <h3>{{ data.name }}</h3>
+      <p>{{ data.shortDescription }}</p>
+    </div>
+    <div class="categories">
+      <span v-for="category in data.categories" :key="category" class="static-category">
+        <p>{{ category }}</p>
+      </span>
+    </div>
+    <hr>
+    <div class="pricing">
+      <p class="b1">Pricing:</p>
+      <div class="tag--static--pricing">
+        <span class="material-symbols-rounded">attach_money</span>
+        <p>{{ data.tags?.pricing || 'Not available' }}</p>
+      </div>
+    </div>
+    <div class="licensing">
+      <p class="b1">Licensing:</p>
+      <div class="tag--static--licensing">
+        <span class="material-symbols-rounded">license</span>
+        <p>{{ data.tags?.licensing || 'Not available' }}</p>
+      </div>
+    </div>
+    <hr>
+    <div class="rating">
+      <Stars :rating="data.rating.stars" />
+      <p class="b2">{{ data.rating.stars.toFixed(1) }}/5</p>
+      <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
+    </div>
+    <div class="pros">
+      <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
+      </p>
+      <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
+        <p>{{ pro.name }}</p>
+        <p class="b1">{{ pro.votes }}</p>
+      </div>
+    </div>
+    <div class="cons">
+      <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
+      </p>
+      <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
+        <p>{{ con.name }}</p>
+        <p class="b1">{{ con.votes }}</p>
+      </div>
+    </div>
+  </div>
+
+  <NuxtLink v-else :to="`/tool/${data.name.toLowerCase().replace(/\s+/g, '-')}`">
     <div v-if="data.pros !== undefined" class="alternative">
       <img class="logo" :src="data.logo" :alt="data.name" />
       <div class="info">
@@ -94,6 +144,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: ItemBasicInfo | Alternative /* | Mini */
+  main?: boolean
 }>()
 
 type Opinion = {
@@ -109,6 +160,15 @@ const sortAndLimitItems = (items: Opinion[]) => {
 </script>
 
 <style scoped lang="scss">
+#main {
+  transition: none;
+
+  &:hover {
+    box-shadow: none;
+    transform: none;
+  }
+}
+
 .alternative {
   display: flex;
   flex-direction: column;
@@ -151,6 +211,8 @@ const sortAndLimitItems = (items: Opinion[]) => {
     width: 100%;
     border-top: 1px solid $primary-200;
     border-bottom: none;
+    border-left: none;
+    border-right: none;
   }
 
   .pricing,

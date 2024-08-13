@@ -152,7 +152,7 @@
             <section class="alternatives">
                 <h3>Popular Alternatives</h3>
                 <div class="content">
-                    <ToolCard v-if="mainTool" :data="mainTool" />
+                    <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
                     <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
                 </div>
                 <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
@@ -278,6 +278,11 @@ main {
 
                     border: 1px solid $primary-200;
                     border-radius: $m;
+
+                    h3 {
+                        display: flex;
+                        text-wrap: pretty;
+                    }
                 }
 
                 .pricing {
