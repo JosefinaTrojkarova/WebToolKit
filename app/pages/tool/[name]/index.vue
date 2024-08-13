@@ -152,7 +152,7 @@
             <section class="alternatives">
                 <h3>Popular Alternatives</h3>
                 <div class="content">
-                    <ToolCard :data="data" />
+                    <ToolCard v-if="mainTool" :data="mainTool" />
                     <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
                 </div>
                 <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
@@ -179,8 +179,8 @@ const route = useRoute()
 const { name } = route.params
 
 const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { alternatives, retryFetch: retryAlternatives } = useFetchAlternatives(data || {})
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data || {})
+const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(data)
+const { reviews, retryFetch: retryReviews } = useFetchReviews(data)
 
 const retryFetch = () => {
     retryToolData()
