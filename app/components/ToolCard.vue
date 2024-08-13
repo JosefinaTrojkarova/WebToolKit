@@ -51,6 +51,12 @@
 
   <NuxtLink v-else :to="`/tool/${data.name.toLowerCase().replace(/\s+/g, '-')}`">
     <div v-if="data.pros !== undefined" class="alternative">
+      <label class="select" @click.stop>
+        <input class="checkbox-default" type="checkbox">
+        <span class="checkbox">
+          <span class="material-symbols-rounded check-icon">check</span>
+        </span>
+      </label>
       <img class="logo" :src="data.logo" :alt="data.name" />
       <div class="info">
         <h3>{{ data.name }}</h3>
@@ -170,6 +176,7 @@ const sortAndLimitItems = (items: Opinion[]) => {
 }
 
 .alternative {
+  position: relative;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -183,6 +190,110 @@ const sortAndLimitItems = (items: Opinion[]) => {
   border-radius: $m;
 
   transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+
+  .select {
+    position: absolute;
+    display: block;
+    overflow: hidden;
+
+    top: $xl;
+    right: $xl;
+
+    height: $xl;
+    width: 6.5rem;
+
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkbox {
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      box-sizing: border-box;
+
+      height: $xl;
+      width: $xl;
+
+      background-color: $primary-100;
+
+      border: 0.0625rem solid $primary-200;
+      border-radius: $xs;
+
+      transition: border 0.1s ease-out;
+
+      .check-icon {
+        opacity: 0;
+        visibility: hidden;
+
+        color: $system-white;
+        font-size: 0rem;
+
+        transition: font-size 0.2s ease-out, opacity 0.2s ease-out, visibility 0.2s ease-out;
+      }
+    }
+
+    &::before {
+      content: "Compare";
+
+      position: absolute;
+      top: $xs;
+      right: -2.7rem;
+
+      color: $primary-400;
+
+      transition: right 0.2s ease-out;
+    }
+
+    &:hover::before {
+      right: 2rem;
+      transition: right 0.3s ease-out;
+    }
+
+    input:checked~ {
+      .checkbox .check-icon {
+        opacity: 1;
+        visibility: visible;
+
+        font-size: 1.3rem;
+
+        transition-delay: 0.1s;
+      }
+    }
+
+    input:checked~.checkbox {
+      border: 0.8rem solid $primary-400;
+
+      transition: border 0.2s ease-out;
+      animation: shrink-bounce 200ms cubic-bezier(.4, .0, .23, 1);
+    }
+
+    // Optional: Add hover and active states
+    &:hover .checkbox {
+      border: 0.0625rem solid $primary-300;
+    }
+
+    @keyframes shrink-bounce {
+      0% {
+        transform: scale(1);
+      }
+
+      33% {
+        transform: scale(.9);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  }
 
   .logo {
     box-sizing: border-box;

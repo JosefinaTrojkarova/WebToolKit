@@ -1,5 +1,18 @@
 <template>
-  <NuxtLink :to="link" target="_blank" class="resource" v-if="preview">
+  <div v-if="loading" class="loading"></div>
+  <div v-else-if="error" class="resource" id="error">
+    <main>
+      <div class="error-image">
+        <span class="material-symbols-rounded">warning</span>
+      </div>
+      <div class="content">
+        <h3 class="title">Failed to load resource</h3>
+        <p class="description p2">This is an issue on our side, try to reload the page. Sorry.</p>
+        <p class="source">webtoolkit.com</p>
+      </div>
+    </main>
+  </div>
+  <NuxtLink v-else :to="link" target="_blank" class="resource" v-if="preview">
     <main>
       <img v-if="preview.image" :src="preview.image" :alt="preview.title" class="image">
       <div class="content">
@@ -26,19 +39,6 @@
       <p v-if="preview.length" class="b2">{{ preview.length }}</p>
     </div>
   </NuxtLink>
-  <div v-else-if="loading" class="loading">Loading preview...</div>
-  <div v-else-if="error" class="resource" id="error">
-    <main>
-      <div class="error-image">
-        <span class="material-symbols-rounded">warning</span>
-      </div>
-      <div class="content">
-        <h3 class="title">Failed to load resource</h3>
-        <p class="description p2">This is an issue on our side, try to reload the page. Sorry.</p>
-        <p class="source">webtoolkit.com</p>
-      </div>
-    </main>
-  </div>
 </template>
 
 <script lang="ts" setup>
@@ -58,6 +58,13 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
 </script>
 
 <style scoped lang="scss">
+.loading {
+  min-width: 22rem;
+
+  background-color: $gray-100;
+  border-radius: $m;
+}
+
 .resource {
   display: flex;
   flex-direction: column;
@@ -145,15 +152,5 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
     box-shadow: none;
     transform: none;
   }
-}
-
-.loading {
-  min-width: 22rem;
-  height: 10rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0f0f0;
-  color: $gray-50;
 }
 </style>

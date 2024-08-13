@@ -161,8 +161,8 @@
             </section>
         </main>
         <!-- Loading state -->
-        <div v-else>
-            <p>Loading...</p>
+        <div v-else class="loading">
+            <h4>One moment please...</h4>
         </div>
     </NuxtLayout>
 </template>
@@ -778,5 +778,15 @@ main {
             }
         }
     }
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 80vh;
+    width: 100%;
 }
 </style>
