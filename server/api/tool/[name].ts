@@ -1,4 +1,5 @@
 // Purpose: API endpoint to get all the data about one specific tool from the database.
+// Used in: pages/tool/[name]/index.vue   -  zmenit
 
 import NodeCache from 'node-cache'; // zmenit cachovani tool page
 

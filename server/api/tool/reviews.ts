@@ -1,4 +1,5 @@
 // Purpose: API endpoint to get the reviews of specific tool.
+// Used in:
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

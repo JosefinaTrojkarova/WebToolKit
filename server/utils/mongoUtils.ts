@@ -1,3 +1,5 @@
+// Purpose: Utility to export getMongoClient function and useMongoClient.
+
 import { MongoClient } from 'mongodb';
 
 export async function getMongoClient(): Promise<MongoClient> {

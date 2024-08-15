@@ -1,3 +1,5 @@
+// Test to check if the useHandleRating composable is working the way it should work
+
 import { describe, it, expect } from 'vitest';
 import { calculateRating } from '~/composables/useHandleRating';
 

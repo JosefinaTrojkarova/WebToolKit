@@ -1,4 +1,6 @@
 // Purpose: API endpoint to submit a new tool suggestion.
+// Used in:
+
 import { Collection } from 'mongodb';
 import type { ToolSuggestion } from '~~/types/types';
 

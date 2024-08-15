@@ -1,4 +1,6 @@
 // Purpose: API endpoint to get the data about tool's alternatives.
+// Used in:
+
 import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {

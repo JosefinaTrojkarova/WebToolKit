@@ -1,3 +1,5 @@
+// Test to check if the Tags component is working the way it should work
+
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import Tags from '~/components/Tags.vue';
 import { describe, it, expect, beforeEach } from 'vitest';
