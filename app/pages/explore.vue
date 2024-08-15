@@ -51,7 +51,7 @@
         <!-- Data loaded -->
         <div class="tools__list" v-else-if="data">
           <!-- Display a list of tools -->
-          <ToolCardExplore v-for="item in data" :key="item._id" :item="item" />
+          <ToolCard v-for="item in data" :key="item._id" :data="item" />
 
           <!-- Display a message if no tools are found -->
           <p v-if="data.length === 0">No tools found.</p>

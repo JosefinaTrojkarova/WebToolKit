@@ -20,6 +20,7 @@ export type ToolHeader = {
   name: string;
   logo: string;
   shortDescription: string;
+  website: string;
   rating: {
     stars: number;
     saves: number;
@@ -36,11 +37,13 @@ export type ToolMain = {
     licensing: string;
   };
   rating: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
+    stats: {
+      1: number;
+      2: number;
+      3: number;
+      4: number;
+      5: number;
+    };
     reviews: number;
   };
   resources: {
@@ -48,6 +51,7 @@ export type ToolMain = {
     type: string;
   }[];
   video: string;
+  pricingLink: string;
   pros: {
     name: string;
     votes: string;
@@ -108,6 +112,7 @@ export type Alternative = {
   rating: {
     stars: number;
     reviews: number;
+    saves: number;
   };
   shortDescription: string;
   pros: {

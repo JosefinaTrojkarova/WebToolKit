@@ -1,7 +1,7 @@
 <template>
-  <div>
-    
-  </div>
+  <NuxtLayout name="tool">
+    <h1>alternatives</h1>
+  </NuxtLayout>
 </template>
 
 <script lang="ts" setup>

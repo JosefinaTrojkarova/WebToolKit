@@ -1,7 +1,5 @@
-export function useFetchToolData(name: string, type?: string) {
-  const isHeader = type === 'header';
-  const { data, error, refresh } = useFetch<ToolMain>(
-    `/api/tool/${name}?header=${isHeader}`,
+export function useFetchToolData(name: string) {
+  const { data, error, refresh } = useFetch<ToolMain>(`/api/tool/${name}`,
     {
       key: `tool-${name}`,
     }

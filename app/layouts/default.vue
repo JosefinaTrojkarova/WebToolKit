@@ -86,11 +86,42 @@
                 </div>
             </div>
         </footer>
+        <button @click="scrollToTop" class="scroll-top-button" :style="showButton()">
+            <span class="material-symbols-rounded">keyboard_arrow_up</span>
+        </button>
     </div>
 </template>
 
 <script setup lang="ts">
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
+const showScrollTopButton = ref(false)
+
+const checkScroll = () => {
+    showScrollTopButton.value = window.scrollY > 300
+}
+
+const showButton = () => {
+    if (showScrollTopButton.value) {
+        return "visibility: visible; transform: translateY(0) scale(1);"
+    } else {
+        return "visibility: hidden; transform: translateY(6rem) scale(0.5);"
+    }
+}
+
+const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
+}
+
+onMounted(() => {
+    window.addEventListener('scroll', checkScroll)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', checkScroll)
+})
 
 const { isModalOpen, openModal, closeModal } = useModal()
 </script>
@@ -188,6 +219,63 @@ const { isModalOpen, openModal, closeModal } = useModal()
                 border-radius: 50%;
                 background-color: $primary-400;
             }
+        }
+    }
+}
+
+.scroll-top-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: $xxl;
+    right: $xxl;
+
+    background-color: $primary-400;
+    box-shadow: $shadow-500;
+
+    border: none;
+    border-radius: 50%;
+
+    width: 3.5rem;
+    height: 3.5rem;
+
+    color: white;
+    cursor: pointer;
+
+    transition: transform 0.3s ease-out, visibility 0.3s ease-out;
+    z-index: 1000;
+
+    .material-symbols-rounded {
+        font-size: 2rem;
+    }
+
+    &:hover {
+        .material-symbols-rounded {
+            animation: jumpAndWiggle 0.5s ease;
+        }
+    }
+
+
+    @keyframes jumpAndWiggle {
+        0% {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        25% {
+            transform: translateY(-5px) rotate(-5deg);
+        }
+
+        50% {
+            transform: translateY(-7px) rotate(5deg);
+        }
+
+        75% {
+            transform: translateY(-5px) rotate(-5deg);
+        }
+
+        100% {
+            transform: translateY(0) rotate(0deg);
         }
     }
 }
