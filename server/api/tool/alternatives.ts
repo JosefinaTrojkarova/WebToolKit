@@ -1,25 +1,9 @@
 // Purpose: API endpoint to get the data about tool's alternatives.
 
+import { getMongoClient } from '../../utils/mongoUtils';
 import { MongoClient, ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
-  const nitroApp = useNitroApp();
-
-  async function getMongoClient(): Promise<MongoClient> {
-    let retries = 0;
-    const maxRetries = 10;
-    const retryDelay = 500;
-
-    while (retries < maxRetries) {
-      if (nitroApp.mongoClient) {
-        return nitroApp.mongoClient;
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      retries++;
-    }
-    throw new Error('MongoDB client is not available');
-  }
-
   const body = await readBody(event);
   const { ids } = body;
 
@@ -31,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient = await getMongoClient();
+    const mongoClient: MongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 

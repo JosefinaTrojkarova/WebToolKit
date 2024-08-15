@@ -1,29 +1,13 @@
 // Purpose: API endpoint to get all the data about one specific tool from the database.
 
+import { getMongoClient } from '../../utils/mongoUtils';
 import { MongoClient } from 'mongodb';
-import NodeCache from 'node-cache';
+
+import NodeCache from 'node-cache'; // zmenit cachovani tool page
 
 const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
 
 export default defineEventHandler(async (event) => {
-  const nitroApp = useNitroApp();
-
-  // function to get the mongo query
-  async function getMongoClient(): Promise<MongoClient> {
-    let retries = 0;
-    const maxRetries = 10;
-    const retryDelay = 500;
-
-    while (retries < maxRetries) {
-      if (nitroApp.mongoClient) {
-        return nitroApp.mongoClient;
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      retries++;
-    }
-    throw new Error('MongoDB client is not available');
-  }
-
   // get name of the tool from the URL
   const { name } = event.context.params as { name: string };
   const query = getQuery(event); // Retrieve query parameters from the event
@@ -44,7 +28,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient = await getMongoClient();
+    const mongoClient: MongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 

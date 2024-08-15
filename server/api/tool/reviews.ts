@@ -1,25 +1,8 @@
 // Purpose: API endpoint to get the reviews of specific tool.
-
+import { getMongoClient } from '../../utils/mongoUtils';
 import { MongoClient } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
-  const nitroApp = useNitroApp();
-
-  async function getMongoClient(): Promise<MongoClient> {
-    let retries = 0;
-    const maxRetries = 10;
-    const retryDelay = 500;
-
-    while (retries < maxRetries) {
-      if (nitroApp.mongoClient) {
-        return nitroApp.mongoClient;
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      retries++;
-    }
-    throw new Error('MongoDB client is not available');
-  }
-
   const query = getQuery(event);
   const toolId = query.toolId as string;
 
@@ -31,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient = await getMongoClient();
+    const mongoClient: MongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Comments');
 

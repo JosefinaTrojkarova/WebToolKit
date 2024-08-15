@@ -21,12 +21,17 @@ export default defineNitroPlugin(async (nitroApp) => {
         console.log('Connected to MongoDB');
         return client;
       } catch (error) {
-        console.error(`Failed to connect to MongoDB (attempt ${retries + 1}/${maxRetries}):`, error);
+        console.error(
+          `Failed to connect to MongoDB (attempt ${
+            retries + 1
+          }/${maxRetries}):`,
+          error
+        );
         retries++;
         if (retries >= maxRetries) {
           throw error;
         }
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
@@ -35,7 +40,10 @@ export default defineNitroPlugin(async (nitroApp) => {
   try {
     nitroApp.mongoClient = await connectWithRetry();
   } catch (error) {
-    console.error('Failed to connect to MongoDB after multiple attempts:', error);
+    console.error(
+      'Failed to connect to MongoDB after multiple attempts:',
+      error
+    );
     nitroApp.mongoClient = null;
   }
 
