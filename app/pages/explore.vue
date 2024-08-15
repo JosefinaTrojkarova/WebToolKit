@@ -46,12 +46,12 @@
           <p class="error__message">Error: {{ error.message }}</p>
         </div>
         <!-- Data loaded -->
-        <div class="tools__list" v-else-if="data">
+        <div class="tools__list" v-else-if="filteredTools">
           <!-- Display a list of tools -->
-          <ToolCard v-for="item in data" :key="item._id" :data="item" />
+          <ToolCard v-for="item in filteredTools" :key="item._id" :data="item" />
 
           <!-- Display a message if no tools are found -->
-          <p v-if="data.length === 0">No tools found.</p>
+          <p v-if="filteredTools.length === 0">No tools found.</p>
         </div>
       </section>
     </main>
