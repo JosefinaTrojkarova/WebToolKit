@@ -1,4 +1,5 @@
 // Purpose: Register a new user.
+// WILL BE CHANGED!!!
 
 import { MongoClient, ObjectId, Collection } from 'mongodb';
 import bcrypt from 'bcrypt';
@@ -25,7 +26,9 @@ export default defineEventHandler(async (event) => {
     const UsersCollection: Collection<IUser> = db.collection('Users');
 
     // check if the user already exists
-    const existingUser = await UsersCollection.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await UsersCollection.findOne({
+      $or: [{ email }, { username }],
+    });
     if (existingUser) {
       throw createError({
         statusCode: 400,

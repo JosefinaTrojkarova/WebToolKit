@@ -1,28 +1,9 @@
-// Purpose: API endpoint to get basic data about the tool and it's alternatives from the database.
-// Used in: composables/UseFetchAlternatives.ts
+// Purpose: API endpoint to get the data about tool's alternatives.
+// Used in:
 
-import { MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
-  const nitroApp = useNitroApp();
-
-  // function to get the mongo query
-  async function getMongoClient(): Promise<MongoClient> {
-    let retries = 0;
-    const maxRetries = 10;
-    const retryDelay = 500;
-
-    while (retries < maxRetries) {
-      if (nitroApp.mongoClient) {
-        return nitroApp.mongoClient;
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      retries++;
-    }
-    throw new Error('MongoDB client is not available');
-  }
-
-  // Get request body
   const body = await readBody(event);
   const { mainToolId, alternativeIds } = body;
 

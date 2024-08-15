@@ -25,7 +25,7 @@ const pricingTags = ref<Tag[]>([
 ])
 
 const licensingTags = ref<Tag[]>([
-    { id: 1, name: 'Open Source', active: false },
+    { id: 1, name: 'Open-Source', active: false },
     { id: 2, name: 'Proprietary', active: false }
 ])
 
@@ -46,8 +46,11 @@ const computedTags = computed(() => {
     }
 })
 
+const emit = defineEmits(['tag-toggled']);
+
 const toggleTag = (tag: Tag) => {
     tag.active = !tag.active;
+    emit('tag-toggled', { variant: props.variant, tag: tag });
 }
 
 const iconName = computed(() => {

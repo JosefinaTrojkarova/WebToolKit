@@ -1,3 +1,5 @@
+// Test to check if the Categories component is working the way it should work
+
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import Categories from '~/components/Categories.vue';
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -28,8 +30,8 @@ describe('Categories Component', () => {
         categories,
       },
     });
-    // Find all elements with class '.btn__category'
-    buttons = wrapper.findAll('.btn__category');
+    // Find all categories
+    buttons = wrapper.findAll('button');
   });
 
   it('should render the correct number of categories', () => {

@@ -3,7 +3,6 @@
     <div v-if="isOpen" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <slot></slot>
-        <button @click="closeModal">Close</button>
       </div>
     </div>
   </Teleport>
@@ -21,7 +20,7 @@ const closeModal = () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -35,8 +34,8 @@ const closeModal = () => {
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: $system-bg;
+  padding: $xxl;
+  border-radius: $s;
 }
 </style>

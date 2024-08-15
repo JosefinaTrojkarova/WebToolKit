@@ -66,14 +66,15 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: [
-    '@nuxt/test-utils/module',
-    '~~/modules/auto-import-types',
-  ],
+  modules: ['@nuxt/test-utils/module', '~~/modules/auto-import-types'],
 
   typescript: {
     typeCheck: true,
     strict: true,
+  },
+
+  imports: {
+    dirs: ['server/utils'],
   },
 
   compatibilityDate: '2024-07-31',

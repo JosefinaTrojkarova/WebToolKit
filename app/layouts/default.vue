@@ -22,7 +22,7 @@
                     <button class="btn btn--primary--small" @click="openModal">Sign In</button>
                 </div>
                 <Modal :is-open="isModalOpen" @close="closeModal">
-                    <LoginForm />
+                    <SignIn />
                 </Modal>
             </nav>
         </header>

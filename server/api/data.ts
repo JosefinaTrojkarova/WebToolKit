@@ -1,86 +1,67 @@
 // Purpose: API endpoint to get basic data about all the tools from the database.
-
-import { MongoClient } from 'mongodb';
-import NodeCache from 'node-cache';
-
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 });
+// Used in: pages\explore.vue and pages\wiki\contribute
 
 export default defineEventHandler(async (event) => {
-  const nitroApp = useNitroApp();
-
-  // function to get the mongo query
-  async function getMongoClient(): Promise<MongoClient> {
-    let retries = 0;
-    const maxRetries = 10;
-    const retryDelay = 500;
-
-    while (retries < maxRetries) {
-      if (nitroApp.mongoClient) {
-        return nitroApp.mongoClient;
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      retries++;
-    }
-    throw new Error('MongoDB client is not available');
-  }
-
   try {
     const mongoClient = await getMongoClient();
 
-    const cacheKey = 'toolsData';
+    // Parse query parameters from the request
     const query = getQuery(event);
     const explore = query.explore === 'true';
     const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
 
-    // check if the data is already cached and return it
-    const cachedData = cache.get(
-      cacheKey +
-        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
-        (searchQuery ? `_${searchQuery}` : '')
-    );
-    if (cachedData) {
-      return cachedData;
-    }
-
+    // Connect to the 'Tools' database and the 'Main' collection
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 
     let data;
 
     if (searchQuery) {
-      // Atlas Search
+      // Define the aggregation pipeline for Atlas Search
       const pipeline = [
         {
           $search: {
             index: 'ToolsSearch',
             compound: {
               should: [
-                {
-                  autocomplete: {
-                    query: searchQuery,
-                    path: 'name',
-                    tokenOrder: 'sequential',
-                  },
-                },
-                {
-                  wildcard: {
-                    query: `*${searchQuery}*`,
-                    path: 'name',
-                    allowAnalyzedField: true,
-                  },
-                },
-                {
-                  text: {
-                    query: searchQuery,
-                    path: 'name',
-                  },
-                },
+                ...(searchQuery
+                  ? [
+                      {
+                        // searches for sequential tokens
+                        autocomplete: {
+                          query: searchQuery,
+                          path: 'name',
+                          tokenOrder: 'sequential',
+                          fuzzy: {
+                            maxEdits: 1,
+                          },
+                        },
+                      },
+                      {
+                        // searches for sequential tokens without correction
+                        autocomplete: {
+                          query: searchQuery,
+                          path: 'name',
+                          tokenOrder: 'sequential',
+                        },
+                      },
+                      {
+                        // searches anywhere in the word
+                        wildcard: {
+                          query: `*${searchQuery}*`,
+                          path: 'name',
+                          allowAnalyzedField: true,
+                        },
+                      },
+                    ]
+                  : []),
               ],
             },
           },
         },
         {
+          // Define the fields to include in the search results
           $project: explore
             ? {
                 name: 1,
@@ -103,6 +84,7 @@ export default defineEventHandler(async (event) => {
         },
       ];
 
+      // Execute the aggregation pipeline and store the results
       data = await collection.aggregate(pipeline).toArray();
     } else {
       // Regular query when there's no search
@@ -122,19 +104,13 @@ export default defineEventHandler(async (event) => {
         ? { name: 1 }
         : {};
 
+      // Execute the regular query and store the results
       data = await collection.find({}, { projection }).toArray();
     }
 
-    cache.set(
-      cacheKey +
-        (explore ? '_explore' : contribute ? '_contribute' : '_full') +
-        (searchQuery ? `_${searchQuery}` : ''),
-      data
-    );
-
     return data;
   } catch (error) {
-    console.error(error);
+    console.error('Detailed error:', error);
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

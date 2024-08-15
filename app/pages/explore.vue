@@ -8,13 +8,13 @@
         <label class="search-container" for="search-field">
           <span class="search-icon material-symbols-rounded">search</span>
           <input id="search-field" class="field--search aside__search" v-model="searchQuery" type="text"
-            placeholder="Search for tools" @input="performSearch" />
+            placeholder="Search for tools" />
         </label>
         <div class="aside__filters">
           <div class="filter filter--categories">
             <h4 class="filter__heading">Categories</h4>
             <ul class="filter__list">
-              <Categories :categories="myCategories" @category-toggled="handleCategoryToggle" />
+              <Categories :categories="categories" @category-toggled="handleCategoryToggle" />
             </ul>
           </div>
           <div class="filter filter--tags">
@@ -22,39 +22,36 @@
             <div class="filter__wrapper">
               <p>Pricing</p>
               <ul class="filter__list">
-                <Tags variant="pricing" />
+                <Tags variant="pricing" @tag-toggled="handleTagToggle" />
               </ul>
             </div>
             <div class="filter__wrapper">
               <p>Licensing</p>
               <ul class="filter__list">
-                <Tags variant="licensing" />
+                <Tags variant="licensing" @tag-toggled="handleTagToggle" />
               </ul>
             </div>
             <div class="filter__wrapper">
               <p>Rating</p>
               <ul class="filter__list">
-                <Tags variant="rating" />
+                <Tags variant="rating" @tag-toggled="handleTagToggle" />
               </ul>
             </div>
           </div>
         </div>
       </aside>
       <section class="section tools">
-        <!-- Loading, <p v-if="status === 'pending'">Loading...</p> add status in LazyFetch-->
         <!-- Error -->
         <div class="error" v-if="error">
           <p class="error__message">Error: {{ error.message }}</p>
-          <button class="btn error__btn--retry" @click="performSearch">Retry</button>
-          <!-- change classes -->
         </div>
         <!-- Data loaded -->
-        <div class="tools__list" v-else-if="data">
+        <div class="tools__list" v-else-if="filteredTools">
           <!-- Display a list of tools -->
-          <ToolCard v-for="item in data" :key="item._id" :data="item" />
+          <ToolCard v-for="item in filteredTools" :key="item._id" :data="item" />
 
           <!-- Display a message if no tools are found -->
-          <p v-if="data.length === 0">No tools found.</p>
+          <p v-if="filteredTools.length === 0">No tools found.</p>
         </div>
       </section>
     </main>
@@ -62,38 +59,22 @@
 </template>
 
 <script setup lang="ts">
-// Categories and Tags data
-const myCategories = ref<Category[]>([
-  { id: 1, name: 'UI Design', active: false },
-  { id: 2, name: 'UX Design', active: false },
-  { id: 3, name: 'Prototyping', active: false },
-  { id: 4, name: 'JavaScript', active: false },
-  { id: 5, name: 'TypeScript', active: false },
-  { id: 6, name: 'Python', active: false },
-  { id: 7, name: 'Framework', active: false },
-  { id: 8, name: 'CSS', active: false },
-  { id: 9, name: 'Hosting', active: false },
-  { id: 10, name: 'Compiling', active: false },
-  { id: 11, name: 'HTML', active: false }
-])
+const {
+  categories,
+  searchQuery,
+  refreshCategories,
+  handleCategoryToggle,
+  handleTagToggle,
+  error,
+  filteredTools
+} = useExplore()
 
-const handleCategoryToggle = () => {
-  refresh()
-}
-
-const searchQuery = ref('')
-
-const { data, error, refresh } = useFetch<ItemBasicInfo[]>(() => {
-  const searchParam = searchQuery.value ? `&search=${encodeURIComponent(searchQuery.value)}` : ''
-  return `/api/data?explore=true${searchParam}`
-}, {
-  immediate: true,
+// Fetch categories on component mount
+onMounted(() => {
+  refreshCategories()
 })
-
-const performSearch = () => {
-  refresh()
-}
 </script>
+
 
 <style lang="scss" scoped>
 .explore {

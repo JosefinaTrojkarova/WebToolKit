@@ -1,23 +1,7 @@
-import { MongoClient, ObjectId } from 'mongodb';
+// Purpose: API endpoint to get the reviews of specific tool.
+// Used in:
 
 export default defineEventHandler(async (event) => {
-  const nitroApp = useNitroApp();
-
-  async function getMongoClient(): Promise<MongoClient> {
-    let retries = 0;
-    const maxRetries = 10;
-    const retryDelay = 500;
-
-    while (retries < maxRetries) {
-      if (nitroApp.mongoClient) {
-        return nitroApp.mongoClient;
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      retries++;
-    }
-    throw new Error('MongoDB client is not available');
-  }
-
   const query = getQuery(event);
   const toolId = query.toolId as string;
 
