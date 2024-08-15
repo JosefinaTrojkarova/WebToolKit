@@ -1,0 +1,88 @@
+<template>
+  <span class="main">
+    <span class="star-fill" :style="{ width: calculateRating(rating) }">
+      <span v-for="i in 5" :key="i" class="star material-symbols-rounded">star_rate</span>
+    </span>
+    <span v-for="i in 5" :key="i" class="star material-symbols-rounded">star_rate</span>
+  </span>
+</template>
+
+<script lang="ts" setup>
+const props = defineProps<{
+  rating: number
+}>()
+
+// Calculation of the fill of rating stars that takes gaps into account
+const calculateRating = (rating: number) => {
+  const starWidth = 19.6; // Each star takes up 18.75% of the total width
+  const gapWidth = 0.5; // Each gap is 1.25% of the total width
+
+  // Calculate how many full stars we have
+  const fullStars = Math.floor(rating);
+
+  // Calculate the percentage of the last partially filled star
+  const partialStar = rating - fullStars;
+
+  // Calculate the total width including gaps up to the current rating
+  let totalWidth = (fullStars * starWidth) + (fullStars * gapWidth);
+
+  // Add the partial star width if there is one, but don't add an extra gap after the partial star
+  if (partialStar > 0) {
+    totalWidth += (partialStar * starWidth);
+  }
+
+  // Remove the last gap if we've filled all stars
+  if (rating === 5) {
+    totalWidth -= gapWidth;
+  }
+
+  // Ensure we don't exceed 100%
+  totalWidth = Math.min(totalWidth, 100);
+
+  return `${totalWidth}%`;
+};
+</script>
+
+<style scoped lang="scss">
+.main {
+  position: relative;
+  display: inline-flex;
+
+  width: 8rem;
+
+  user-select: none;
+
+  .star-fill {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 100%;
+
+    overflow: hidden;
+    white-space: nowrap;
+
+    .star {
+      color: $secondary-400;
+    }
+  }
+
+  .star {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 1.6rem;
+
+    color: $primary-100;
+
+    font-variation-settings:
+      'opsz' 40,
+      'wght' 400,
+      'FILL' 1,
+      'GRAD' 100;
+    font-size: 2rem;
+  }
+}
+</style>

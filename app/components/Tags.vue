@@ -140,10 +140,6 @@ const iconName = computed(() => {
                 transform: rotateX(180deg);
             }
         }
-
-        .circle {
-            background-color: $system-success;
-        }
     }
 
     &.licensing {
@@ -175,10 +171,6 @@ const iconName = computed(() => {
                 color: $system-white;
                 transform: rotateX(180deg);
             }
-        }
-
-        .circle {
-            background-color: $primary-400;
         }
     }
 
@@ -220,10 +212,6 @@ const iconName = computed(() => {
                 color: $system-white;
                 transform: rotateX(180deg);
             }
-        }
-
-        .circle {
-            background-color: $primary-400;
         }
     }
 
