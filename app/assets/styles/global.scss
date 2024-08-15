@@ -36,6 +36,7 @@ $gray-500: #1a1c21;
 
 // Shadows
 $shadow-300: 0rem 0.5rem 1.2rem 0rem rgba(0, 0, 0, 0.08);
+$shadow-500: 0rem 0.5rem 1rem 0rem rgba(0, 0, 0, 0.2);
 
 // Spacing
 $xs: 0.25rem;
@@ -182,11 +183,17 @@ p {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+  box-sizing: border-box;
+  position: relative;
 
   height: 3.5rem;
 
   padding: 0 $xxl 0 $xl;
   gap: $m;
+
+  background-color: $system-bg;
+
+  box-shadow: 0 0 0 0 $primary-400;
 
   color: $primary-400;
   font-size: 1.125rem;
@@ -197,6 +204,8 @@ p {
 
   cursor: pointer;
 
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+
   span {
     display: flex;
     align-items: center;
@@ -206,7 +215,15 @@ p {
     font-size: 2rem;
   }
 
-  //&:hover {}
+  &:hover {
+    transform: translateY(-0.2rem);
+    box-shadow: 0 0.2rem 0 0 $primary-400;
+  }
+
+  &:active {
+    transform: translateY(0rem);
+    box-shadow: 0 0 0 0 $primary-400;
+  }
 }
 
 .btn--secondary--small {

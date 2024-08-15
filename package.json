@@ -19,7 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "node-cache": "^5.1.2",
-    "vue": "^3.4.37",
+    "vue": "^3.4.38",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "@nuxt/types": "^2.18.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^22.2.0",
+    "@types/node": "^22.3.0",
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "^14.12.3",
     "nuxt": "^3.12.4",

@@ -60,6 +60,7 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
 <style scoped lang="scss">
 .loading {
   min-width: 22rem;
+  max-height: 30rem;
 
   background-color: $gray-100;
   border-radius: $m;
