@@ -16,3 +16,8 @@ export async function getMongoClient(): Promise<MongoClient> {
   // Throw an error if the MongoDB client is not available after max retries
   throw new Error('MongoDB client is not available');
 }
+
+export const useMongoClient = () => {
+  const config = useRuntimeConfig();
+  return new MongoClient(config.mongodbUri);
+};

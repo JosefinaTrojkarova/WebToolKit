@@ -1,6 +1,5 @@
 // Purpose: API endpoint to submit an existing tool edit suggestion.
-import { getMongoClient } from '../../utils/mongoUtils';
-import { MongoClient, Collection } from 'mongodb';
+import { Collection } from 'mongodb';
 import type { Tool, ToolSuggestion } from '~~/types/types';
 
 export default defineEventHandler(async (event) => {
@@ -15,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient: MongoClient = await getMongoClient();
+    const mongoClient = await getMongoClient();
 
     if (!mongoClient) {
       console.error('MongoDB client is not available');

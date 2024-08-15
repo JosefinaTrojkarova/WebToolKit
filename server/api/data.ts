@@ -1,10 +1,8 @@
 // Purpose: API endpoint to get basic data about all the tools from the database. Used in app\pages\explore.vue amd app\pages\wiki\contribute
-import { getMongoClient } from '../utils/mongoUtils';
-import { MongoClient } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
-    const mongoClient: MongoClient = await getMongoClient();
+    const mongoClient = await getMongoClient();
 
     // Parse query parameters from the request
     const query = getQuery(event);

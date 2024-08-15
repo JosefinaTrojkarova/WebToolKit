@@ -1,7 +1,5 @@
 // Purpose: API endpoint to get the data about tool's alternatives.
-
-import { getMongoClient } from '../../utils/mongoUtils';
-import { MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -15,7 +13,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient: MongoClient = await getMongoClient();
+    const mongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 

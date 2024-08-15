@@ -1,10 +1,9 @@
 // Purpose: API endpoint to get data about categories from the database.
-import { getMongoClient } from '../../utils/mongoUtils';
-import { MongoClient } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   try {
-    const mongoClient: MongoClient = await getMongoClient();
+    const mongoClient = await getMongoClient();
+
     const database = mongoClient.db('Tools');
     const collection = database.collection('Categories');
 

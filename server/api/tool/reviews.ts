@@ -1,6 +1,4 @@
 // Purpose: API endpoint to get the reviews of specific tool.
-import { getMongoClient } from '../../utils/mongoUtils';
-import { MongoClient } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -14,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient: MongoClient = await getMongoClient();
+    const mongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Comments');
 

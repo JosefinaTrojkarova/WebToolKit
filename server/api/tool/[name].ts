@@ -1,8 +1,5 @@
 // Purpose: API endpoint to get all the data about one specific tool from the database.
 
-import { getMongoClient } from '../../utils/mongoUtils';
-import { MongoClient } from 'mongodb';
-
 import NodeCache from 'node-cache'; // zmenit cachovani tool page
 
 const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
@@ -28,7 +25,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient: MongoClient = await getMongoClient();
+    const mongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 
