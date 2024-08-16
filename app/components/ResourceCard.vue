@@ -6,9 +6,13 @@
         <span class="material-symbols-rounded">warning</span>
       </div>
       <div class="content">
-        <h3 class="title">Failed to load resource</h3>
+        <h4 class="title">Failed to load resource</h4>
+        <div class="origin">
+          <p class="source p3">webtoolkit.com</p>
+          <p class="p3">•</p>
+          <p class="p3">Just now</p>
+        </div>
         <p class="description p2">This is an issue on our side, try to reload the page. Sorry.</p>
-        <p class="source">webtoolkit.com</p>
       </div>
     </main>
   </div>
@@ -16,13 +20,13 @@
     <main>
       <img v-if="preview.image" :src="preview.image" :alt="preview.title" class="image">
       <div class="content">
-        <h3 class="title">{{ preview.title }}</h3>
-        <p class="description p2">{{ preview.description }}</p>
+        <h4 class="title">{{ preview.title }}</h4>
         <div class="origin">
-          <p class="source">{{ preview.source }}</p>
-          <p>•</p>
-          <p>{{ preview.date }}</p>
+          <p class="source p3">{{ preview.source }}</p>
+          <p class="p3">•</p>
+          <p class="p3">{{ preview.date }}</p>
         </div>
+        <p class="description p2">{{ preview.description }}</p>
       </div>
     </main>
     <div v-if="type === 'article'" class="type">
@@ -123,13 +127,9 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
       box-sizing: border-box;
 
       padding: $xl;
+      gap: $s;
       flex-grow: 1;
       overflow: hidden;
-
-      .title {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-      }
 
       .description {
         color: $primary-400;
@@ -143,9 +143,12 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
         flex-direction: row;
         align-items: center;
         gap: $s;
+
+        p {
+          color: $primary-300;
+        }
       }
 
-      .source,
       .video-length,
       .reply-count {
         font-size: 0.8rem;
