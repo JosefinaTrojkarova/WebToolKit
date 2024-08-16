@@ -244,7 +244,7 @@ const { isModalOpen, openModal, closeModal } = useModal()
     cursor: pointer;
 
     transition: transform 0.3s ease-out, visibility 0.3s ease-out;
-    z-index: 1000;
+    z-index: 999;
 
     .material-symbols-rounded {
         font-size: 2rem;

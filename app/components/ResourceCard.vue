@@ -18,7 +18,11 @@
       <div class="content">
         <h3 class="title">{{ preview.title }}</h3>
         <p class="description p2">{{ preview.description }}</p>
-        <p class="source">{{ preview.source }}</p>
+        <div class="origin">
+          <p class="source">{{ preview.source }}</p>
+          <p>•</p>
+          <p>{{ preview.date }}</p>
+        </div>
       </div>
     </main>
     <div v-if="type === 'article'" class="type">
@@ -70,8 +74,10 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
 
   min-width: 22rem;
+  height: 100%;
 
   border: 1px solid $primary-200;
   border-radius: $m;
@@ -79,50 +85,72 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
   overflow: hidden;
   transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
-  .image {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-
-    border-bottom: 1px solid $primary-200;
-  }
-
-  .error-image {
+  main {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
 
-    width: 100%;
-    height: 10rem;
 
-    background-color: $primary-100;
+    .image {
+      width: 100%;
+      object-fit: cover;
 
-    border-bottom: 1px solid $primary-200;
-
-    .material-symbols-rounded {
-      font-size: 3rem;
-      color: $primary-400;
-    }
-  }
-
-  .content {
-    padding: $xl;
-
-    .title {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+      border-bottom: 1px solid $primary-200;
     }
 
-    .description {
-      color: $primary-400;
-      margin-bottom: 0.5rem;
+    .error-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 100%;
+      height: 10rem;
+
+      background-color: $primary-100;
+
+      border-bottom: 1px solid $primary-200;
+
+      .material-symbols-rounded {
+        font-size: 3rem;
+        color: $primary-400;
+      }
     }
 
-    .source,
-    .video-length,
-    .reply-count {
-      font-size: 0.8rem;
-      color: $gray-50;
+    .content {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+
+      padding: $xl;
+      flex-grow: 1;
+      overflow: hidden;
+
+      .title {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .description {
+        color: $primary-400;
+        margin-bottom: 0.5rem;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+
+      .origin {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: $s;
+      }
+
+      .source,
+      .video-length,
+      .reply-count {
+        font-size: 0.8rem;
+        color: $gray-50;
+      }
     }
   }
 

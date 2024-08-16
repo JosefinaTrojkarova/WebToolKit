@@ -15,15 +15,16 @@
           </div>
         </div>
         <div class="buttons">
-          <NuxtLink class="btn--primary--large" :to="headerData.website" target="_blank">Visit Website</NuxtLink>
-          <button class="btn--secondary--large--icon"><span class="material-symbols-rounded">keyboard_arrow_down</span>
-            Contribute</button>
-          <button class="btn--tertiary--large--icon"><span class="material-symbols-rounded">bookmark</span> Save to
-            list</button>
+          <NuxtLink class="btn--primary--large web-btn" :to="headerData.website" target="_blank">Visit Website <span
+              class="material-symbols-rounded">captive_portal</span></NuxtLink>
+          <button class="btn--secondary--large--icon dropdown-btn">Contribute <span
+              class="material-symbols-rounded">keyboard_arrow_down</span></button>
+          <button class="save" @click="toggleActive" :class="{ active: isActive }"><span
+              class="material-symbols-rounded">bookmark</span></button>
         </div>
       </main>
       <nav>
-        <NuxtLink v-for="link in links" class="link p1" :class="{ 'router-link-active': isActive(link.path) }"
+        <NuxtLink v-for="link in links" class="link p1" :class="{ 'router-link-active': isPathActive(link.path) }"
           :to="link.path">{{ link.name }}</NuxtLink>
       </nav>
     </header>
@@ -42,7 +43,7 @@ const links = [
   { name: 'Resources', path: `/tool/${route.params.name}/resources` },
 ]
 
-const isActive = (path: string) => {
+const isPathActive = (path: string) => {
   return route.path === path
 }
 
@@ -59,6 +60,11 @@ watch(() => route.params.name, (newName) => {
     fetchHeaderData()
   }
 })
+
+const isActive = ref<boolean>(false)
+const toggleActive = () => {
+  isActive.value = !isActive.value;
+}
 </script>
 
 <style scoped lang="scss">
@@ -132,6 +138,116 @@ header {
       align-items: center;
 
       gap: $m;
+
+      .web-btn {
+        position: relative;
+
+        transition: padding-right 0.2s ease-out;
+
+        span {
+          position: absolute;
+          right: $xxl;
+
+          color: transparent;
+          font-variation-settings: 'opsz' 32, 'wght' 300, 'FILL' 0, 'GRAD' 100;
+
+          transform: scale(0) rotateY(180deg);
+          transition: color 0.2s ease-out, transform 0.2s ease-out;
+        }
+
+        &:hover {
+          padding-right: 4rem;
+
+          span {
+            transform: scale(1) rotateY(180deg);
+            color: $system-white;
+          }
+        }
+      }
+
+      .save {
+        height: 3.5rem;
+
+        padding: 0 $l;
+        cursor: pointer;
+
+        span {
+          color: $primary-400;
+          font-size: 2rem;
+          font-variation-settings: 'opsz' 32, 'wght' 400, 'FILL' 0, 'GRAD' 100;
+
+          transform-origin: top center;
+          transition: font-variation-settings 0.1s ease-out, transform 0.1s ease-out;
+          animation: shrink-bounce 0.2s ease-out;
+        }
+      }
+
+      .active {
+        span {
+          font-variation-settings: 'opsz' 32, 'wght' 400, 'FILL' 1, 'GRAD' 100;
+
+          transform-origin: top center;
+          animation: expand-bounce 0.2s ease-out 0.1s;
+        }
+      }
+
+      @keyframes expand-bounce {
+        0% {
+          transform: scale(1, 1);
+        }
+
+        50% {
+          transform: scale(1, 1.2);
+        }
+
+        100% {
+          transform: scale(1, 1);
+        }
+      }
+
+      @keyframes shrink-bounce {
+        0% {
+          transform: scale(1, 1);
+        }
+
+        50% {
+          transform: scale(1, 0.8);
+        }
+
+        100% {
+          transform: scale(1, 1);
+        }
+      }
+
+      .dropdown-btn {
+        &:hover {
+          span {
+            animation: dropAndWiggle 0.5s ease;
+          }
+        }
+      }
+
+      @keyframes dropAndWiggle {
+        0% {
+          transform: translateY(0) rotate(0deg);
+        }
+
+        25% {
+          transform: translateY(2px) rotate(-5deg);
+        }
+
+        50% {
+          transform: translateY(4px) rotate(5deg);
+        }
+
+        75% {
+          transform: translateY(2px) rotate(-5deg);
+        }
+
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+      }
     }
   }
 
