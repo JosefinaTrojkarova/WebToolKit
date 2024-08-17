@@ -1,6 +1,12 @@
 <template>
   <div v-if="main" class="alternative" id="main">
-    <img class="logo" :src="data.logo" :alt="data.name" />
+    <label class="select" @click.stop>
+      <input class="checkbox-default" type="checkbox">
+      <span class="checkbox">
+        <span class="material-symbols-rounded check-icon">check</span>
+      </span>
+    </label>
+    <img class="logo" :src="data.logo || ''" :alt="data.name" />
     <div class="info">
       <h3>{{ data.name }}</h3>
       <p>{{ data.shortDescription }}</p>

@@ -154,6 +154,9 @@ const isMounted = ref(false)
 onMounted(() => {
     isMounted.value = true
 })
+onUnmounted(() => {
+    isMounted.value = false
+})
 
 // Setup the route and data fetching
 const route = useRoute()

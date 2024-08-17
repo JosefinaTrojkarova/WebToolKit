@@ -19,8 +19,9 @@
               class="material-symbols-rounded">captive_portal</span></NuxtLink>
           <button class="btn--secondary--large--icon dropdown-btn">Contribute <span
               class="material-symbols-rounded">keyboard_arrow_down</span></button>
-          <button class="save" @click="toggleActive" :class="{ active: isActive }"><span
-              class="material-symbols-rounded">bookmark</span></button>
+          <button class="save" @click="toggleActive" :class="{ active: isActive }" title="Save to list">
+            <span class="material-symbols-rounded">bookmark</span>
+          </button>
         </div>
       </main>
       <nav>
