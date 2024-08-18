@@ -1,12 +1,12 @@
 <template>
   <NuxtLayout name="tool">
     <!-- Error state -->
-    <div v-if="error">
-      <p>Error: {{ error.message }}</p>
+    <div v-if="alternativesError">
+      <p>Error: {{ alternativesError.message }}</p>
       <button @click="retryFetch">Retry</button>
     </div>
     <!-- Working state -->
-    <main v-else-if="isMounted && data">
+    <main v-else-if="isMounted && alternativesData">
       <div class="main-tool">
         <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
@@ -97,11 +97,14 @@ onUnmounted(() => {
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(data)
+const { data: alternativesData, error: alternativesError, refresh: refreshAlternatives } = useFetch(`/api/tool/${name}`, {
+  params: { alternativesOnly: 'true' },
+})
+const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(alternativesData)
+
 
 const retryFetch = () => {
-  retryToolData()
+  refreshAlternatives()
   retryAlternatives()
 }
 

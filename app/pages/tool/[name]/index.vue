@@ -164,7 +164,7 @@ const { name } = route.params
 
 const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
 const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(data)
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data)
+const { reviews, retryFetch: retryReviews } = useFetchReviews(data, 3)
 
 const retryFetch = () => {
     retryToolData()

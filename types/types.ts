@@ -155,7 +155,8 @@ export type Tag = {
 export type User = {
   id: string;
   username: string;
-  email: string;
+  picture: string;
+  handle: string;
 };
 
 export type ToolSuggestion = {
