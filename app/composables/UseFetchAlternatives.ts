@@ -1,4 +1,4 @@
-// Composable function to fetch alternatives for a given tool
+// Composable function to fetch alternatives
 // Used in: pages/tool/[name]/index.vue and pages/tool/[name]/alternatives.vue
 
 export function useFetchAlternatives(
@@ -11,89 +11,62 @@ export function useFetchAlternatives(
   const mainTool = ref<Tool | null>(null);
   const error = ref<Error | null>(null);
 
-  // Function to fetch alternatives based on the provided tool ID and alternative IDs
+  // Function to fetch alternatives
   const fetchAlternatives = async (amount = initialAmount) => {
-    // If toolId and alternativeIds are provided, fetch alternatives using them
+    // If toolId is not provided -> fetch it based on the name
+    if (!toolId) {
+      // Get toolName from the URL if toolId is not provided
+      const route = useRoute();
+      const toolName = route.params.name as string;
+
+      // Fetch tool data to get toolId if it's not provided
+      try {
+        const toolData = await $fetch<Tool>(`/api/tool/${toolName}`, {
+          params: { alternativesOnly: 'true' },
+        });
+        toolId = toolData._id; // Assign the fetched toolId
+        alternativeIds = toolData.alternatives || []; // Assign alternativeIds from fetched tool data
+      } catch (e) {
+        console.error('Failed to fetch tool data:', e);
+        error.value =
+          e instanceof Error ? e : new Error('Unknown error occurred');
+        return;
+      }
+    }
+
+    // If toolId is available or we fetched it -> fetch alternatives for the tool
     if (toolId && alternativeIds) {
       try {
-        // Fetch alternatives using the provided toolId and alternativeIds
+        const params: any = { mainToolId: toolId };
+        if (alternativeIds.length > 0) {
+          params.alternativeIds = alternativeIds; // Apply alternativeIds if provided
+        }
+        if (amount !== undefined) {
+          params.amount = amount; // Apply amount if provided
+        }
+        // Fetch alternatives from the API
         const response = await $fetch('/api/tool/alternatives', {
           method: 'POST',
-          body: {
-            mainToolId: toolId,
-            alternativeIds: alternativeIds,
-            amount: amount ?? undefined, // Pass the amount if provided
-          },
+          body: params,
         });
-
-        if (response) {
-          mainTool.value = response.mainTool; // Set the main tool data
-          alternatives.value = response.alternatives || []; // Set the list of alternatives
-        }
+        mainTool.value = response.mainTool || null; // Set the main tool data or null if no data
+        alternatives.value = response.alternatives || []; // Set fetched alternatives or an empty array if no data
       } catch (e) {
-        // Log and set the error if fetching alternatives fails
         console.error('Error fetching alternatives:', e);
         error.value =
           e instanceof Error ? e : new Error('Unknown error occurred');
       }
     } else {
-      // If toolId or alternativeIds are missing, fetch tool data based on route parameter
-      const route = useRoute();
-      const toolName = route.params.name as string;
-
-      try {
-        // Fetch tool data if toolId and alternativeIds are not provided
-        const toolData = await $fetch<Tool>(`/api/tool/${toolName}`, {
-          params: { alternativesOnly: 'true' },
-        });
-
-        if (
-          toolData &&
-          toolData._id &&
-          toolData.alternatives &&
-          toolData.alternatives.length > 0
-        ) {
-          try {
-            // Fetch alternatives using the fetched tool data
-            const response = await $fetch('/api/tool/alternatives', {
-              method: 'POST',
-              body: {
-                mainToolId: toolData._id,
-                alternativeIds: toolData.alternatives,
-                amount: amount ?? undefined, // Pass the amount if provided
-              },
-            });
-
-            if (response) {
-              mainTool.value = response.mainTool; // Set the main tool data
-              alternatives.value = response.alternatives || []; // Set the list of alternatives
-            }
-          } catch (e) {
-            // Log and set the error if fetching alternatives fails
-            console.error('Error fetching alternatives:', e);
-            error.value =
-              e instanceof Error ? e : new Error('Unknown error occurred');
-          }
-        } else {
-          error.value = new Error(
-            'Tool data is incomplete or has no alternatives'
-          );
-        }
-      } catch (e) {
-        // Log and set the error if fetching tool data fails
-        console.error('Failed to fetch tool data:', e);
-        error.value =
-          e instanceof Error ? e : new Error('Unknown error occurred');
-      }
+      error.value = new Error('Tool ID or alternative IDs are missing');
     }
   };
 
-  // Watch effect to trigger fetching alternatives when dependencies change
+  // Watch effect to automatically trigger fetching whenever the reactive dependencies change
   const stopWatch = watchEffect(() => {
     fetchAlternatives();
   });
 
-  // Function to retry fetching alternatives
+  // Function to retry fetching
   const retryFetch = (amount?: number) => {
     fetchAlternatives(amount);
   };
