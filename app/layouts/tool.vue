@@ -38,10 +38,10 @@ const route = useRoute()
 const { headerData, fetchHeaderData } = useFetchHeaderData()
 
 const links = [
-  { name: 'Overview', path: `/tool/${route.params.name}` },
-  { name: 'Reviews', path: `/tool/${route.params.name}/reviews` },
-  { name: 'Alternatives', path: `/tool/${route.params.name}/alternatives` },
-  { name: 'Resources', path: `/tool/${route.params.name}/resources` },
+  { name: 'Overview', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}` },
+  { name: 'Reviews', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/reviews` },
+  { name: 'Alternatives', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/alternatives` },
+  { name: 'Resources', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/resources` },
 ]
 
 const isPathActive = (path: string) => {

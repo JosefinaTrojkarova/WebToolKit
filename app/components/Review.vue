@@ -3,12 +3,11 @@
     <div class="review-content-wrapper">
       <div class="comment-header">
         <div class="user-info">
-          <img
-            src="https://play-lh.googleusercontent.com/L5OfSFUWZlLLgBrexrjWyIbKgFAzzuepGEmO6erE-9766GFA3hxRahjF2oshJZrHFw=w1400-h720"
-            alt="pfp" class="user-pfp">
+          <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
-            <p class="b1">{{ data.user }}</p>
-            <p class="p3">15 contributions</p>
+            <p class="b1">{{ data.userNickname }}</p>
+            <p v-if="data.userContributions === 1" class="p3">{{ data.userContributions }} contribution</p>
+            <p v-else class="p3">{{ data.userContributions }} contributions</p>
           </div>
         </div>
         <span class="material-symbols-rounded report-btn" title="Report review">report</span>
@@ -19,7 +18,9 @@
           star_rate
         </span>
       </div>
-      <p>{{ data.comment }}</p>
+      <p class="comment" :style="`-webkit-line-clamp: ${handleLineLimit}; line-clamp: ${handleLineLimit};`">
+        {{ data.comment }}
+      </p>
     </div>
     <p class="date p3">{{ new Date(data.date).toLocaleDateString() }}</p>
     <Modal :is-open="isModalOpen" @close="closeModal">
@@ -54,9 +55,13 @@
 <script lang="ts" setup>
 const props = defineProps<{
   data: Review
+  // Prop to set the maximum number of lines to display
+  limit?: number
 }>()
 
 const { isModalOpen, openModal, closeModal } = useModal()
+
+const handleLineLimit = ref(props.limit || '')
 </script>
 
 <style scoped lang="scss">
@@ -168,9 +173,16 @@ const { isModalOpen, openModal, closeModal } = useModal()
       }
     }
   }
+
+  .comment {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
 }
 
 .date {
   color: $gray-50;
+  padding-top: $s;
 }
 </style>

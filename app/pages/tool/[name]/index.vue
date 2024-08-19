@@ -58,7 +58,7 @@
                         :link="resource.link" :type="resource.type">
                     </ResourceCard>
                 </div>
-                <NuxtLink :to="`${data.name}/resources`" class="view-resources-btn">
+                <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/resources`" class="view-resources-btn">
                     <p>View All</p>
                 </NuxtLink>
             </section>
@@ -108,7 +108,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <NuxtLink :to="`${data.name}/reviews`" class="contribute-btn">
+                            <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
+                                class="contribute-btn">
                                 <p>Contribute</p>
                             </NuxtLink>
                         </div>
@@ -122,9 +123,10 @@
                             <div v-if="reviews.length === 0" class="no-reviews">
                                 <p>No reviews yet :(</p>
                             </div>
-                            <Review v-else v-for="review in reviews" :data="review"></Review>
+                            <Review v-else v-for="review in reviews" :data="review" :limit="6" class="review"></Review>
                         </ul>
-                        <NuxtLink :to="`${data.name}/reviews`" class="view-reviews-btn">
+                        <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
+                            class="view-reviews-btn">
                             <p>View All</p>
                         </NuxtLink>
                     </div>
@@ -136,7 +138,8 @@
                     <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
                     <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
                 </div>
-                <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
+                <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/alternatives`"
+                    class="view-alternatives-btn">
                     <p>View All</p>
                 </NuxtLink>
             </section>
@@ -513,6 +516,10 @@ main {
 
                             gap: $m;
 
+                            p {
+                                text-wrap: nowrap;
+                            }
+
                             .votes-wrapper {
                                 display: flex;
                                 flex-direction: row;
@@ -612,6 +619,10 @@ main {
 
                         width: 100%;
                         height: 100%;
+                    }
+
+                    .review {
+                        flex: 1;
                     }
                 }
 
