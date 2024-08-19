@@ -79,39 +79,7 @@
           </div>
         </div>
         <div class="reviews-wrapper">
-          <div class="search-tools" :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
-            <div class="filters">
-              <li class="all">
-                <button>All</button>
-              </li>
-              <li class="rating">
-                <button class="tag--static--rating">
-                  <span class="material-symbols-rounded">star</span>
-                  <p>5</p>
-                </button>
-                <button class="tag--static--rating">
-                  <span class="material-symbols-rounded">star</span>
-                  <p>4</p>
-                </button>
-                <button class="tag--static--rating">
-                  <span class="material-symbols-rounded">star</span>
-                  <p>3</p>
-                </button>
-                <button class="tag--static--rating">
-                  <span class="material-symbols-rounded">star</span>
-                  <p>2</p>
-                </button>
-                <button class="tag--static--rating">
-                  <span class="material-symbols-rounded">star</span>
-                  <p>1</p>
-                </button>
-              </li>
-            </div>
-            <button class="sort">
-              <p>Most Popular</p>
-              <span class="material-symbols-rounded">sort</span>
-            </button>
-          </div>
+          <Filters type="reviews" :trigger="490" />
           <div class="reviews">
             <div v-if="reviews.length === 0" class="no-reviews">
               <p>No reviews yet :(</p>
@@ -152,20 +120,6 @@ const retryFetch = () => {
   retryReviews()
   retryToolData()
 }
-
-const searchToolsStyle = ref(0)
-
-const checkScroll = () => {
-  searchToolsStyle.value = window.scrollY > 490 ? 1 : 0
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', checkScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', checkScroll)
-})
 
 const getLabelForRating = (rating: number) => {
   const labels: { [key: number]: string } = {
@@ -489,82 +443,6 @@ main {
     .reviews-wrapper {
       display: flex;
       flex-direction: column;
-
-      .search-tools {
-        position: sticky;
-        top: $xxl;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-
-        width: 100%;
-
-        padding: 0 0 $m 0;
-
-        background-color: $system-bg;
-
-        border-bottom: 1px solid $primary-200;
-
-        transition: border-bottom-width 0.1s ease;
-
-        .filters {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-
-          gap: $m;
-
-          .all {
-            button {
-              height: $xxl;
-              padding: 0 $m;
-              border-radius: $s;
-              background-color: $primary-400;
-              color: $system-white;
-              font-weight: 500;
-              cursor: pointer;
-            }
-          }
-
-          li {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-
-            gap: $s;
-          }
-        }
-
-        .sort {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          box-sizing: border-box;
-
-          height: $xxl;
-
-          gap: $s;
-          padding: 0 $m;
-
-          cursor: pointer;
-
-          span {
-            color: $primary-400;
-          }
-        }
-
-        &::before {
-          content: '';
-          position: absolute;
-          top: -$xxl;
-          left: -2%;
-          height: $xxl * 2 + $m;
-          width: 104%;
-          background-color: $system-bg;
-          z-index: -1;
-        }
-      }
 
       .reviews {
         display: grid;

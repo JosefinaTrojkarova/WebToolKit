@@ -1,16 +1,18 @@
 <template>
-  <div class="review" @click="openModal">
+  <div :class="`review ${clickable}`" @click="handleOpenModal">
     <div class="review-content-wrapper">
       <div class="comment-header">
-        <div class="user-info">
+        <!-- Fix link -->
+        <NuxtLink to="/user/@payaa" class="user-info">
           <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
             <p class="b1">{{ data.username }}</p>
             <p v-if="data.userContributions === 1" class="p3">{{ data.userContributions }} contribution</p>
             <p v-else class="p3">{{ data.userContributions }} contributions</p>
           </div>
-        </div>
-        <span class="material-symbols-rounded report-btn" title="Report review">report</span>
+        </NuxtLink>
+        <span class="material-symbols-rounded report-btn" title="Report review"
+          @click.stop="toggleReportModal">report</span>
       </div>
       <div class="star-rating">
         <span v-for="star in 5" :key="star" class="material-symbols-rounded"
@@ -27,14 +29,16 @@
       <div class="modal">
         <div class="review-content-wrapper">
           <div class="comment-header">
-            <div class="user-info">
+            <!-- Fix link -->
+            <NuxtLink to="/user/@payaa" class="user-info">
               <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
               <div class="user-details">
                 <p class="b1">{{ data.username }}</p>
                 <p class="p3">{{ data.userContributions }}</p>
               </div>
-            </div>
-            <span class="material-symbols-rounded report-btn" title="Report review">report</span>
+            </NuxtLink>
+            <span class="material-symbols-rounded report-btn" title="Report review"
+              @click="toggleReportModal">report</span>
           </div>
           <div class="star-rating">
             <span v-for="star in 5" :key="star" class="material-symbols-rounded"
@@ -47,21 +51,39 @@
         <p class="date p3">{{ formatDate(data.date) }}</p>
       </div>
     </Modal>
+    <Modal :is-open="isReportModalOpen" @close="toggleReportModal">
+      <div class="modal">
+        <h1>REPORT!!!</h1>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 const props = defineProps<{
   data: Review
-  // Prop to set the maximum number of lines to display
+  // Prop to set the maximum number of lines of text to display, if not set, all lines will be displayed and no modal will be openable
   limit?: number
 }>()
+
+const clickable = props.limit ? 'clickable' : ''
+
+const handleOpenModal = () => {
+  if (props.limit) {
+    openModal()
+  }
+}
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
 }
 
 const { isModalOpen, openModal, closeModal } = useModal()
+const isReportModalOpen = ref(false)
+
+const toggleReportModal = () => {
+  isReportModalOpen.value = !isReportModalOpen.value
+}
 
 const handleLineLimit = ref(props.limit || '')
 </script>
@@ -78,7 +100,9 @@ const handleLineLimit = ref(props.limit || '')
 
   border: 1px solid $primary-200;
   border-radius: $m;
+}
 
+.clickable {
   cursor: pointer;
   transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
@@ -118,6 +142,8 @@ const handleLineLimit = ref(props.limit || '')
       align-items: center;
 
       gap: $m;
+
+      cursor: pointer;
 
       .user-pfp {
         width: 3rem;
