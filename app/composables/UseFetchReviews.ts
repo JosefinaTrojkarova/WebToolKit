@@ -9,7 +9,7 @@ export function useFetchReviews(
 
   const fetchReviews = async (amount = initialAmount) => {
     // Set limit to initialLimit by default
-    if (toolData.value && toolData.value._id) {
+    if (toolData.value._id) {
       try {
         const params: any = { toolId: toolData.value._id };
         if (amount) {

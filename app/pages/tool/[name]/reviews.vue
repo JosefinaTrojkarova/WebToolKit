@@ -4,9 +4,9 @@
       <p>Error: {{ error.message }}</p>
       <button @click="retryFetch">Retry</button>
     </div>
-    <div v-else-if="data && reviews && isMounted" class="reviews">
+    <div v-else-if="reviewsData && reviews && isMounted" class="reviews">
       <div class="review-cta">
-        <p>Got something to say about {{ data.name }}? Leave a review!</p>
+        <p>Got something to say about {{ reviewsData.name }}? Leave a review!</p>
         <button class="btn--secondary--small">Leave a Review</button>
       </div>
       <ul class="review-wrapper">
@@ -38,16 +38,6 @@
 </template>
 
 <script setup lang="ts">
-/*interface Review {
-  user: string;
-  comment: string;
-  rating: number;
-  date: string;
-  userNickname: string;
-  userContributions: number;
-  userProfilePic: string;
-}*/
-
 // Hydration mismatch prevention
 const isMounted = ref(false)
 onMounted(() => {
@@ -61,13 +51,15 @@ onUnmounted(() => {
 const route = useRoute()
 const { name } = route.params
 
-const { data, error: toolError, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data) as { reviews: Ref<Review[]>, retryFetch: () => void }
+const { data: reviewsData, error: reviewsError, refresh: refreshReviews } = useFetch(`/api/tool/${name}`, {
+  params: { reviewsOnly: 'true' },
+})
+const { reviews, retryFetch: retryReviews } = useFetchReviews(reviewsData)
 
-const error = ref(toolError.value || null)
+const error = ref(reviewsError.value || null)
 
 const retryFetch = () => {
-  retryToolData()
+  refreshReviews()
   retryReviews()
 }
 

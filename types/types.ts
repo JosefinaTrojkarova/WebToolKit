@@ -100,40 +100,6 @@ export type Tool = {
   alternatives: string[];
 };
 
-export type Alternative = {
-  _id: string;
-  name: string;
-  categories: string[];
-  logo: string;
-  tags: {
-    pricing: string;
-    licensing: string;
-  };
-  rating: {
-    stars: number;
-    reviews: number;
-    saves: number;
-  };
-  shortDescription: string;
-  pros: {
-    name: string;
-    votes: string;
-  }[];
-  cons: {
-    name: string;
-    votes: string;
-  }[];
-};
-
-export type Review = {
-  _id: string;
-  tool: string;
-  user: string;
-  comment: string;
-  rating: number;
-  date: string;
-};
-
 export type Category = {
   id: number;
   name: string;
