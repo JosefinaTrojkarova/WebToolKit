@@ -5,7 +5,7 @@
         <div class="user-info">
           <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
-            <p class="b1">{{ data.userNickname }}</p>
+            <p class="b1">{{ data.username }}</p>
             <p v-if="data.userContributions === 1" class="p3">{{ data.userContributions }} contribution</p>
             <p v-else class="p3">{{ data.userContributions }} contributions</p>
           </div>
@@ -22,18 +22,16 @@
         {{ data.comment }}
       </p>
     </div>
-    <p class="date p3">{{ new Date(data.date).toLocaleDateString() }}</p>
+    <p class="date p3">{{ formatDate(data.date) }}</p>
     <Modal :is-open="isModalOpen" @close="closeModal">
       <div class="modal">
         <div class="review-content-wrapper">
           <div class="comment-header">
             <div class="user-info">
-              <img
-                src="https://play-lh.googleusercontent.com/L5OfSFUWZlLLgBrexrjWyIbKgFAzzuepGEmO6erE-9766GFA3hxRahjF2oshJZrHFw=w1400-h720"
-                alt="pfp" class="user-pfp">
+              <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
               <div class="user-details">
-                <p class="b1">{{ data.user }}</p>
-                <p class="p3">15 contributions</p>
+                <p class="b1">{{ data.username }}</p>
+                <p class="p3">{{ data.userContributions }}</p>
               </div>
             </div>
             <span class="material-symbols-rounded report-btn" title="Report review">report</span>
@@ -46,7 +44,7 @@
           </div>
           <p>{{ data.comment }}</p>
         </div>
-        <p class="date p3">{{ new Date(data.date).toLocaleDateString() }}</p>
+        <p class="date p3">{{ formatDate(data.date) }}</p>
       </div>
     </Modal>
   </div>
@@ -58,6 +56,10 @@ const props = defineProps<{
   // Prop to set the maximum number of lines to display
   limit?: number
 }>()
+
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString()
+}
 
 const { isModalOpen, openModal, closeModal } = useModal()
 

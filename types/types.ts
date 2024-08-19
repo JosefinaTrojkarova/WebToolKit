@@ -125,15 +125,6 @@ export type Alternative = {
   }[];
 };
 
-export type Review = {
-  _id: string;
-  tool: string;
-  user: string;
-  comment: string;
-  rating: number;
-  date: string;
-};
-
 export type Category = {
   id: number;
   name: string;

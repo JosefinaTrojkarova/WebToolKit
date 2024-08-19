@@ -3,10 +3,10 @@
     <!-- Error state -->
     <div v-if="alternativesError">
       <p>Error: {{ alternativesError.message }}</p>
-      <button @click="retryFetch">Retry</button>
+      <button @click="handleRetryFetch">Retry</button>
     </div>
     <!-- Working state -->
-    <main v-else-if="isMounted && alternativesData">
+    <main v-else-if="isMounted && alternatives">
       <div class="main-tool">
         <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
@@ -94,18 +94,11 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
-const route = useRoute()
-const { name } = route.params
-
-const { data: alternativesData, error: alternativesError, refresh: refreshAlternatives } = useFetch(`/api/tool/${name}`, {
-  params: { alternativesOnly: 'true' },
-})
-const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(alternativesData)
+const { alternatives, mainTool, error: alternativesError, retryFetch } = useFetchAlternatives();
 
 
-const retryFetch = () => {
-  refreshAlternatives()
-  retryAlternatives()
+const handleRetryFetch = () => {
+  retryFetch()
 }
 
 const searchToolsStyle = ref(0)
