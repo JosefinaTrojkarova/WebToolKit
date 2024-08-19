@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event); // Retrieve query parameters from the event
   const isHeader = query.header === 'true'; // Determine if the header projection is needed
   const isAlternativesOnly = query.alternativesOnly === 'true'; // Determine if the alternativesOnly projection is needed
-  const isReviewsOnly = query.reviewsOnly === 'true'; // Determine if the reviewsOnly projection is needed
+  const isReviewsOnly = query.reviewsPage === 'true'; // Determine if the reviewsPage projection is needed
 
   if (!name) {
     throw createError({
@@ -28,7 +28,25 @@ export default defineEventHandler(async (event) => {
       };
     } else if (isReviewsOnly) {
       projection = {
-        _id: 1,
+        rating: {
+          stats: {
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1,
+            5: 1,
+          },
+          stars: 1,
+          reviews: 1,
+        },
+        pros: {
+          name: 1,
+          votes: 1,
+        },
+        cons: {
+          name: 1,
+          votes: 1,
+        },
       };
     } else if (isHeader) {
       projection = {

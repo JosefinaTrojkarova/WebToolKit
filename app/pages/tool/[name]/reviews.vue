@@ -142,9 +142,11 @@ onUnmounted(() => {
 const route = useRoute()
 const { name } = route.params
 
-const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
+const { data, error, refresh: retryToolData } = await useFetch<Tool>(`/api/tool/${name}`, {
+  params: { reviewsPage: 'true' },
+});
 
-const { reviews, error: reviewsError, retryFetch: retryReviews } = useFetchReviews(data?.value?._id, 3)
+const { reviews, retryFetch: retryReviews } = useFetchReviews(data?.value?._id)
 
 const retryFetch = () => {
   retryReviews()
