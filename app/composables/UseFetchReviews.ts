@@ -1,27 +1,22 @@
 // Composable function to fetch reviews
 // Used in: pages/tool/[name]/index.vue and pages/tool/[name]/reviews.vue
 
-export function useFetchReviews(
-  providedToolData?: Ref<Tool | null>,
-  initialAmount?: number
-) {
+export function useFetchReviews(toolId?: string, initialAmount?: number) {
   const reviews = ref<Review[]>([]);
   const error = ref<Error | null>(null);
-  const route = useRoute();
-  const toolName = route.params.name;
 
   const fetchReviews = async (amount = initialAmount) => {
-    let toolData: Tool | null = null;
+    if (!toolId) {
+      // Get toolName from the URL if toolId is not provided
+      const route = useRoute();
+      const toolName = route.params.name;
 
-    if (providedToolData) {
-      // Use provided tool data
-      toolData = providedToolData.value;
-    } else if (toolName) {
-      // Fetch tool data if not provided
+      // Fetch tool data if toolId is not provided
       try {
-        toolData = await $fetch<Tool>(`/api/tool/${toolName}`, {
+        const toolData = await $fetch<Tool>(`/api/tool/${toolName}`, {
           params: { reviewsOnly: 'true' },
         });
+        toolId = toolData._id;
       } catch (e) {
         console.error('Failed to fetch tool data:', e);
         error.value =
@@ -30,9 +25,9 @@ export function useFetchReviews(
       }
     }
 
-    if (toolData && toolData._id) {
+    if (toolId) {
       try {
-        const params: any = { toolId: toolData._id };
+        const params: any = { toolId };
         if (amount) {
           params.limit = amount;
         }
@@ -44,7 +39,7 @@ export function useFetchReviews(
           e instanceof Error ? e : new Error('Unknown error occurred');
       }
     } else {
-      error.value = new Error('Tool data is incomplete');
+      error.value = new Error('Tool ID is missing');
     }
   };
 

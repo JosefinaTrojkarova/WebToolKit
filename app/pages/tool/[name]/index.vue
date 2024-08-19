@@ -163,8 +163,12 @@ const route = useRoute()
 const { name } = route.params
 
 const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { alternatives, mainTool, error: alternativesError, retryFetch: retryAlternatives } = useFetchAlternatives(data);
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data, 3)
+const { alternatives, mainTool, error: alternativesError, retryFetch: retryAlternatives } = useFetchAlternatives(
+    data?.value?._id,
+    data?.value?.alternatives,
+    3
+)
+const { reviews, retryFetch: retryReviews } = useFetchReviews(data?.value?._id, 3)
 
 const retryFetch = () => {
     retryToolData()

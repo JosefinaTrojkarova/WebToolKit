@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const { mainToolId, alternativeIds } = body;
+  const { mainToolId, alternativeIds, amount } = body;
 
   // Validate input
   if (!mainToolId || !alternativeIds || !Array.isArray(alternativeIds)) {
@@ -50,10 +50,17 @@ export default defineEventHandler(async (event) => {
       { projection }
     );
 
-    // Fetch alternatives
-    const alternatives = await collection
-      .find({ _id: { $in: alternativeObjectIds } }, { projection })
-      .toArray();
+    // Fetch alternatives with optional limit (amount)
+    const alternativesQuery = collection.find(
+      { _id: { $in: alternativeObjectIds } },
+      { projection }
+    );
+
+    if (amount > 0) {
+      alternativesQuery.limit(amount);
+    }
+
+    const alternatives = await alternativesQuery.toArray();
 
     return { mainTool, alternatives };
   } catch (error) {
