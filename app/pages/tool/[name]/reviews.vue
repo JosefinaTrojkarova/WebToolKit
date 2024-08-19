@@ -4,9 +4,9 @@
       <p>Error: {{ error.message }}</p>
       <button @click="retryFetch">Retry</button>
     </div>
-    <div v-else-if="reviewsData && reviews && isMounted" class="reviews">
+    <div v-else-if="reviews && isMounted" class="reviews">
       <div class="review-cta">
-        <p>Got something to say about {{ reviewsData.name }}? Leave a review!</p>
+        <p>Got something to say about {{ reviews.name }}? Leave a review!</p>
         <button class="btn--secondary--small">Leave a Review</button>
       </div>
       <ul class="review-wrapper">
@@ -16,7 +16,7 @@
               <div class="user-info">
                 <img :src="review.userProfilePic" alt="pfp" class="user-pfp">
                 <div class="user-details">
-                  <p class="b1">{{ review.userNickname }}</p>
+                  <p class="b1">{{ review.username }}</p>
                   <p class="p3">{{ review.userContributions }} contributions</p>
                 </div>
               </div>
@@ -47,19 +47,9 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
-// Setup the route and data fetching
-const route = useRoute()
-const { name } = route.params
-
-const { data: reviewsData, error: reviewsError, refresh: refreshReviews } = useFetch(`/api/tool/${name}`, {
-  params: { reviewsOnly: 'true' },
-})
-const { reviews, retryFetch: retryReviews } = useFetchReviews(reviewsData)
-
-const error = ref(reviewsError.value || null)
+const { reviews, error, retryFetch: retryReviews } = useFetchReviews()
 
 const retryFetch = () => {
-  refreshReviews()
   retryReviews()
 }
 

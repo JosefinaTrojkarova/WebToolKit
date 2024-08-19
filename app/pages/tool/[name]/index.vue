@@ -2,7 +2,7 @@
     <NuxtLayout name="tool">
         <!-- Error state -->
         <div v-if="error">
-            <p>Error: {{ error.message }}</p>
+            <p>Error: {{ error?.message || alternativesError?.message }}</p>
             <button @click="retryFetch">Retry</button>
         </div>
         <!-- Working state -->
@@ -163,7 +163,7 @@ const route = useRoute()
 const { name } = route.params
 
 const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(data)
+const { alternatives, mainTool, error: alternativesError, retryFetch: retryAlternatives } = useFetchAlternatives(data);
 const { reviews, retryFetch: retryReviews } = useFetchReviews(data, 3)
 
 const retryFetch = () => {

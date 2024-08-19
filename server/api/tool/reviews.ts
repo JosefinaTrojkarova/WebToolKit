@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
         comment: review.comment,
         rating: review.rating,
         date: review.date.toISOString(),
-        userNickname: userData ? userData.username : 'Anonymous',
+        username: userData ? userData.username : 'Anonymous',
         userContributions: userData ? userData.contributions : '?',
         userProfilePic: userData
           ? userData.picture
