@@ -444,6 +444,8 @@ main {
       display: flex;
       flex-direction: column;
 
+      width: 100%;
+
       .reviews {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));

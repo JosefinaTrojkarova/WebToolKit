@@ -29,6 +29,21 @@
       <span class="material-symbols-rounded">sort</span>
     </button>
   </div>
+  <div v-else-if="type === 'resources'" class="search-tools"
+    :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
+    <div class="filters">
+      <li class="sources">
+        <Tags variant="resource-src" @tag-toggled="handleTagToggle" />
+      </li>
+      <li class="types">
+        <Tags variant="resource-types" @tag-toggled="handleTagToggle" />
+      </li>
+    </div>
+    <button class="sort">
+      <p class="p2">Most Relevant</p>
+      <span class="material-symbols-rounded">sort</span>
+    </button>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -122,9 +137,9 @@ onUnmounted(() => {
     content: '';
     position: absolute;
     top: -$xxl;
-    left: -2%;
+    left: -1rem;
     height: $xxl * 2 + $m;
-    width: 104%;
+    width: calc(100% + 2rem);
     background-color: $system-bg;
     z-index: -1;
   }
