@@ -1,12 +1,15 @@
 // Purpose: API endpoint to get all the data about one specific tool from the database.
 // Used in: pages/tool/[name]/index.vue
 
+// Needs a little bit more work, unfinished code
+
 export default defineEventHandler(async (event) => {
   const { name } = event.context.params as { name: string }; // get name of the tool from the URL
   const query = getQuery(event); // Retrieve query parameters from the event
   const isHeader = query.header === 'true'; // Determine if the header projection is needed
   const isAlternativesOnly = query.alternativesOnly === 'true'; // Determine if the alternativesOnly projection is needed
   const isReviewsOnly = query.reviewsPage === 'true'; // Determine if the reviewsPage projection is needed
+  const isResourcesOnly = query.resourcesOnly === 'true'; // Determine if the resourcesOnly projection is needed
 
   if (!name) {
     throw createError({
@@ -60,6 +63,14 @@ export default defineEventHandler(async (event) => {
           saves: 1,
         },
       };
+    } else if (isResourcesOnly) {
+      projection = {
+        resources: {
+          link: 1,
+          type: 1,
+          category: 1,
+        },
+      };
     } else {
       projection = {
         name: 1,
@@ -84,6 +95,7 @@ export default defineEventHandler(async (event) => {
         resources: {
           link: 1,
           type: 1,
+          category: 1,
         },
         video: 1,
         pricingLink: 1,

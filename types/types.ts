@@ -135,6 +135,12 @@ export type Review = {
   userProfilePic: string;
 };
 
+export type Resources = {
+  link: string;
+  type: string;
+  category: string;
+};
+
 export type Category = {
   id: number;
   name: string;
