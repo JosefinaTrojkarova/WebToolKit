@@ -71,6 +71,7 @@ export default defineEventHandler(async (event) => {
         rating: review.rating,
         date: review.date.toISOString(),
         username: userData ? userData.username : 'Anonymous',
+        userHandle: userData ? userData.handle : 'anonymous',
         userContributions: userData ? userData.contributions : '?',
         userProfilePic: userData
           ? userData.picture

@@ -2,8 +2,7 @@
   <div :class="`review ${clickable}`" @click="handleOpenModal">
     <div class="review-content-wrapper">
       <div class="comment-header">
-        <!-- Fix link -->
-        <NuxtLink to="/user/@payaa" class="user-info">
+        <NuxtLink :to="`/user/@${data.userHandle}`" class="user-info">
           <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
             <p class="b1">{{ data.username }}</p>
@@ -29,8 +28,7 @@
       <div class="modal">
         <div class="review-content-wrapper">
           <div class="comment-header">
-            <!-- Fix link -->
-            <NuxtLink to="/user/@payaa" class="user-info">
+            <NuxtLink :to="`/user/@${data.userHandle}`" class="user-info">
               <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
               <div class="user-details">
                 <p class="b1">{{ data.username }}</p>
