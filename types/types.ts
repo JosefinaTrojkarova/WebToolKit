@@ -125,6 +125,16 @@ export type Alternative = {
   }[];
 };
 
+export type Review = {
+  comment: string;
+  rating: number;
+  date: string;
+  username: string;
+  userHandle: string;
+  userContributions: number | string;
+  userProfilePic: string;
+};
+
 export type Category = {
   id: number;
   name: string;
