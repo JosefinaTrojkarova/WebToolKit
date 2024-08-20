@@ -11,7 +11,7 @@
         <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
       <div class="alternatives-wrapper">
-        <Filters type="alternatives" :trigger="300" />
+        <Filters type="alternatives" :trigger="360" />
         <div class="alternatives">
           <ToolCard v-for="alt in alternatives" :key="alt._id" :data="alt" />
         </div>

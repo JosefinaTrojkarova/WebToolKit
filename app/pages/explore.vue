@@ -13,29 +13,29 @@
         <div class="aside__filters">
           <div class="filter filter--categories">
             <h4 class="filter__heading">Categories</h4>
-            <ul class="filter__list">
+            <div class="filter__list">
               <Categories :categories="categories" @category-toggled="handleCategoryToggle" />
-            </ul>
+            </div>
           </div>
           <div class="filter filter--tags">
             <h4 class="filter__heading">Tags</h4>
             <div class="filter__wrapper">
               <p>Pricing</p>
-              <ul class="filter__list">
+              <div class="filter__list">
                 <Tags variant="pricing" @tag-toggled="handleTagToggle" />
-              </ul>
+              </div>
             </div>
             <div class="filter__wrapper">
               <p>Licensing</p>
-              <ul class="filter__list">
+              <div class="filter__list">
                 <Tags variant="licensing" @tag-toggled="handleTagToggle" />
-              </ul>
+              </div>
             </div>
             <div class="filter__wrapper">
               <p>Rating</p>
-              <ul class="filter__list">
+              <div class="filter__list">
                 <Tags variant="rating" @tag-toggled="handleTagToggle" />
-              </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -123,6 +123,13 @@ onMounted(() => {
         flex-direction: column;
 
         gap: $xs;
+
+        .filter__list {
+          display: flex;
+          flex-direction: column;
+
+          gap: $s;
+        }
 
         &:not(:last-child) {
           margin-bottom: $s;

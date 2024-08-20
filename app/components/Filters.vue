@@ -3,30 +3,11 @@
     :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
     <div class="filters">
       <li class="rating">
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>5</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>4</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>3</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>2</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>1</p>
-        </button>
+        <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
     <button class="sort">
-      <p>Most Relevant</p>
+      <p class="p2">Most Relevant</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
   </div>
@@ -34,58 +15,17 @@
     :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
     <div class="filters">
       <li class="pricing">
-        <button class="tag--static--pricing">
-          <span class="material-symbols-rounded">attach_money</span>
-          <p>100% Free</p>
-        </button>
-        <button class="tag--static--pricing">
-          <span class="material-symbols-rounded">attach_money</span>
-          <p>Free Version</p>
-        </button>
-        <button class="tag--static--pricing">
-          <span class="material-symbols-rounded">attach_money</span>
-          <p>Free Trial</p>
-        </button>
-        <button class="tag--static--pricing">
-          <span class="material-symbols-rounded">attach_money</span>
-          <p>Paid</p>
-        </button>
+        <Tags variant="pricing" @tag-toggled="handleTagToggle" />
       </li>
       <li class="licensing">
-        <button class="tag--static--licensing">
-          <span class="material-symbols-rounded">license</span>
-          <p>Open Source</p>
-        </button>
-        <button class="tag--static--licensing">
-          <span class="material-symbols-rounded">license</span>
-          <p>Proprietary</p>
-        </button>
+        <Tags variant="licensing" @tag-toggled="handleTagToggle" />
       </li>
       <li class="rating">
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>5</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>4</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>3</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>2</p>
-        </button>
-        <button class="tag--static--rating">
-          <span class="material-symbols-rounded">star</span>
-          <p>1</p>
-        </button>
+        <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
     <button class="sort">
-      <p>Most Popular</p>
+      <p class="p2">Most Popular</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
   </div>
@@ -104,6 +44,11 @@ const props = defineProps({
     required: true
   }
 })
+
+/* Temporary placeholder */
+const handleTagToggle = (tag: Tag) => {
+  console.log(tag)
+}
 
 const searchToolsStyle = ref(0)
 
@@ -144,7 +89,7 @@ onUnmounted(() => {
     flex-direction: row;
     align-items: center;
 
-    gap: $m;
+    gap: $l;
 
     li {
       display: flex;

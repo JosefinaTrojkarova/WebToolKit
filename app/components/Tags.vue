@@ -1,11 +1,13 @@
 <template>
-    <div class="tag-selector">
-        <label v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
-            :class="['tag', variant, { active: tag.active }]">
-            <span class="material-symbols-rounded tag-icon">{{ iconName }}</span>
-            <p class="p2">{{ tag.name }}</p>
-        </label>
-    </div>
+    <!-- 
+        Having more than one element in the template is the best solution here in terms of practicality 
+        but I'm not sure if it won't cause some problems down the line. The Vue docs don't recommend it.
+    -->
+    <label v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
+        :class="['tag', variant, { active: tag.active }]">
+        <span class="material-symbols-rounded tag-icon">{{ iconName }}</span>
+        <p class="p2">{{ tag.name }}</p>
+    </label>
 </template>
 
 <script setup lang="ts">
@@ -65,14 +67,6 @@ const iconName = computed(() => {
 
 
 <style lang="scss" scoped>
-.tag-selector {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: $s;
-}
-
 .tag {
     position: relative;
     display: flex;
@@ -216,7 +210,7 @@ const iconName = computed(() => {
     }
 
     &:hover {
-        opacity: 70%;
+        opacity: 85%;
     }
 }
 </style>
