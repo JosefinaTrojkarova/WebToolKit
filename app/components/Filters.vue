@@ -6,10 +6,15 @@
         <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <button class="sort">
+    <button class="sort" @click="openDropdown(0)">
       <p class="p2">Most Relevant</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
+    <Dropdown :open="isDropdownOpen" :id="0" @close="closeDropdown">
+      <p class="dropdown--item">Most Relevant</p>
+      <p class="dropdown--item">Most Recent</p>
+      <p class="dropdown--item">Most Helpful</p>
+    </Dropdown>
   </div>
   <div v-else-if="type === 'alternatives'" class="search-tools"
     :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
@@ -24,10 +29,15 @@
         <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <button class="sort">
+    <button class="sort" @click="openDropdown(1)">
       <p class="p2">Most Popular</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
+    <Dropdown :open="isDropdownOpen" :id="1" @close="closeDropdown">
+      <p class="dropdown--item">Most Popular</p>
+      <p class="dropdown--item">Most Recent</p>
+      <p class="dropdown--item">Most Helpful</p>
+    </Dropdown>
   </div>
   <div v-else-if="type === 'resources'" class="search-tools"
     :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
@@ -39,10 +49,15 @@
         <Tags variant="resource-types" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <button class="sort">
+    <button class="sort" @click="openDropdown(2)">
       <p class="p2">Most Relevant</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
+    <Dropdown :open="isDropdownOpen" :id="2" @close="closeDropdown">
+      <p class="dropdown--item">Most Relevant</p>
+      <p class="dropdown--item">Most Recent</p>
+      <p class="dropdown--item">Most Helpful</p>
+    </Dropdown>
   </div>
 </template>
 
@@ -59,6 +74,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0, 1, 2])
 
 /* Temporary placeholder */
 const handleTagToggle = (tag: Tag) => {

@@ -619,3 +619,21 @@ p {
   color: $primary-400;
   line-height: 140%;
 }
+
+.dropdown--item {
+  padding: $m $l;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: background-color 0.1s ease-out;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $primary-200;
+  }
+
+  &:hover {
+    background-color: $primary-100;
+  }
+}
