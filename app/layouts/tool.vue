@@ -17,8 +17,23 @@
         <div class="buttons">
           <NuxtLink class="btn--primary--large web-btn" :to="headerData.website" target="_blank">Visit Website <span
               class="material-symbols-rounded">captive_portal</span></NuxtLink>
-          <button class="btn--secondary--large--icon dropdown-btn">Contribute <span
-              class="material-symbols-rounded">keyboard_arrow_down</span></button>
+          <button class="btn--secondary--large--icon dropdown-btn" @click="openDropdown(0)">Contribute <span
+              class="material-symbols-rounded">keyboard_arrow_down</span>
+            <Dropdown :open="isDropdownOpen" :id="0" @close="closeDropdown" class="dropdown">
+              <button class="dropdown--item">
+                <p>Edit page</p>
+                <span class="material-symbols-rounded">edit</span>
+              </button>
+              <button class="dropdown--item">
+                <p>Add a tool</p>
+                <span class="material-symbols-rounded">add</span>
+              </button>
+              <button class="dropdown--item">
+                <p>Report page</p>
+                <span class="material-symbols-rounded">warning</span>
+              </button>
+            </Dropdown>
+          </button>
           <button class="save" @click="toggleActive" :class="{ active: isActive }" title="Save to list">
             <span class="material-symbols-rounded">bookmark</span>
           </button>
@@ -36,6 +51,7 @@
 <script lang="ts" setup>
 const route = useRoute()
 const { headerData, fetchHeaderData } = useFetchHeaderData()
+const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0])
 
 const links = [
   { name: 'Overview', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}` },
@@ -224,6 +240,30 @@ header {
         &:hover {
           span {
             animation: dropAndWiggle 0.5s ease;
+          }
+        }
+
+        .dropdown {
+          box-sizing: border-box;
+          top: 3.7rem;
+          right: 0;
+
+          width: 100%;
+
+          button {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            width: 100%;
+
+            span {
+              color: $primary-400;
+              font-size: 1.5rem;
+              font-variation-settings: 'opsz' 32, 'wght' 400, 'FILL' 0, 'GRAD' 100;
+              animation: none;
+            }
           }
         }
       }

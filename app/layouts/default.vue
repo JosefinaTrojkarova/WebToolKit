@@ -86,7 +86,7 @@
                 </div>
             </div>
         </footer>
-        <button @click="scrollToTop" class="scroll-top-button" :style="showButton()">
+        <button @click="scrollToTop" class="scroll-top-button" :class="showButton()">
             <span class="material-symbols-rounded">keyboard_arrow_up</span>
         </button>
     </div>
@@ -94,17 +94,24 @@
 
 <script setup lang="ts">
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
-const showScrollTopButton = ref(false)
+const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 
 const checkScroll = () => {
-    showScrollTopButton.value = window.scrollY > 300
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1) {
+        showScrollTopButton.value = 'bottom'
+    } else {
+        showScrollTopButton.value = window.scrollY > 300 ? 'true' : 'false'
+    }
 }
 
 const showButton = () => {
-    if (showScrollTopButton.value) {
-        return "visibility: visible; transform: translateY(0) scale(1);"
-    } else {
-        return "visibility: hidden; transform: translateY(6rem) scale(0.5);"
+    switch (showScrollTopButton.value) {
+        case 'true':
+            return "visible"
+        case 'bottom':
+            return "bottom"
+        case 'false':
+            return "hidden"
     }
 }
 
@@ -170,7 +177,7 @@ const { isModalOpen, openModal, closeModal } = useModal()
     justify-content: space-between;
     padding: $xxl;
     margin-top: $xxl;
-    margin-bottom: 50px;
+    margin-bottom: 5rem;
     border-top: 1px solid $primary-100;
 
     // Left
@@ -235,7 +242,7 @@ const { isModalOpen, openModal, closeModal } = useModal()
     box-shadow: $shadow-500;
 
     border: none;
-    border-radius: 50%;
+    border-radius: 5rem;
 
     width: 3.5rem;
     height: 3.5rem;
@@ -243,10 +250,11 @@ const { isModalOpen, openModal, closeModal } = useModal()
     color: white;
     cursor: pointer;
 
-    transition: transform 0.3s ease-out, visibility 0.3s ease-out;
+    transition: transform 0.3s ease-out, visibility 0.3s ease-out, width 0.3s ease-out, border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
     z-index: 999;
 
     .material-symbols-rounded {
+        transition: transform 0.3s ease-out;
         font-size: 2rem;
     }
 
@@ -255,7 +263,6 @@ const { isModalOpen, openModal, closeModal } = useModal()
             animation: jumpAndWiggle 0.5s ease;
         }
     }
-
 
     @keyframes jumpAndWiggle {
         0% {
@@ -277,6 +284,84 @@ const { isModalOpen, openModal, closeModal } = useModal()
         100% {
             transform: translateY(0) rotate(0deg);
         }
+    }
+
+    &::after {
+        content: 'Back to top';
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        top: 0;
+        left: 2rem;
+        bottom: 0;
+
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        text-wrap: nowrap;
+
+        opacity: 0;
+        scale: 0;
+        transition: opacity 0.2s ease-out, scale 0.2s ease-out;
+    }
+}
+
+.hidden {
+    visibility: hidden;
+    transform: translateY(6rem) scale(0.5);
+}
+
+.visible {
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.bottom {
+    visibility: visible;
+
+    width: 11rem;
+    border-radius: 5rem;
+
+    box-shadow: none;
+
+    .material-symbols-rounded {
+        transform: translateX(3.7rem);
+    }
+
+    &:hover {
+        .material-symbols-rounded {
+            animation: jumpAndWiggleBottom 0.5s ease;
+        }
+    }
+
+    @keyframes jumpAndWiggleBottom {
+        0% {
+            transform: translateX(3.7rem) translateY(0) rotate(0deg);
+        }
+
+        25% {
+            transform: translateX(3.7rem) translateY(-5px) rotate(-5deg);
+        }
+
+        50% {
+            transform: translateX(3.7rem) translateY(-7px) rotate(5deg);
+        }
+
+        75% {
+            transform: translateX(3.7rem) translateY(-5px) rotate(-5deg);
+        }
+
+        100% {
+            transform: translateX(3.7rem) translateY(0) rotate(0deg);
+        }
+    }
+
+    &::after {
+        opacity: 1;
+        scale: 1;
+        transition: opacity 0.2s ease-out 0.1s, scale 0.2s ease-out 0.1s;
     }
 }
 </style>
