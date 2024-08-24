@@ -3,16 +3,24 @@
     <div class="layout">
         <header class="layout__header">
             <nav class="layout__nav">
-                <NuxtLink class="nav__logo" to="/">WebToolKit</NuxtLink>
+                <NuxtLink class="nav__logo" to="/">
+                    <span class="material-symbols-rounded">category_search</span>
+                </NuxtLink>
                 <ul class="nav__list">
                     <li class="item nav__item">
-                        <NuxtLink class="link item__link" to="/explore">Explore</NuxtLink>
+                        <NuxtLink class="link item__link" to="/explore">
+                            <p>Explore</p>
+                        </NuxtLink>
                     </li>
                     <li class="item nav__item">
-                        <NuxtLink class="link item__link" to="/quiz">Quiz</NuxtLink>
+                        <NuxtLink class="link item__link" to="/quiz">
+                            <p>Quiz</p>
+                        </NuxtLink>
                     </li>
                     <li class="item nav__item">
-                        <NuxtLink class="link item__link" to="/wiki">Wiki</NuxtLink>
+                        <NuxtLink class="link item__link" to="/wiki">
+                            <p>Wiki</p>
+                        </NuxtLink>
                     </li>
                 </ul>
                 <div class="nav__btns btns">
@@ -80,9 +88,15 @@
                 <p class="footer__text b1">2024 &copy; WebToolKit s.r.o.</p>
                 <p class="footer__text--gray">Made by web-devs for web-devs.</p>
                 <div class="footer__icons">
-                    <i class="footer__icon">ikona</i>
-                    <i class="footer__icon">ikona</i>
-                    <i class="footer__icon">ikona</i>
+                    <NuxtLink to="https://instagram.com" class="footer__icon">
+                        <span class="material-symbols-rounded">domino_mask</span>
+                    </NuxtLink>
+                    <NuxtLink to="https://twitter.com" class="footer__icon">
+                        <span class="material-symbols-rounded">flutter</span>
+                    </NuxtLink>
+                    <NuxtLink to="https://facebook.com" class="footer__icon">
+                        <span class="material-symbols-rounded">diamond</span>
+                    </NuxtLink>
                 </div>
             </div>
         </footer>
@@ -156,6 +170,18 @@ const { isModalOpen, openModal, closeModal } = useModal()
     gap: $xl;
     padding: $xxl;
     border-bottom: 1px solid $primary-100;
+
+    .nav__logo {
+        display: flex;
+        align-items: center;
+        gap: $m;
+
+        span {
+            color: $primary-400;
+            font-size: 2rem;
+            font-variation-settings: 'opsz' 32, 'wght' 500, 'FILL' 0, 'GRAD' 100;
+        }
+    }
 }
 
 .nav__list {
@@ -225,6 +251,11 @@ const { isModalOpen, openModal, closeModal } = useModal()
                 width: 45px;
                 border-radius: 50%;
                 background-color: $primary-400;
+
+                span {
+                    font-size: 1.5rem;
+                    font-variation-settings: 'opsz' 20, 'wght' 300, 'FILL' 0, 'GRAD' 100;
+                }
             }
         }
     }
