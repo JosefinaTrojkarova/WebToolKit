@@ -39,7 +39,7 @@
             <slot />
         </main>
 
-        <footer class="layout__footer">
+        <footer v-if="name !== 'index'" class="layout__footer">
             <div class="footer__links">
                 <div class="links">
                     <p class="links__title b1">Use cases</p>
@@ -100,7 +100,7 @@
                 </div>
             </div>
         </footer>
-        <button @click="scrollToTop" class="scroll-top-button" :class="showButton()">
+        <button v-if="name !== 'index'" @click="scrollToTop" class="scroll-top-button" :class="showButton()">
             <span class="material-symbols-rounded">keyboard_arrow_up</span>
         </button>
     </div>
@@ -108,6 +108,8 @@
 
 <script setup lang="ts">
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
+const { name } = useRoute()
+
 const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 
 const checkScroll = () => {
