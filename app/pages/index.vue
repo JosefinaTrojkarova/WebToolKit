@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { render } from 'vue';
+import { render, h } from 'vue';
 import Matter from 'matter-js'
 import ToolCard from '~/components/ToolCard.vue'
 
@@ -30,11 +30,14 @@ const initMatter = () => {
   const Composite = Matter.Composite
 
   const engine = Engine.create({
+    positionIterations: 20,
+    velocityIterations: 20,
     gravity: {
       x: 0,
-      y: 3
+      y: 0
     }
   })
+
   const matterRender = Render.create({
     element: matterContainer.value,
     engine: engine,
@@ -46,63 +49,75 @@ const initMatter = () => {
     }
   })
 
-  const toolCards = filteredTools.value.slice(0, 5).map((data) => {
+  const toolCards = [...filteredTools.value, ...filteredTools.value].map((data) => {
     const x = Math.random() * containerWidth;
-    const y = Math.random() * containerHeight; // Ensure they start within the top half of the screen
-    const width = 500;
-    const height = 256;
-
-    const body = Bodies.rectangle(x, y, width, height, {
-      frictionAir: 0.001,
-      friction: 0.3,
-      restitution: 0.5,
-      render: { visible: false },
-      chamfer: { radius: 10 },
-    })
+    const y = Math.random() * containerHeight;
 
     const vNode = h(ToolCard, {
       data,
       alt: 'homepage',
+      hover: false,
       style: {
         position: 'absolute',
-        width: `${width}px`,
-        height: `${height}px`,
-        transform: `translate(-50%, -50%)`,
+        width: 'fit-content',
+        height: 'fit-content',
       }
-    })
+    });
 
-    const container = document.createElement('div')
-    render(vNode, container)
-    matterContainer.value!.appendChild(container)
+    const container = document.createElement('div');
+    container.style.display = 'inline-block';
+    container.style.position = 'absolute';
+    container.style.zIndex = '-1';
+
+    render(vNode, container);
+    matterContainer.value!.appendChild(container);
+
+    const toolCardElement = container.firstElementChild || container;
+    const actualWidth = toolCardElement.getBoundingClientRect().width;
+    const actualHeight = toolCardElement.getBoundingClientRect().height;
+    container.style.width = `${actualWidth}px`;
+    container.style.height = `${actualHeight}px`;
+
+    const body = Bodies.rectangle(x, y, actualWidth, actualHeight, {
+      frictionAir: 0.001,
+      friction: 1,
+      restitution: 1.25,
+      render: { visible: false },
+      chamfer: { radius: 10 },
+    });
 
     Matter.Events.on(engine, 'afterUpdate', () => {
-      container.style.position = 'absolute'
-      container.style.pointerEvents = 'none';
-      container.style.left = `${body.position.x}px`
-      container.style.top = `${body.position.y}px`
-      container.style.transform = `translate(-50%, -50%) rotate(${body.angle}rad)`
-    })
+      container.style.left = `${body.position.x}px`;
+      container.style.top = `${body.position.y}px`;
+      container.style.transform = `translate(-50%, -50%) rotate(${body.angle}rad)`;
+    });
 
-    return body
-  })
+    return body;
+  });
 
-  Composite.add(engine.world, toolCards)
+  Composite.add(engine.world, toolCards);
 
-  // Adjust walls dynamically
-  const wallOptions = { isStatic: true, render: { visible: false }, friction: 0.3 }
+  const wallOptions = { isStatic: true, render: { visible: false }, friction: 1 }
+
   const ground = Bodies.rectangle(containerWidth / 2, containerHeight + 30, containerWidth + 100, 60, wallOptions)
   const leftWall = Bodies.rectangle(-30, containerHeight / 2, 60, containerHeight * 5, wallOptions)
   const rightWall = Bodies.rectangle(containerWidth + 30, containerHeight / 2, 60, containerHeight * 500, wallOptions)
-  const circle = Bodies.circle(Math.random() * containerWidth, Math.random() * containerHeight / 2, 60, { friction: 0.3, restitution: 0.8 })
-  const triangle = Bodies.polygon(Math.random() * containerWidth, Math.random() * containerHeight / 2, 3, 60, { friction: 0.3, restitution: 0.8 })
+  const ceiling = Bodies.rectangle(containerWidth / 2, -30, containerWidth + 100, 60, wallOptions)
 
-  Composite.add(engine.world, [ground, leftWall, rightWall, circle, triangle])
+  /* for (let i = 0; i < 5; i++) {
+      const circle = Bodies.circle(Math.random() * containerWidth, Math.random() * containerHeight / 2, 60, { friction: 1, restitution: 0.8 })
+      const triangle = Bodies.polygon(Math.random() * containerWidth, Math.random() * containerHeight / 2, 5, 60, { friction: 1, restitution: 0.8 })
+  
+      Composite.add(engine.world, [circle, triangle])
+    } */
+
+  Composite.add(engine.world, [ground, leftWall, rightWall, ceiling])
 
   const mouse = Matter.Mouse.create(matterRender.canvas)
   const mouseConstraint = Matter.MouseConstraint.create(engine, {
     mouse: mouse,
     constraint: {
-      stiffness: 0.2,
+      stiffness: 1,
       render: { visible: false }
     }
   })
@@ -144,7 +159,6 @@ body {
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 1;
   overflow: hidden;
 }
 </style>

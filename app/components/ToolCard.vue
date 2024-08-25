@@ -1,5 +1,5 @@
 <template>
-  <div v-if="alt === 'homepage'" class="explore homepage-card">
+  <div v-if="alt === 'homepage'" class="explore" id="homepage-card">
     <div class="heading">
       <img class="logo" :src="data.logo" :alt="data.name">
       <div class="content-wrapper">
@@ -416,10 +416,34 @@ const sortAndLimitItems = (items: Opinion[]) => {
   }
 }
 
-.homepage-card {
+#homepage-card {
   box-sizing: border-box;
-  width: 100%;
-  height: 100%;
+  user-select: none;
+  width: fit-content;
+  height: fit-content;
+
+  .heading {
+    .logo {
+      min-width: 10rem;
+      min-height: 10rem;
+    }
+
+    .content-wrapper {
+      display: none;
+    }
+
+    .select {
+      display: none;
+    }
+  }
+
+  .main {
+    display: none;
+  }
+
+  .categories {
+    display: none;
+  }
 }
 
 .explore {
