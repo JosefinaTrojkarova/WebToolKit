@@ -34,9 +34,17 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+// DATA
 const { alternatives, mainTool, error: alternativesError, retryFetch } = useFetchAlternatives();
 
-const { handleFilterToggle, filteredAlternatives } = useFilters(alternatives);
+// FILTER
+const filterConfig: any = {
+  categories: (alt: Alternative, selected: string[]) => selected.some((cat: Category) => alt.categories.includes(cat)),
+  pricing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.pricing),
+  licensing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.licensing),
+  rating: (alt: Alternative, selected: number[]) => selected.some((rating: number) => Math.abs(alt.rating.stars - rating) <= 0.5),
+};
+const { handleFilterToggle, filteredItems: filteredAlternatives } = useFilters(alternatives, filterConfig);
 
 
 const handleRetryFetch = () => {

@@ -106,11 +106,15 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+// DATA
 const { reviews, toolData, error: reviewsError, retryFetch: retryReviews } = useFetchReviews()
 
-// State to manage selected ratings
-const { handleFilterToggle, filteredReviews } = useFilters(reviews);
-// END OF FILTER ----------
+// FILTER
+const filterConfig: any = {
+  rating: (review: Review, selected: number[]) => selected.some((rating: number) => Math.abs(review.rating - rating) <= 0.5),
+};
+const { handleFilterToggle, filteredItems: filteredReviews } = useFilters(reviews, filterConfig);
+
 
 const retryFetch = () => {
   retryReviews()

@@ -1,67 +1,49 @@
-// UNFINISHED COMPOSABLE FUNCTION FOR FILTERS!!!!!! - not working on reviews page yet
+// Composable function fro categories and tags on tool side pages
+// Used in: pages/tool/[name]/reviews.vue and pages/tool/[name]/alternatives.vue
 
-export function useFilters(alternatives: Ref<any[]>) {
+export function useFilters(items: Ref<any[]>, filterConfig: any) {
   // State to manage selected filters
-  const selectedFilters = ref<Record<string, any>>({
-    categories: [],
-    pricing: [],
-    licensing: [],
-    rating: [] as number[], // Rating is an array of numbers
+  const selectedFilters = ref<Record<string, any>>({});
+
+  // Initialize selectedFilters based on filterConfig
+  Object.keys(filterConfig).forEach((key) => {
+    selectedFilters.value[key] = [];
   });
 
   // Function to handle filter toggle
   const handleFilterToggle = (filter: { type: string; value: any }) => {
     const { type, value } = filter;
 
-    if (type === 'rating') {
-      const index = selectedFilters.value.rating.indexOf(value);
-      if (index === -1) {
-        selectedFilters.value.rating.push(value);
-      } else {
-        selectedFilters.value.rating.splice(index, 1);
-      }
-    } else if (['categories', 'pricing', 'licensing'].includes(type)) {
-      if (!Array.isArray(selectedFilters.value[type])) {
-        selectedFilters.value[type] = [];
-      }
-      const index = selectedFilters.value[type].indexOf(value);
-      if (index === -1) {
-        selectedFilters.value[type].push(value);
-      } else {
-        selectedFilters.value[type].splice(index, 1);
-      }
+    if (!Array.isArray(selectedFilters.value[type])) {
+      selectedFilters.value[type] = [];
+    }
+
+    const index = selectedFilters.value[type].indexOf(value);
+    if (index === -1) {
+      selectedFilters.value[type].push(value);
+    } else {
+      selectedFilters.value[type].splice(index, 1);
     }
   };
 
-  // Computed property to filter the alternatives based on selected filters
-  const filteredAlternatives = computed(() => {
-    return alternatives.value.filter((alternative: Alternative) => {
-      const isRatingMatch =
-        selectedFilters.value.rating.length === 0 ||
-        selectedFilters.value.rating.some(
-          (selectedRating: number) =>
-            Math.abs(alternative.rating.stars - selectedRating) <= 0.5
-        );
-
-      return (
-        (selectedFilters.value.categories.length === 0 ||
-          selectedFilters.value.categories.some((cat: any) =>
-            alternative.categories.includes(cat)
-          )) &&
-        (selectedFilters.value.pricing.length === 0 ||
-          selectedFilters.value.pricing.includes(alternative.tags.pricing)) &&
-        (selectedFilters.value.licensing.length === 0 ||
-          selectedFilters.value.licensing.includes(
-            alternative.tags.licensing
-          )) &&
-        isRatingMatch
-      );
+  // Computed property to filter the items based on selected filters
+  const filteredItems = computed(() => {
+    return items.value.filter((item: any) => {
+      return Object.keys(filterConfig).every((filterType) => {
+        if (selectedFilters.value[filterType].length === 0) return true;
+        const filterFunction = filterConfig[filterType];
+        if (filterFunction) {
+          return filterFunction(item, selectedFilters.value[filterType]);
+        } else {
+          return true;
+        }
+      });
     });
   });
 
   // Return the reactive properties and methods for use in components
   return {
     handleFilterToggle,
-    filteredAlternatives,
+    filteredItems,
   };
 }
