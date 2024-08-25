@@ -5,36 +5,38 @@
     </header>
     <main class="explore__main">
       <aside class="aside">
-        <label class="search-container" for="search-field">
-          <span class="search-icon material-symbols-rounded">search</span>
-          <input id="search-field" class="field--search aside__search" v-model="searchQuery" type="text"
-            placeholder="Search for tools" />
-        </label>
-        <div class="aside__filters">
-          <div class="filter filter--categories">
-            <h4 class="filter__heading">Categories</h4>
-            <div class="filter__list">
-              <Categories :categories="categories" @category-toggled="handleCategoryToggle" />
-            </div>
-          </div>
-          <div class="filter filter--tags">
-            <h4 class="filter__heading">Tags</h4>
-            <div class="filter__wrapper">
-              <p>Pricing</p>
+        <div class="aside-wrapper">
+          <label class="search-container" for="search-field">
+            <span class="search-icon material-symbols-rounded">search</span>
+            <input id="search-field" class="field--search aside__search" v-model="searchQuery" type="text"
+              placeholder="Search for tools" />
+          </label>
+          <div class="aside__filters">
+            <div class="filter filter--categories">
+              <h4 class="filter__heading">Categories</h4>
               <div class="filter__list">
-                <Tags variant="pricing" @tag-toggled="handleTagToggle" />
+                <Categories :categories="categories" @category-toggled="handleCategoryToggle" />
               </div>
             </div>
-            <div class="filter__wrapper">
-              <p>Licensing</p>
-              <div class="filter__list">
-                <Tags variant="licensing" @tag-toggled="handleTagToggle" />
+            <div class="filter filter--tags">
+              <h4 class="filter__heading">Tags</h4>
+              <div class="filter__wrapper">
+                <p>Pricing</p>
+                <div class="filter__list">
+                  <Tags variant="pricing" @tag-toggled="handleTagToggle" />
+                </div>
               </div>
-            </div>
-            <div class="filter__wrapper">
-              <p>Rating</p>
-              <div class="filter__list">
-                <Tags variant="rating" @tag-toggled="handleTagToggle" />
+              <div class="filter__wrapper">
+                <p>Licensing</p>
+                <div class="filter__list">
+                  <Tags variant="licensing" @tag-toggled="handleTagToggle" />
+                </div>
+              </div>
+              <div class="filter__wrapper">
+                <p>Rating</p>
+                <div class="filter__list">
+                  <Tags variant="rating" @tag-toggled="handleTagToggle" />
+                </div>
               </div>
             </div>
           </div>
@@ -69,6 +71,17 @@ const {
   filteredTools
 } = useExplore()
 
+// Reset scroll position when filters change
+watch(
+  () => filteredTools,
+  () => {
+    if (window.scrollY > 200) {
+      window.scrollTo({ top: 200 })
+    }
+  },
+  { deep: true, immediate: false }
+)
+
 // Fetch categories on component mount
 onMounted(() => {
   refreshCategories()
@@ -88,6 +101,7 @@ onMounted(() => {
 
 .explore__main {
   display: flex;
+
   gap: $xxl;
 }
 
@@ -100,39 +114,51 @@ onMounted(() => {
 
   gap: $m;
 
-  .aside__filters {
+  .aside-wrapper {
+    position: sticky;
     display: flex;
+    flex-direction: column;
+
+    top: $xxl;
+
+    width: 100%;
 
     gap: $m;
 
-    .filter {
+    .aside__filters {
       display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
 
-      width: 50%;
+      gap: $m;
 
-      gap: $s;
-      padding: $xl;
-
-      border: 1px solid $primary-200;
-      border-radius: $m;
-
-      .filter__wrapper {
+      .filter {
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
 
-        gap: $xs;
+        width: 50%;
 
-        .filter__list {
+        gap: $s;
+        padding: $xl;
+
+        border: 1px solid $primary-200;
+        border-radius: $m;
+
+        .filter__wrapper {
           display: flex;
           flex-direction: column;
 
-          gap: $s;
-        }
+          gap: $xs;
 
-        &:not(:last-child) {
-          margin-bottom: $s;
+          .filter__list {
+            display: flex;
+            flex-direction: column;
+
+            gap: $s;
+          }
+
+          &:not(:last-child) {
+            margin-bottom: $s;
+          }
         }
       }
     }
