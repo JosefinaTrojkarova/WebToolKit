@@ -1,11 +1,11 @@
 <template>
   <NuxtLayout name="tool">
     <!-- Error state -->
-    <div v-if="error">
-      <p>Error: {{ error.message }}</p>
+    <div v-if="reviewsError">
+      <p>Error: {{ reviewsError.message }}</p>
       <button @click="retryFetch">Retry</button>
     </div>
-    <main v-else-if="reviews && isMounted" class="reviews">
+    <main v-else-if="reviews && toolData && isMounted" class="reviews">
       <div class="review-cta">
         <p>Got something to say about {{ reviews.name }}? Leave a review!</p>
         <button class="btn--secondary--small">Leave a Review</button>
@@ -14,18 +14,18 @@
         <div class="info">
           <div class="rating">
             <div class="stats">
-              <div v-for="(count, rating) in data.rating.stats" :key="rating" class="rating-row">
+              <div v-for="(count, rating) in toolData.rating.stats" :key="rating" class="rating-row">
                 <p class="label">{{ getLabelForRating(rating) }}</p>
                 <div class="bar-background">
-                  <div class="bar" :style="{ width: calculateBarWidth(count, data.rating.reviews) }"></div>
+                  <div class="bar" :style="{ width: calculateBarWidth(count, toolData.rating.reviews) }"></div>
                 </div>
                 <p class="count">{{ count }}</p>
               </div>
             </div>
             <div class="stars">
-              <h1>{{ data.rating.stars.toFixed(1) }}</h1>
-              <Stars :rating="data.rating.stars" />
-              <p>{{ data.rating.reviews }} reviews</p>
+              <h1>{{ toolData.rating.stars.toFixed(1) }}</h1>
+              <Stars :rating="toolData.rating.stars" />
+              <p>{{ toolData.rating.reviews }} reviews</p>
             </div>
           </div>
           <div class="tutorial">
@@ -42,7 +42,7 @@
               <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
               </p>
               <div class="pros-content">
-                <div v-for="(pro) in sortItems(data.pros)" class="opinion-row">
+                <div v-for="(pro) in sortItems(toolData.pros)" class="opinion-row">
                   <p>{{ pro.name }}</p>
                   <div class="votes-wrapper">
                     <span class="material-symbols-rounded upvote">shift</span>
@@ -61,7 +61,7 @@
               <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
               </p>
               <div class="cons-content">
-                <div v-for="(con) in sortItems(data.cons)" class="opinion-row">
+                <div v-for="(con) in sortItems(toolData.cons)" class="opinion-row">
                   <p>{{ con.name }}</p>
                   <div class="votes-wrapper">
                     <span class="material-symbols-rounded upvote">shift</span>
@@ -79,12 +79,12 @@
           </div>
         </div>
         <div class="reviews-wrapper">
-          <Filters type="reviews" :trigger="490" />
+          <Filters type="reviews" :trigger="490" @filter-toggled="handleFilterToggle" />
           <div class="reviews">
             <div v-if="reviews.length === 0" class="no-reviews">
               <p>No reviews yet :(</p>
             </div>
-            <Review v-else v-for="review in reviews" :data="review" :key="review.date" class="review"></Review>
+            <Review v-else v-for="review in filteredReviews" :data="review" :key="review.date" class="review"></Review>
           </div>
         </div>
       </div>
@@ -106,19 +106,14 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+const { reviews, toolData, error: reviewsError, retryFetch: retryReviews } = useFetchReviews()
 
-const route = useRoute()
-const { name } = route.params
-
-const { data, error, refresh: retryToolData } = await useFetch<Tool>(`/api/tool/${name}`, {
-  params: { reviewsPage: 'true' },
-});
-
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data?.value?._id)
+// State to manage selected ratings
+const { handleFilterToggle, filteredReviews } = useFilters(reviews);
+// END OF FILTER ----------
 
 const retryFetch = () => {
   retryReviews()
-  retryToolData()
 }
 
 const getLabelForRating = (rating: number) => {

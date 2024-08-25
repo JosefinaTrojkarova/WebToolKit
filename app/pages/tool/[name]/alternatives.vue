@@ -11,9 +11,9 @@
         <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
       <div class="alternatives-wrapper">
-        <Filters type="alternatives" :trigger="360" />
+        <Filters type="alternatives" :trigger="360" @filter-toggled="handleFilterToggle" />
         <div class="alternatives">
-          <ToolCard v-for="alt in alternatives" :key="alt._id" :data="alt" />
+          <ToolCard v-for="alt in filteredAlternatives" :key="alt._id" :data="alt" />
         </div>
       </div>
     </main>
@@ -35,6 +35,8 @@ onUnmounted(() => {
 })
 
 const { alternatives, mainTool, error: alternativesError, retryFetch } = useFetchAlternatives();
+
+const { handleFilterToggle, filteredAlternatives } = useFilters(alternatives);
 
 
 const handleRetryFetch = () => {

@@ -135,6 +135,28 @@ export type Review = {
   userProfilePic: string;
 };
 
+export type ReviewPage = {
+  rating: {
+    stats: {
+      1: number;
+      2: number;
+      3: number;
+      4: number;
+      5: number;
+    };
+    stars: number;
+    reviews: number;
+  };
+  pros: {
+    name: string;
+    votes: number;
+  }[];
+  cons: {
+    name: string;
+    votes: number;
+  }[];
+};
+
 export type Resources = {
   link: string;
   type: string;

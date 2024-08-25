@@ -15,6 +15,7 @@ export default defineNuxtModule({
       'Tag',
       'User',
       'ToolSuggestion',
+      'ReviewPage',
     ];
 
     types.forEach((type) => {

@@ -77,10 +77,11 @@ const props = defineProps({
 
 const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0, 1, 2])
 
-/* Temporary placeholder */
-const handleTagToggle = (tag: Tag) => {
-  console.log(tag)
-}
+const emit = defineEmits(['filter-toggled']);
+
+const handleTagToggle = (filter: Tag) => {
+  emit('filter-toggled', { type: filter.variant, value: filter.tag.name });
+};
 
 const searchToolsStyle = ref(0)
 
