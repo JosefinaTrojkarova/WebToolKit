@@ -1,9 +1,16 @@
 <template>
   <main>
-    <h1>Hello, welcome to WebToolKit!</h1>
-    <NuxtLink to="/explore">Explore the catalogue</NuxtLink>
-    <p>Unsure what to use? Use our state-of-the-art system to find the best tools for your project.</p>
-    <NuxtLink to="/form">Find the best tools for my project</NuxtLink>
+    <div class="heading">
+      <h1>Find the <span class="orange">best</span> tools</h1>
+      <h1>for your <span class="material-symbols-rounded" @click="startSlowdownEffect(engine)()">language</span>web-dev
+        projects
+      </h1>
+    </div>
+    <div class="buttons">
+      <NuxtLink to="/explore" class="btn--primary--large">Explore</NuxtLink>
+      <p>or</p>
+      <NuxtLink to="/quiz" class="btn--secondary--large">Quiz</NuxtLink>
+    </div>
     <Teleport to="body">
       <div ref="matterContainer" id="matter"></div>
     </Teleport>
@@ -11,14 +18,19 @@
 </template>
 
 <script setup lang="ts">
-import { render, h } from 'vue';
-import Matter from 'matter-js'
+import { render } from 'vue';
+import Matter, { Engine } from 'matter-js'
 import ToolCard from '~/components/ToolCard.vue'
 
 const matterContainer = ref<HTMLElement | null>(null)
 const { filteredTools } = useExplore()
 
-const initMatter = () => {
+// Functions that need to be accessible globally
+let handleResize = () => { }
+let startSlowdownEffect: any = (engine: Matter.Engine) => { } // Unfortunately has to be any. Didn't find other way to fix the type error
+let engine: Engine
+
+onMounted(() => {
   if (!matterContainer.value) return
   const containerWidth = matterContainer.value.clientWidth;
   const containerHeight = matterContainer.value.clientHeight;
@@ -28,13 +40,16 @@ const initMatter = () => {
   const Runner = Matter.Runner
   const Bodies = Matter.Bodies
   const Composite = Matter.Composite
+  const Events = Matter.Events
+  const Body = Matter.Body
+  const Common = Matter.Common
 
-  const engine = Engine.create({
+  engine = Engine.create({
     positionIterations: 20,
     velocityIterations: 20,
     gravity: {
       x: 0,
-      y: 0
+      y: 1
     }
   })
 
@@ -79,14 +94,14 @@ const initMatter = () => {
     container.style.height = `${actualHeight}px`;
 
     const body = Bodies.rectangle(x, y, actualWidth, actualHeight, {
-      frictionAir: 0.001,
-      friction: 1,
-      restitution: 1.25,
+      frictionAir: 0,
+      friction: 0.5,
+      restitution: 0.5,
       render: { visible: false },
       chamfer: { radius: 10 },
     });
 
-    Matter.Events.on(engine, 'afterUpdate', () => {
+    Events.on(engine, 'afterUpdate', () => {
       container.style.left = `${body.position.x}px`;
       container.style.top = `${body.position.y}px`;
       container.style.transform = `translate(-50%, -50%) rotate(${body.angle}rad)`;
@@ -97,19 +112,12 @@ const initMatter = () => {
 
   Composite.add(engine.world, toolCards);
 
-  const wallOptions = { isStatic: true, render: { visible: false }, friction: 1 }
+  const wallOptions = { isStatic: true, render: { visible: false }, friction: 0.5 }
 
   const ground = Bodies.rectangle(containerWidth / 2, containerHeight + 30, containerWidth + 100, 60, wallOptions)
   const leftWall = Bodies.rectangle(-30, containerHeight / 2, 60, containerHeight * 5, wallOptions)
   const rightWall = Bodies.rectangle(containerWidth + 30, containerHeight / 2, 60, containerHeight * 500, wallOptions)
-  const ceiling = Bodies.rectangle(containerWidth / 2, -30, containerWidth + 100, 60, wallOptions)
-
-  /* for (let i = 0; i < 5; i++) {
-      const circle = Bodies.circle(Math.random() * containerWidth, Math.random() * containerHeight / 2, 60, { friction: 1, restitution: 0.8 })
-      const triangle = Bodies.polygon(Math.random() * containerWidth, Math.random() * containerHeight / 2, 5, 60, { friction: 1, restitution: 0.8 })
-  
-      Composite.add(engine.world, [circle, triangle])
-    } */
+  const ceiling = Bodies.rectangle(containerWidth / 2, 13, containerWidth + 100, 200, wallOptions)
 
   Composite.add(engine.world, [ground, leftWall, rightWall, ceiling])
 
@@ -125,9 +133,96 @@ const initMatter = () => {
   Composite.add(engine.world, mouseConstraint)
 
   Render.run(matterRender)
-  Runner.run(Runner.create(), engine)
+  const runner = Runner.create()
+  Runner.run(runner, engine)
 
-  const handleResize = () => {
+  // Explosion function
+  const explosionForce = 0.4;
+
+  const explosion = (engine: Matter.Engine) => {
+    const bodies = Composite.allBodies(engine.world);
+
+    for (let i = 0; i < bodies.length; i++) {
+      const body = bodies[i];
+
+      if (!body?.isStatic && body) {
+        const forceMagnitude = explosionForce * body.mass;
+
+        // Generate a random angle in radians
+        const angle = Math.random() * Math.PI * 2;
+
+        // Calculate force components using trigonometry for random directions
+        const forceX = forceMagnitude * Math.cos(angle);
+        const forceY = forceMagnitude * Math.sin(angle);
+
+        Body.applyForce(body, body.position, {
+          x: forceX,
+          y: forceY
+        });
+      }
+    }
+  };
+
+  // Time scaling
+  startSlowdownEffect = (engine: Matter.Engine) => {
+    let isRunning = false;
+    let eventListener = (event: any) => { };
+
+    function runEffect() {
+      if (isRunning) return; // Ignore if already running
+      isRunning = true;
+
+      let timeScaleTarget = 1,
+        lastTime = Common.now() - 2000, // Start 2 seconds in the past
+        hasSlowedDown = false,
+        speedUpTime: number | null = null;
+
+      console.log("Slowdown effect started");
+
+      eventListener = (event: any) => {
+        let timeScale = (event.delta || (1000 / 60)) / 1000;
+        let currentTime = Common.now();
+
+        // tween the timescale for bullet time slow-mo
+        engine.timing.timeScale += (timeScaleTarget - engine.timing.timeScale) * 12 * timeScale;
+
+        // every 2 sec (real time)
+        if (currentTime - lastTime >= 2000) {
+          if (!hasSlowedDown) {
+            // Slow down to bullet time
+            timeScaleTarget = 0;
+            hasSlowedDown = true;
+            speedUpTime = currentTime + 2000; // Set time to speed up
+            setTimeout(() => {
+              explosion(engine);
+            }, 10);
+          } else if (hasSlowedDown && currentTime >= speedUpTime!) {
+            // Speed back up to normal time
+            timeScaleTarget = 1;
+            // Effect is complete, remove listener and reset
+            setTimeout(() => {
+              Events.off(engine, 'afterUpdate', eventListener);
+              isRunning = false;
+              console.log("Slowdown effect completed");
+            }, 1500);
+          }
+
+          // update last time
+          lastTime = currentTime;
+        }
+
+        console.log("Current timeScale:", engine.timing.timeScale);
+      };
+
+      Events.on(engine, 'afterUpdate', eventListener);
+    }
+
+    return runEffect;
+  }
+
+  startSlowdownEffect(engine)();
+
+  handleResize = () => {
     if (!matterContainer.value) return
     matterRender.canvas.width = matterContainer.value.clientWidth
     matterRender.canvas.height = matterContainer.value.clientHeight
@@ -141,12 +236,58 @@ const initMatter = () => {
   }
 
   window.addEventListener('resize', handleResize)
-}
+})
 
-onMounted(() => {
-  initMatter()
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 </script>
+
+<style scoped lang="scss">
+main {
+  display: flex;
+  flex-direction: column;
+
+  gap: $xxl;
+  padding: $xxl;
+
+  .heading {
+    display: flex;
+    flex-direction: column;
+
+    width: fit-content;
+    z-index: 1;
+
+    .orange {
+      color: $secondary-400;
+      font-style: italic;
+    }
+
+    .material-symbols-rounded {
+      color: $primary-400;
+      font-size: 5rem;
+      font-variation-settings:
+        'opsz' 48,
+        'wght' 500,
+        'FILL' 0,
+        'GRAD' 100;
+
+      transform: translateY(1.2rem);
+      cursor: pointer;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+
+    width: fit-content;
+    z-index: 1;
+
+    gap: $xl;
+  }
+}
+</style>
 
 <style>
 body {

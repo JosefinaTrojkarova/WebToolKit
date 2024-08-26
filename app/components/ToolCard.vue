@@ -424,8 +424,8 @@ const sortAndLimitItems = (items: Opinion[]) => {
 
   .heading {
     .logo {
-      min-width: 10rem;
-      min-height: 10rem;
+      min-width: 7rem;
+      min-height: 7rem;
     }
 
     .content-wrapper {
