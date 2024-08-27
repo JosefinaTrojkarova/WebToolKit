@@ -109,7 +109,7 @@ onUnmounted(() => {
 
   width: 100%;
 
-  padding: 0 0 $m 0;
+  margin: 0 0 $xl 0;
 
   background-color: $system-bg;
 

@@ -11,7 +11,7 @@
         <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
       <div class="alternatives-wrapper">
-        <Filters type="alternatives" :trigger="360" @filter-toggled="handleFilterToggle" />
+        <Filters type="alternatives" :trigger="360" @filter-toggled="handleFilterToggle" style="z-index: 100;" />
         <div class="alternatives">
           <ToolCard v-for="alt in filteredAlternatives" :key="alt._id" :data="alt" />
         </div>
@@ -68,7 +68,7 @@ main {
     top: $xxl + $xxl + $m;
     flex: 1;
     height: min-content;
-    margin-top: $xxl + $m;
+    margin-top: $xxl + $xl;
   }
 
   .alternatives-wrapper {
