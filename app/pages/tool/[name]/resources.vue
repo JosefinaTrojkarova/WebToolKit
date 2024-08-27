@@ -12,7 +12,7 @@
         <button class="btn--secondary--small">Suggest a Resource</button>
       </div>
       <div class="content-wrapper">
-        <Filters type="resources" :trigger="490" />
+        <Filters type="resources" :trigger="490" @filter-toggled="handleFilterToggle" />
         <div class="content">
           <div class="from-creators">
             <div class="header">
@@ -81,17 +81,25 @@ const retryFetch = () => {
   refresh()
 }
 
+// Filter
+const filterConfig: any = {
+  category: (resource: Resources, selected: string[]) => selected.length === 0 || selected.includes(resource.category),
+  type: (resource: Resources, selected: string[]) => selected.length === 0 || selected.includes(resource.type)
+};
+const { handleFilterToggle, filteredItems } = useFilters(computed(() => data.value?.resources || []), filterConfig);
+
+
 // Resources categories
 const newsResources = computed(() => {
-  return data.value?.resources?.filter((resource: { category: string; }) => resource.category === 'News')
+  return filteredItems.value.filter((resource: Resources) => resource.category === 'News')
 })
 
 const comparisonResources = computed(() => {
-  return data.value?.resources?.filter((resource: { category: string; }) => resource.category === 'Comparisons')
+  return filteredItems.value.filter((resource: Resources) => resource.category === 'Comparisons')
 })
 
 const fromCreatorsResources = computed(() => {
-  return data.value?.resources?.filter((resource: { category: string; }) => resource.category === 'From the creators')
+  return filteredItems.value.filter((resource: Resources) => resource.category === 'From the creators')
 })
 </script>
 
