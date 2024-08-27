@@ -31,7 +31,7 @@ export function useFetchReviews(toolId?: string, initialAmount?: number) {
       }
     }
 
-    // If toolId is availabl, or we fetched it -> fetch reviews for the tool
+    // If toolId is available, or we fetched it -> fetch reviews for the tool
     if (id) {
       try {
         const params: any = { toolId: id };
@@ -42,7 +42,7 @@ export function useFetchReviews(toolId?: string, initialAmount?: number) {
         const data = await $fetch('/api/tool/reviews', { params });
         reviews.value = data || []; // Set fetched reviews or an empty array if no data
       } catch (e) {
-        console.error('Failed to fetch reviews:', e);
+        console.error('Failed to fetch reviews or tool data:', e);
         error.value =
           e instanceof Error ? e : new Error('Unknown error occurred');
       }

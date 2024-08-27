@@ -62,7 +62,6 @@
 
 <script lang="ts" setup>
 // Hydration mismatch prevention
-// Not sure if it's needed here on resources page, added it to make sure
 const isMounted = ref(false)
 onMounted(() => {
   isMounted.value = true
@@ -71,6 +70,7 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+// Data fetching
 const route = useRoute()
 const { name } = route.params
 
@@ -81,6 +81,7 @@ const retryFetch = () => {
   refresh()
 }
 
+// Resources categories
 const newsResources = computed(() => {
   return data.value?.resources?.filter((resource: { category: string; }) => resource.category === 'News')
 })

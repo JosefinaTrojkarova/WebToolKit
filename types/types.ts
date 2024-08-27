@@ -74,11 +74,13 @@ export type Tool = {
     licensing: string;
   };
   rating: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
+    stats: {
+      1: 1;
+      2: 1;
+      3: 1;
+      4: 1;
+      5: 1;
+    };
     stars: number;
     reviews: number;
     saves: number;

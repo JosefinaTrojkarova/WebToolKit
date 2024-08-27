@@ -106,20 +106,21 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
-// DATA
+// Data fetching
 const { reviews, toolData, error: reviewsError, retryFetch: retryReviews } = useFetchReviews()
 
-// FILTER
+// Filter
 const filterConfig: any = {
   rating: (review: Review, selected: number[]) => selected.some((rating: number) => Math.abs(review.rating - rating) <= 0.5),
 };
 const { handleFilterToggle, filteredItems: filteredReviews } = useFilters(reviews, filterConfig);
 
-
+// Retry fetch on error
 const retryFetch = () => {
   retryReviews()
 }
 
+// Rating
 const getLabelForRating = (rating: number) => {
   const labels: { [key: number]: string } = {
     5: 'Excellent',

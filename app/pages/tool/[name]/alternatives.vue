@@ -34,10 +34,10 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
-// DATA
+// Data fetching
 const { alternatives, mainTool, error: alternativesError, retryFetch } = useFetchAlternatives();
 
-// FILTER
+// Fiter
 const filterConfig: any = {
   categories: (alt: Alternative, selected: string[]) => selected.some((cat: Category) => alt.categories.includes(cat)),
   pricing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.pricing),
@@ -46,7 +46,7 @@ const filterConfig: any = {
 };
 const { handleFilterToggle, filteredItems: filteredAlternatives } = useFilters(alternatives, filterConfig);
 
-
+// Retry fetch on error
 const handleRetryFetch = () => {
   retryFetch()
 }
