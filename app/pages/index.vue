@@ -2,7 +2,7 @@
   <main>
     <div class="heading">
       <h1>Find the <span class="orange">best</span> tools</h1>
-      <h1>for your <span class="material-symbols-rounded" @click="startSlowdownEffect(engine)()">language</span>web-dev
+      <h1>for your <span class="material-symbols-rounded">language</span>web-dev
         projects
       </h1>
     </div>
@@ -10,6 +10,8 @@
       <NuxtLink to="/explore" class="btn--primary--large">Explore</NuxtLink>
       <p>or</p>
       <NuxtLink to="/quiz" class="btn--secondary--large">Quiz</NuxtLink>
+      <p>or</p>
+      <span class="material-symbols-rounded" @click="startSlowdownEffect(engine)()">bomb</span>
     </div>
     <Teleport to="body">
       <div ref="matterContainer" id="matter"></div>
@@ -19,15 +21,17 @@
 
 <script setup lang="ts">
 import { render } from 'vue';
-import Matter, { Engine } from 'matter-js'
+import Matter, { Engine, type IBodyDefinition } from 'matter-js'
+import MatterWrap from 'matter-wrap';
 import ToolCard from '~/components/ToolCard.vue'
 
+Matter.use(MatterWrap as any);
 const matterContainer = ref<HTMLElement | null>(null)
 const { filteredTools } = useExplore()
 
 // Functions that need to be accessible globally
 let handleResize = () => { }
-let startSlowdownEffect: any = (engine: Matter.Engine) => { } // Unfortunately has to be any. Didn't find other way to fix the type error
+let startSlowdownEffect: any = (engine: Matter.Engine) => { }
 let engine: Engine
 
 onMounted(() => {
@@ -99,7 +103,13 @@ onMounted(() => {
       restitution: 0.5,
       render: { visible: false },
       chamfer: { radius: 10 },
-    });
+      plugin: {
+        wrap: {
+          min: { x: 0, y: 0 },
+          max: { x: containerWidth, y: containerHeight }
+        }
+      }
+    } as IBodyDefinition);
 
     Events.on(engine, 'afterUpdate', () => {
       container.style.left = `${body.position.x}px`;
@@ -112,14 +122,31 @@ onMounted(() => {
 
   Composite.add(engine.world, toolCards);
 
-  const wallOptions = { isStatic: true, render: { visible: false }, friction: 0.5 }
+  const ground = Bodies.rectangle(containerWidth / 2, containerHeight + 30, containerWidth + 500, 60,
+    { isStatic: true, render: { visible: false }, friction: 0.5 })
 
-  const ground = Bodies.rectangle(containerWidth / 2, containerHeight + 30, containerWidth + 100, 60, wallOptions)
-  const leftWall = Bodies.rectangle(-30, containerHeight / 2, 60, containerHeight * 5, wallOptions)
-  const rightWall = Bodies.rectangle(containerWidth + 30, containerHeight / 2, 60, containerHeight * 500, wallOptions)
-  const ceiling = Bodies.rectangle(containerWidth / 2, 13, containerWidth + 100, 200, wallOptions)
+  Composite.add(engine.world, [ground]);
 
-  Composite.add(engine.world, [ground, leftWall, rightWall, ceiling])
+  /* const circles = Array.from({ length: 10 }, () => {
+    const x = Math.random() * containerWidth;
+    const y = Math.random() * containerHeight;
+
+    const radius = Math.random() * 50 + 20;
+
+    return Bodies.circle(x, y, radius, {
+      frictionAir: 0,
+      friction: 0.5,
+      restitution: 0.5,
+      render: { visible: true },
+      plugin: {
+        wrap: {
+          min: { x: 0, y: 0 },
+          max: { x: containerWidth, y: containerHeight }
+        }
+      }
+    } as IBodyDefinition);
+  });
+  Composite.add(engine.world, circles); */
 
   const mouse = Matter.Mouse.create(matterRender.canvas)
   const mouseConstraint = Matter.MouseConstraint.create(engine, {
@@ -224,15 +251,25 @@ onMounted(() => {
 
   handleResize = () => {
     if (!matterContainer.value) return
-    matterRender.canvas.width = matterContainer.value.clientWidth
-    matterRender.canvas.height = matterContainer.value.clientHeight
-
     const newWidth = matterContainer.value.clientWidth;
     const newHeight = matterContainer.value.clientHeight;
 
+    matterRender.canvas.width = newWidth
+    matterRender.canvas.height = newHeight
+
     Matter.Body.setPosition(ground, Matter.Vector.create(newWidth / 2, newHeight + 30))
-    Matter.Body.setPosition(leftWall, Matter.Vector.create(-30, newHeight / 2))
-    Matter.Body.setPosition(rightWall, Matter.Vector.create(newWidth + 30, newHeight / 2))
+
+    // Update wrap boundaries for all bodies
+    const allBodies = Composite.allBodies(engine.world);
+    for (let i = 0; i < allBodies.length; i++) {
+      const body = allBodies[i];
+      if (body && body.plugin && 'wrap' in body.plugin) {
+        (body.plugin as any).wrap = {
+          min: { x: 0, y: 0 },
+          max: { x: newWidth, y: newHeight }
+        };
+      }
+    }
   }
 
   window.addEventListener('resize', handleResize)
@@ -256,7 +293,7 @@ main {
     flex-direction: column;
 
     width: fit-content;
-    z-index: 1;
+    z-index: -2;
 
     .orange {
       color: $secondary-400;
@@ -273,6 +310,7 @@ main {
         'GRAD' 100;
 
       transform: translateY(1.2rem);
+      user-select: none;
       cursor: pointer;
     }
   }
@@ -285,6 +323,17 @@ main {
     z-index: 1;
 
     gap: $xl;
+
+    .material-symbols-rounded {
+      font-size: 3rem;
+      color: $primary-400;
+      font-variation-settings:
+        'opsz' 48,
+        'wght' 600,
+        'FILL' 0,
+        'GRAD' 100;
+      cursor: pointer;
+    }
   }
 }
 </style>

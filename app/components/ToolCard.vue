@@ -421,6 +421,7 @@ const sortAndLimitItems = (items: Opinion[]) => {
   user-select: none;
   width: fit-content;
   height: fit-content;
+  background-color: $system-bg;
 
   .heading {
     .logo {
