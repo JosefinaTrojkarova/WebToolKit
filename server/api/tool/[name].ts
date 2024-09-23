@@ -1,8 +1,6 @@
 // Purpose: API endpoint to get all the data about one specific tool from the database.
 // Used in: pages/tool/[name]/index.vue
 
-// Needs a little bit more work, unfinished code
-
 export default defineEventHandler(async (event) => {
   const { name } = event.context.params as { name: string }; // get name of the tool from the URL
   const query = getQuery(event); // Retrieve query parameters from the event
