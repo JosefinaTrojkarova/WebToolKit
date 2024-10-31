@@ -1,4 +1,4 @@
-// Purpose: Utility to export getMongoClient function and useMongoClient.
+// Utility to export getMongoClient function and useMongoClient.
 
 import { MongoClient } from 'mongodb';
 

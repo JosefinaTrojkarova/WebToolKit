@@ -1,5 +1,4 @@
 // Composable function fro categories and tags on tool side pages
-// Used in: pages/tool/[name]/reviews.vue and pages/tool/[name]/alternatives.vue
 
 export function useFilters(items: Ref<any[]>, filterConfig: any) {
   // State to manage selected filters

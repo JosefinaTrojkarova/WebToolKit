@@ -1,13 +1,12 @@
-// Purpose: API endpoint to get all the data about one specific tool from the database.
-// Used in: pages/tool/[name]/index.vue
+// API endpoint to get all the data about one specific tool from the database
 
 export default defineEventHandler(async (event) => {
-  const { name } = event.context.params as { name: string }; // get name of the tool from the URL
-  const query = getQuery(event); // Retrieve query parameters from the event
-  const isHeader = query.header === 'true'; // Determine if the header projection is needed
-  const isAlternativesOnly = query.alternativesOnly === 'true'; // Determine if the alternativesOnly projection is needed
-  const isReviewsOnly = query.reviewsPage === 'true'; // Determine if the reviewsPage projection is needed
-  const isResourcesOnly = query.resourcesOnly === 'true'; // Determine if the resourcesOnly projection is needed
+  const { name } = event.context.params as { name: string };
+  const query = getQuery(event);
+  const isHeader = query.header === 'true';
+  const isAlternativesOnly = query.alternativesOnly === 'true';
+  const isReviewsOnly = query.reviewsPage === 'true';
+  const isResourcesOnly = query.resourcesOnly === 'true';
 
   if (!name) {
     throw createError({
@@ -109,7 +108,7 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // find single tool by name and ignore case
+    // Find single tool by name and ignore case
     const data = await collection.findOne(
       { name: { $regex: new RegExp(`^${name}$`, 'i') } },
       { projection }

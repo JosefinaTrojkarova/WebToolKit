@@ -1,5 +1,4 @@
 // Composable function to fetch tool data
-// Used in: pages/tool/[name]/index.vue
 
 export function useFetchToolData(name: string) {
   const { getCachedData, setCachedData } = useCache(); // useCache composable

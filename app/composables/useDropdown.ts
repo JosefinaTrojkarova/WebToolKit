@@ -1,3 +1,5 @@
+// Functions for dropdowns
+
 interface DropdownItem {
   id: number;
   state: boolean;

@@ -1,5 +1,5 @@
-// Purpose: API endpoint to get the reviews of specific tool.
-// Used in: pages/tool/[name]/reviews.vue
+// API endpoint to get the reviews of specific tool
+
 import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
