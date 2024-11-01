@@ -1,5 +1,4 @@
 // Composable function to fetch reviews
-// Used in: pages/tool/[name]/index.vue and pages/tool/[name]/reviews.vue
 
 export function useFetchReviews(toolId?: string, initialAmount?: number) {
   // Reactive state to hold the fetched reviews and any errors that occur

@@ -1,4 +1,17 @@
 <template>
+    <div>
+
+    </div>
+</template>
+
+<script lang="ts" setup>
+
+</script>
+
+<style></style>
+
+
+<!-- <template>
     <div v-if="error">
         <p>Error: {{ error.message }}</p>
     </div>
@@ -20,4 +33,4 @@ const { data: userData, error } = await useFetch(`/api/userData/${username.value
     key: `user-${username.value}`,
     server: false
 })
-</script>
+</script> -->

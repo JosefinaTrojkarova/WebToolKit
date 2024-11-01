@@ -1,17 +1,19 @@
+// Functions for modals
+
 export const useModal = () => {
-  const isModalOpen = ref(false)
+  const isModalOpen = ref(false);
 
   const openModal = () => {
-    isModalOpen.value = true
-  }
+    isModalOpen.value = true;
+  };
 
   const closeModal = () => {
-    isModalOpen.value = false
-  }
+    isModalOpen.value = false;
+  };
 
   return {
     isModalOpen,
     openModal,
-    closeModal
-  }
-}
+    closeModal,
+  };
+};

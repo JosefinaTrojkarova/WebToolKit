@@ -1,5 +1,4 @@
 // Composable function made specifically for pages/explore.vue
-// Used in: pages/explore.vue
 
 export function useExplore() {
   const categories = useState<Category[]>('categories', () => []); // list of all categories fetched from the server

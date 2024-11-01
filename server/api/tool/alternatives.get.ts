@@ -1,11 +1,14 @@
-// Purpose: API endpoint to get the data about tool's alternatives.
-// Used in:
-
+// API endpoint to get the data about tool's alternatives
 import { ObjectId } from 'mongodb';
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const { mainToolId, alternativeIds, amount } = body;
+  // Get query parameters instead of body
+  const query = getQuery(event);
+  const mainToolId = query.mainToolId as string;
+  const alternativeIds = Array.isArray(query['alternativeIds[]'])
+    ? (query['alternativeIds[]'] as string[])
+    : ([query['alternativeIds[]']].filter(Boolean) as string[]);
+  const amount = query.amount ? parseInt(query.amount as string) : undefined;
 
   // Validate input
   if (!mainToolId || !alternativeIds || !Array.isArray(alternativeIds)) {
@@ -17,7 +20,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Get MongoDB client and collection
     const mongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
@@ -27,7 +29,6 @@ export default defineEventHandler(async (event) => {
       ObjectId.createFromHexString(id)
     );
 
-    // Define projection for database queries
     const projection = {
       _id: 1,
       name: 1,
@@ -44,24 +45,21 @@ export default defineEventHandler(async (event) => {
       cons: 1,
     };
 
-    // Fetch main tool
     const mainTool = await collection.findOne(
       { _id: mainObjectId },
       { projection }
     );
 
-    // Fetch alternatives with optional limit (amount)
     const alternativesQuery = collection.find(
       { _id: { $in: alternativeObjectIds } },
       { projection }
     );
 
-    if (amount > 0) {
-      alternativesQuery.limit(amount);
+    if ((amount ?? 0) > 0) {
+      alternativesQuery.limit(amount ?? 0);
     }
 
     const alternatives = await alternativesQuery.toArray();
-
     return { mainTool, alternatives };
   } catch (error) {
     console.error(error);
