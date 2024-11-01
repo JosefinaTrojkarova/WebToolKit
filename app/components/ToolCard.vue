@@ -1,5 +1,43 @@
 <template>
-  <div v-if="main" class="alternative" id="main">
+  <div v-if="alt === 'homepage'" class="explore" id="homepage-card">
+    <div class="heading">
+      <img class="logo" :src="data.logo" :alt="data.name">
+      <div class="content-wrapper">
+        <h3>{{ data.name }}</h3>
+        <div class="tags">
+          <div class="tag tag--pricing">
+            <span class="icon material-symbols-rounded">attach_money</span>
+            <p class="text p2">{{ data.tags.pricing }}</p>
+          </div>
+          <div class="tag tag--licensing">
+            <span class="icon material-symbols-rounded">license</span>
+            <p class="text p2">{{ data.tags.licensing }}</p>
+          </div>
+        </div>
+        <div class="rating">
+          <Stars :rating="data.rating.stars" />
+          <p class="p2"><span class="b2">{{ data.rating.reviews }}</span> reviews</p>
+          <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
+        </div>
+      </div>
+      <label class="select" @click.stop>
+        <input class="checkbox-default" type="checkbox">
+        <span class="checkbox">
+          <span class="material-symbols-rounded check-icon">check</span>
+        </span>
+      </label>
+    </div>
+    <div class="main">
+      <p class="item-description">{{ data.description }}</p>
+    </div>
+    <div class="categories">
+      <span v-for="category in data.categories" :key="category" class="static-category">
+        <p>{{ category }}</p>
+      </span>
+    </div>
+  </div>
+
+  <div v-else-if="alt === 'main'" class="alternative" id="main">
     <label class="select" @click.stop>
       <input class="checkbox-default" type="checkbox">
       <span class="checkbox">
@@ -156,7 +194,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: ItemBasicInfo | Alternative /* | Mini */
-  main?: boolean
+  alt?: 'main' | 'homepage'
 }>()
 
 type Opinion = {
@@ -375,6 +413,37 @@ const sortAndLimitItems = (items: Opinion[]) => {
   &:hover {
     box-shadow: $shadow-300;
     transform: translateY(-0.3rem);
+  }
+}
+
+#homepage-card {
+  box-sizing: border-box;
+  user-select: none;
+  width: fit-content;
+  height: fit-content;
+  background-color: $system-bg;
+
+  .heading {
+    .logo {
+      min-width: 7rem;
+      min-height: 7rem;
+    }
+
+    .content-wrapper {
+      display: none;
+    }
+
+    .select {
+      display: none;
+    }
+  }
+
+  .main {
+    display: none;
+  }
+
+  .categories {
+    display: none;
   }
 }
 

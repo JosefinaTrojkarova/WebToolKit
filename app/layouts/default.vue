@@ -39,7 +39,7 @@
             <slot />
         </main>
 
-        <footer class="layout__footer">
+        <footer v-if="name !== 'index'" class="layout__footer">
             <div class="footer__links">
                 <div class="links">
                     <p class="links__title b1">Use cases</p>
@@ -100,7 +100,7 @@
                 </div>
             </div>
         </footer>
-        <button @click="scrollToTop" class="scroll-top-button" :class="showButton()">
+        <button v-if="name !== 'index'" @click="scrollToTop" class="scroll-top-button" :class="showButton()">
             <span class="material-symbols-rounded">keyboard_arrow_up</span>
         </button>
     </div>
@@ -108,6 +108,8 @@
 
 <script setup lang="ts">
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
+const { name } = useRoute()
+
 const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 
 const checkScroll = () => {
@@ -163,23 +165,27 @@ const { isModalOpen, openModal, closeModal } = useModal()
 }
 
 // Navbar
-.layout__nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: $xl;
-    padding: $xxl;
-    border-bottom: 1px solid $primary-100;
+.layout__header {
+    z-index: 999;
 
-    .nav__logo {
+    .layout__nav {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        gap: $m;
+        gap: $xl;
+        padding: $xxl;
+        border-bottom: 1px solid $primary-100;
 
-        span {
-            color: $primary-400;
-            font-size: 2rem;
-            font-variation-settings: 'opsz' 32, 'wght' 500, 'FILL' 0, 'GRAD' 100;
+        .nav__logo {
+            display: flex;
+            align-items: center;
+            gap: $m;
+
+            span {
+                color: $primary-400;
+                font-size: 2rem;
+                font-variation-settings: 'opsz' 32, 'wght' 500, 'FILL' 0, 'GRAD' 100;
+            }
         }
     }
 }
