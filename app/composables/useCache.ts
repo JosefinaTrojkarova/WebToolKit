@@ -1,5 +1,4 @@
 // Composable function to cache data using nuxtapp
-// Used in:
 
 export function useCache() {
   const nuxtApp = useNuxtApp();

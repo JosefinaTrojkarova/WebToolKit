@@ -1,5 +1,4 @@
-// Purpose: API endpoint to get data about categories from the database.
-// Used in: pages\explore.vue
+// API endpoint to get data about categories from the database
 
 export default defineEventHandler(async (event) => {
   try {

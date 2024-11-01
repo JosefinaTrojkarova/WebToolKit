@@ -7,13 +7,13 @@
       </li>
     </div>
     <button class="sort" @click="openDropdown(0)">
-      <p class="p2">Most Relevant</p>
+      <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
     <Dropdown :open="isDropdownOpen" :id="0" @close="closeDropdown">
-      <p class="dropdown--item">Most Relevant</p>
-      <p class="dropdown--item">Most Recent</p>
-      <p class="dropdown--item">Most Helpful</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
     </Dropdown>
   </div>
   <div v-else-if="type === 'alternatives'" class="search-tools"
@@ -30,13 +30,13 @@
       </li>
     </div>
     <button class="sort" @click="openDropdown(1)">
-      <p class="p2">Most Popular</p>
+      <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
     <Dropdown :open="isDropdownOpen" :id="1" @close="closeDropdown">
-      <p class="dropdown--item">Most Popular</p>
-      <p class="dropdown--item">Most Recent</p>
-      <p class="dropdown--item">Most Helpful</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
     </Dropdown>
   </div>
   <div v-else-if="type === 'resources'" class="search-tools"
@@ -50,13 +50,13 @@
       </li>
     </div>
     <button class="sort" @click="openDropdown(2)">
-      <p class="p2">Most Relevant</p>
+      <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
     <Dropdown :open="isDropdownOpen" :id="2" @close="closeDropdown">
-      <p class="dropdown--item">Most Relevant</p>
-      <p class="dropdown--item">Most Recent</p>
-      <p class="dropdown--item">Most Helpful</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
+      <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
     </Dropdown>
   </div>
 </template>
@@ -75,13 +75,36 @@ const props = defineProps({
   }
 })
 
+// Filters emit
+const emit = defineEmits(['sort-changed', 'filter-toggled']);
+
+// Dropdown filters
 const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0, 1, 2])
 
-/* Temporary placeholder */
-const handleTagToggle = (tag: Tag) => {
-  console.log(tag)
-}
+const currentSort = ref('Most Relevant');
 
+const handleSortChange = (sortOption: string) => {
+  currentSort.value = sortOption;
+  emit('sort-changed', sortOption);
+  switch (props.type) {
+    case 'reviews':
+      closeDropdown(0);
+      break;
+    case 'alternatives':
+      closeDropdown(1);
+      break;
+    case 'resources':
+      closeDropdown(2);
+      break;
+  }
+};
+
+// Tag filters
+const handleTagToggle = (filter: Tag) => {
+  emit('filter-toggled', { type: filter.variant, value: filter.tag.name });
+};
+
+// Scroll
 const searchToolsStyle = ref(0)
 
 const checkScroll = () => {
@@ -108,7 +131,7 @@ onUnmounted(() => {
 
   width: 100%;
 
-  padding: 0 0 $m 0;
+  margin: 0 0 $xl 0;
 
   background-color: $system-bg;
 

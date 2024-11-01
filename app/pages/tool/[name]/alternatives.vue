@@ -11,9 +11,9 @@
         <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
       <div class="alternatives-wrapper">
-        <Filters type="alternatives" :trigger="360" />
+        <Filters type="alternatives" :trigger="360" @filter-toggled="handleFilterToggle" style="z-index: 100;" />
         <div class="alternatives">
-          <ToolCard v-for="alt in alternatives" :key="alt._id" :data="alt" />
+          <ToolCard v-for="alt in filteredAlternatives" :key="alt._id" :data="alt" />
         </div>
       </div>
     </main>
@@ -34,9 +34,19 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+// Data fetching
 const { alternatives, mainTool, error: alternativesError, retryFetch } = useFetchAlternatives();
 
+// Fiter
+const filterConfig: any = {
+  categories: (alt: Alternative, selected: string[]) => selected.some((cat: Category) => alt.categories.includes(cat)),
+  pricing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.pricing),
+  licensing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.licensing),
+  rating: (alt: Alternative, selected: number[]) => selected.some((rating: number) => Math.abs(alt.rating.stars - rating) <= 0.5),
+};
+const { handleFilterToggle, filteredItems: filteredAlternatives } = useFilters(alternatives, filterConfig);
 
+// Retry fetch on error
 const handleRetryFetch = () => {
   retryFetch()
 }
@@ -58,7 +68,7 @@ main {
     top: $xxl + $xxl + $m;
     flex: 1;
     height: min-content;
-    margin-top: $xxl + $m;
+    margin-top: $xxl + $xl;
   }
 
   .alternatives-wrapper {

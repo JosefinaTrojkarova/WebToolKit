@@ -53,7 +53,6 @@ watch(
   position: absolute;
   top: 2.5rem;
   right: $s;
-  z-index: 1000;
 
   background-color: $system-bg;
 

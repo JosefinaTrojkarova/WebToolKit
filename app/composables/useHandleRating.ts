@@ -1,3 +1,5 @@
+// Function to calculate rating
+
 export function calculateRating(rating: number): string {
   const starWidth = 19.6; // Each star takes up 18.75% of the total width
   const gapWidth = 0.5; // Each gap is 1.25% of the total width
