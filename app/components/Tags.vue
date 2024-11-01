@@ -1,19 +1,32 @@
 <template>
-    <div class="tag-selector">
-        <label v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
-            :class="['tag', variant, { active: tag.active }]">
-            <span class="material-symbols-rounded tag-icon">{{ iconName }}</span>
-            <p class="p2">{{ tag.name }}</p>
-        </label>
-    </div>
+    <!-- 
+        Having more than one element in the template is the best solution here in terms of practicality 
+        but I'm not sure if it won't cause some problems down the line. The Vue docs don't recommend it.
+    -->
+    <label v-if="variant === 'resource-types'" v-for="type in computedTags" :key="type.id" @click="toggleTag(type)"
+        :class="['tag', variant, { active: type.active }]">
+        <span class="material-symbols-rounded tag-icon">{{ type.icon }}</span>
+        <p class="p2">{{ type.name }}</p>
+    </label>
+
+    <label v-else-if="variant === 'resource-src'" v-for="source in computedTags" :key="source.id"
+        @click="toggleTag(source)" :class="['tag', variant, { active: source.active }]">
+        <p class="p2">{{ source.name }}</p>
+    </label>
+
+    <label v-else v-for="tag in computedTags" :key="tag.id" @click="toggleTag(tag)"
+        :class="['tag', variant, { active: tag.active }]">
+        <span class="material-symbols-rounded tag-icon">{{ iconName }}</span>
+        <p class="p2">{{ tag.name }}</p>
+    </label>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
     variant: {
-        type: String as PropType<'pricing' | 'licensing' | 'rating' | 'default'>,
+        type: String as PropType<'pricing' | 'licensing' | 'rating' | 'resource-types' | 'resource-src' | 'default'>,
         default: 'default',
-        validator: (value: string) => ['pricing', 'licensing', 'rating', 'default'].includes(value)
+        validator: (value: string) => ['pricing', 'licensing', 'rating', 'resource-types', 'resource-src', 'default'].includes(value)
     }
 })
 
@@ -37,11 +50,25 @@ const ratingTags = ref<Tag[]>([
     { id: 5, name: '1', active: false }
 ])
 
+const resourceTypes = ref<Tag[]>([
+    { id: 1, name: 'Videos', icon: 'smart_display', active: false },
+    { id: 2, name: 'Articles', icon: 'newsmode', active: false },
+    { id: 3, name: 'Discussions', icon: 'forum', active: false }
+])
+
+const resourceSources = ref<Tag[]>([
+    { id: 1, name: 'From the creators', active: false },
+    { id: 2, name: 'Comparisons', active: false },
+    { id: 3, name: 'News', active: false }
+])
+
 const computedTags = computed(() => {
     switch (props.variant) {
         case 'pricing': return pricingTags.value
         case 'licensing': return licensingTags.value
         case 'rating': return ratingTags.value
+        case 'resource-types': return resourceTypes.value
+        case 'resource-src': return resourceSources.value
         default: return [{ id: 1, name: 'Tag 1', active: false }]
     }
 })
@@ -58,21 +85,13 @@ const iconName = computed(() => {
         case 'pricing': return 'attach_money'
         case 'licensing': return 'license'
         case 'rating': return 'star'
-        default: return 'help'
+        default: return ''
     }
 })
 </script>
 
 
 <style lang="scss" scoped>
-.tag-selector {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: $s;
-}
-
 .tag {
     position: relative;
     display: flex;
@@ -215,8 +234,67 @@ const iconName = computed(() => {
         }
     }
 
+    &.resource-types {
+        padding-left: $xs;
+
+        border: 2px solid $primary-400;
+
+        color: $primary-400;
+
+        .tag-icon {
+            font-variation-settings:
+                'opsz' 20,
+                'wght' 400,
+                'FILL' 0,
+                'GRAD' 100;
+            font-size: 1.25rem;
+        }
+
+        p {
+            color: $primary-400;
+        }
+
+        &.active {
+            background-color: $primary-400;
+            color: $system-white;
+            transform: rotateX(180deg);
+
+            .tag-icon {
+                transform: rotateX(180deg);
+            }
+
+            p {
+                color: $system-white;
+                transform: rotateX(180deg);
+            }
+        }
+    }
+
+    &.resource-src {
+        padding-left: $s;
+
+        border: 2px solid $primary-400;
+
+        color: $primary-400;
+
+        p {
+            color: $primary-400;
+        }
+
+        &.active {
+            background-color: $primary-400;
+            color: $system-white;
+            transform: rotateX(180deg);
+
+            p {
+                color: $system-white;
+                transform: rotateX(180deg);
+            }
+        }
+    }
+
     &:hover {
-        opacity: 70%;
+        opacity: 85%;
     }
 }
 </style>

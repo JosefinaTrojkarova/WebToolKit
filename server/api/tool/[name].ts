@@ -1,15 +1,15 @@
 // Purpose: API endpoint to get all the data about one specific tool from the database.
-// Used in: pages/tool/[name]/index.vue   -  zmenit
+// Used in: pages/tool/[name]/index.vue
 
-import NodeCache from 'node-cache'; // zmenit cachovani tool page
-
-const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+// Needs a little bit more work, unfinished code
 
 export default defineEventHandler(async (event) => {
-  // get name of the tool from the URL
-  const { name } = event.context.params as { name: string };
+  const { name } = event.context.params as { name: string }; // get name of the tool from the URL
   const query = getQuery(event); // Retrieve query parameters from the event
   const isHeader = query.header === 'true'; // Determine if the header projection is needed
+  const isAlternativesOnly = query.alternativesOnly === 'true'; // Determine if the alternativesOnly projection is needed
+  const isReviewsOnly = query.reviewsPage === 'true'; // Determine if the reviewsPage projection is needed
+  const isResourcesOnly = query.resourcesOnly === 'true'; // Determine if the resourcesOnly projection is needed
 
   if (!name) {
     throw createError({
@@ -18,21 +18,41 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // check if the data is already cached and return it
-  const cacheKey = `toolData_${name}_${isHeader ? 'header' : 'main'}`;
-  const cachedData = cache.get(cacheKey);
-  if (cachedData) {
-    return cachedData;
-  }
-
   try {
     const mongoClient = await getMongoClient();
     const database = mongoClient.db('Tools');
     const collection = database.collection('Main');
 
     // Define projection based on the query parameter
-    const projection = isHeader
-      ? {
+    let projection;
+    if (isAlternativesOnly) {
+      projection = {
+        alternatives: 1,
+      };
+    } else if (isReviewsOnly) {
+      projection = {
+        rating: {
+          stats: {
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1,
+            5: 1,
+          },
+          stars: 1,
+          reviews: 1,
+        },
+        pros: {
+          name: 1,
+          votes: 1,
+        },
+        cons: {
+          name: 1,
+          votes: 1,
+        },
+      };
+    } else if (isHeader) {
+      projection = {
         name: 1,
         logo: 1,
         shortDescription: 1,
@@ -42,8 +62,17 @@ export default defineEventHandler(async (event) => {
           reviews: 1,
           saves: 1,
         },
-      }
-      : {
+      };
+    } else if (isResourcesOnly) {
+      projection = {
+        resources: {
+          link: 1,
+          type: 1,
+          category: 1,
+        },
+      };
+    } else {
+      projection = {
         name: 1,
         categories: 1,
         logo: 1,
@@ -66,6 +95,7 @@ export default defineEventHandler(async (event) => {
         resources: {
           link: 1,
           type: 1,
+          category: 1,
         },
         video: 1,
         pricingLink: 1,
@@ -79,6 +109,7 @@ export default defineEventHandler(async (event) => {
         },
         alternatives: 1,
       };
+    }
 
     // find single tool by name and ignore case
     const data = await collection.findOne(
@@ -92,8 +123,6 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Tool not found',
       });
     }
-
-    cache.set(cacheKey, data);
 
     return data;
   } catch (error) {

@@ -3,16 +3,24 @@
     <div class="layout">
         <header class="layout__header">
             <nav class="layout__nav">
-                <NuxtLink class="nav__logo" to="/">WebToolKit</NuxtLink>
+                <NuxtLink class="nav__logo" to="/">
+                    <span class="material-symbols-rounded">category_search</span>
+                </NuxtLink>
                 <ul class="nav__list">
                     <li class="item nav__item">
-                        <NuxtLink class="link item__link" to="/explore">Explore</NuxtLink>
+                        <NuxtLink class="link item__link" to="/explore">
+                            <p>Explore</p>
+                        </NuxtLink>
                     </li>
                     <li class="item nav__item">
-                        <NuxtLink class="link item__link" to="/quiz">Quiz</NuxtLink>
+                        <NuxtLink class="link item__link" to="/quiz">
+                            <p>Quiz</p>
+                        </NuxtLink>
                     </li>
                     <li class="item nav__item">
-                        <NuxtLink class="link item__link" to="/wiki">Wiki</NuxtLink>
+                        <NuxtLink class="link item__link" to="/wiki">
+                            <p>Wiki</p>
+                        </NuxtLink>
                     </li>
                 </ul>
                 <div class="nav__btns btns">
@@ -31,7 +39,7 @@
             <slot />
         </main>
 
-        <footer class="layout__footer">
+        <footer v-if="name !== 'index'" class="layout__footer">
             <div class="footer__links">
                 <div class="links">
                     <p class="links__title b1">Use cases</p>
@@ -80,13 +88,19 @@
                 <p class="footer__text b1">2024 &copy; WebToolKit s.r.o.</p>
                 <p class="footer__text--gray">Made by web-devs for web-devs.</p>
                 <div class="footer__icons">
-                    <i class="footer__icon">ikona</i>
-                    <i class="footer__icon">ikona</i>
-                    <i class="footer__icon">ikona</i>
+                    <NuxtLink to="https://instagram.com" class="footer__icon">
+                        <span class="material-symbols-rounded">domino_mask</span>
+                    </NuxtLink>
+                    <NuxtLink to="https://twitter.com" class="footer__icon">
+                        <span class="material-symbols-rounded">flutter</span>
+                    </NuxtLink>
+                    <NuxtLink to="https://facebook.com" class="footer__icon">
+                        <span class="material-symbols-rounded">diamond</span>
+                    </NuxtLink>
                 </div>
             </div>
         </footer>
-        <button @click="scrollToTop" class="scroll-top-button" :style="showButton()">
+        <button v-if="name !== 'index'" @click="scrollToTop" class="scroll-top-button" :class="showButton()">
             <span class="material-symbols-rounded">keyboard_arrow_up</span>
         </button>
     </div>
@@ -94,17 +108,26 @@
 
 <script setup lang="ts">
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
-const showScrollTopButton = ref(false)
+const { name } = useRoute()
+
+const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 
 const checkScroll = () => {
-    showScrollTopButton.value = window.scrollY > 300
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1) {
+        showScrollTopButton.value = 'bottom'
+    } else {
+        showScrollTopButton.value = window.scrollY > 300 ? 'true' : 'false'
+    }
 }
 
 const showButton = () => {
-    if (showScrollTopButton.value) {
-        return "visibility: visible; transform: translateY(0) scale(1);"
-    } else {
-        return "visibility: hidden; transform: translateY(6rem) scale(0.5);"
+    switch (showScrollTopButton.value) {
+        case 'true':
+            return "visible"
+        case 'bottom':
+            return "bottom"
+        case 'false':
+            return "hidden"
     }
 }
 
@@ -142,13 +165,29 @@ const { isModalOpen, openModal, closeModal } = useModal()
 }
 
 // Navbar
-.layout__nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: $xl;
-    padding: $xxl;
-    border-bottom: 1px solid $primary-100;
+.layout__header {
+    z-index: 999;
+
+    .layout__nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: $xl;
+        padding: $xxl;
+        border-bottom: 1px solid $primary-100;
+
+        .nav__logo {
+            display: flex;
+            align-items: center;
+            gap: $m;
+
+            span {
+                color: $primary-400;
+                font-size: 2rem;
+                font-variation-settings: 'opsz' 32, 'wght' 500, 'FILL' 0, 'GRAD' 100;
+            }
+        }
+    }
 }
 
 .nav__list {
@@ -170,7 +209,7 @@ const { isModalOpen, openModal, closeModal } = useModal()
     justify-content: space-between;
     padding: $xxl;
     margin-top: $xxl;
-    margin-bottom: 50px;
+    margin-bottom: 5rem;
     border-top: 1px solid $primary-100;
 
     // Left
@@ -218,6 +257,11 @@ const { isModalOpen, openModal, closeModal } = useModal()
                 width: 45px;
                 border-radius: 50%;
                 background-color: $primary-400;
+
+                span {
+                    font-size: 1.5rem;
+                    font-variation-settings: 'opsz' 20, 'wght' 300, 'FILL' 0, 'GRAD' 100;
+                }
             }
         }
     }
@@ -235,7 +279,7 @@ const { isModalOpen, openModal, closeModal } = useModal()
     box-shadow: $shadow-500;
 
     border: none;
-    border-radius: 50%;
+    border-radius: 5rem;
 
     width: 3.5rem;
     height: 3.5rem;
@@ -243,10 +287,11 @@ const { isModalOpen, openModal, closeModal } = useModal()
     color: white;
     cursor: pointer;
 
-    transition: transform 0.3s ease-out, visibility 0.3s ease-out;
-    z-index: 1000;
+    transition: transform 0.3s ease-out, visibility 0.3s ease-out, width 0.3s ease-out, border-radius 0.3s ease-out, box-shadow 0.3s ease-out;
+    z-index: 999;
 
     .material-symbols-rounded {
+        transition: transform 0.3s ease-out;
         font-size: 2rem;
     }
 
@@ -255,7 +300,6 @@ const { isModalOpen, openModal, closeModal } = useModal()
             animation: jumpAndWiggle 0.5s ease;
         }
     }
-
 
     @keyframes jumpAndWiggle {
         0% {
@@ -277,6 +321,84 @@ const { isModalOpen, openModal, closeModal } = useModal()
         100% {
             transform: translateY(0) rotate(0deg);
         }
+    }
+
+    &::after {
+        content: 'Back to top';
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        top: 0;
+        left: 2rem;
+        bottom: 0;
+
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        text-wrap: nowrap;
+
+        opacity: 0;
+        scale: 0;
+        transition: opacity 0.2s ease-out, scale 0.2s ease-out;
+    }
+}
+
+.hidden {
+    visibility: hidden;
+    transform: translateY(6rem) scale(0.5);
+}
+
+.visible {
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.bottom {
+    visibility: visible;
+
+    width: 11rem;
+    border-radius: 5rem;
+
+    box-shadow: none;
+
+    .material-symbols-rounded {
+        transform: translateX(3.7rem);
+    }
+
+    &:hover {
+        .material-symbols-rounded {
+            animation: jumpAndWiggleBottom 0.5s ease;
+        }
+    }
+
+    @keyframes jumpAndWiggleBottom {
+        0% {
+            transform: translateX(3.7rem) translateY(0) rotate(0deg);
+        }
+
+        25% {
+            transform: translateX(3.7rem) translateY(-5px) rotate(-5deg);
+        }
+
+        50% {
+            transform: translateX(3.7rem) translateY(-7px) rotate(5deg);
+        }
+
+        75% {
+            transform: translateX(3.7rem) translateY(-5px) rotate(-5deg);
+        }
+
+        100% {
+            transform: translateX(3.7rem) translateY(0) rotate(0deg);
+        }
+    }
+
+    &::after {
+        opacity: 1;
+        scale: 1;
+        transition: opacity 0.2s ease-out 0.1s, scale 0.2s ease-out 0.1s;
     }
 }
 </style>

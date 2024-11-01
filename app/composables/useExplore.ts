@@ -1,4 +1,5 @@
-// Composable for app\pages\explore.vue
+// Composable function made specifically for pages/explore.vue
+// Used in: pages/explore.vue
 
 export function useExplore() {
   const categories = useState<Category[]>('categories', () => []); // list of all categories fetched from the server
@@ -7,8 +8,7 @@ export function useExplore() {
   const activeTags = ref<string[]>([]); // currently selected tags
   const searchQuery = ref(''); //  current search query
 
-  const nuxtApp = useNuxtApp(); // nuxt application instance for accessing nuxt caching
-
+  const { getCachedData, setCachedData } = useCache(); // useCache composable
   const cacheKey = 'explore-data'; // key for caching explore data
   const categoriesCacheKey = 'categories-data'; // key for caching categories data
 
@@ -19,32 +19,11 @@ export function useExplore() {
     key: categoriesCacheKey,
     transform: (response) =>
       response.map((category: any) => ({ ...category, active: false })),
-    getCachedData: (key) => {
-      try {
-        if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
-          return nuxtApp.payload.data[key];
-        }
-        if (nuxtApp.static?.data?.[key]) {
-          return nuxtApp.static.data[key];
-        }
-      } catch (err) {
-        console.error(`Error retrieving cached data for key ${key}:`, err);
-      }
-      return null;
-    },
+    getCachedData: () => getCachedData(categoriesCacheKey),
     onResponse: ({ response }) => {
       if (response.ok) {
         categories.value = response._data;
-        try {
-          if (nuxtApp.static?.data) {
-            nuxtApp.static.data[categoriesCacheKey] = response._data;
-          }
-        } catch (err) {
-          console.error(
-            `Error caching data for key ${categoriesCacheKey}:`,
-            err
-          );
-        }
+        setCachedData(categoriesCacheKey, response._data);
       }
     },
     onRequestError: ({ error }) => {
@@ -83,29 +62,10 @@ export function useExplore() {
       return `/api/data?explore=true${searchParam}`;
     },
     {
-      // caching data
       key: cacheKey,
-      getCachedData: (key) => {
-        try {
-          if (nuxtApp.isHydrating && nuxtApp.payload?.data?.[key]) {
-            return nuxtApp.payload.data[key];
-          }
-          if (nuxtApp.static?.data?.[key]) {
-            return nuxtApp.static.data[key];
-          }
-        } catch (err) {
-          console.error(`Error retrieving cached data for key ${key}:`, err);
-        }
-        return null;
-      },
+      getCachedData: () => getCachedData(cacheKey),
       transform: (response) => {
-        try {
-          if (nuxtApp.static?.data) {
-            nuxtApp.static.data[cacheKey] = response;
-          }
-        } catch (err) {
-          console.error(`Error caching data for key ${cacheKey}:`, err);
-        }
+        setCachedData(cacheKey, response);
         return response;
       },
     }
@@ -132,7 +92,7 @@ export function useExplore() {
 
       const pricingTagMatch =
         pricingTags.length === 0 ||
-        pricingTags.some((tagName) => tool.tags.pricing?.includes(tagName));
+        pricingTags.some((tagName) => tool.tags.pricing.includes(tagName));
 
       // Check if tool matches selected licensing tags
       const licensingTags = activeTags.value
@@ -141,7 +101,7 @@ export function useExplore() {
 
       const licensingTagMatch =
         licensingTags.length === 0 ||
-        licensingTags.some((tagName) => tool.tags.licensing?.includes(tagName));
+        licensingTags.some((tagName) => tool.tags.licensing.includes(tagName));
 
       // Check if tool matches selected rating tags
       const ratingTags = activeTags.value

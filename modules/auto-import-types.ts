@@ -9,6 +9,7 @@ export default defineNuxtModule({
       'ToolHeader',
       'Alternative',
       'Review',
+      'Resources',
       'Category',
       'CategoryDatabase',
       'Tag',

@@ -11,6 +11,10 @@ export default defineNuxtConfig({
     youtubeApiKey: process.env.YOUTUBE_API_KEY
   },
 
+  nitro: {
+    compressPublicAssets: true,
+  },
+
   css: ['~/assets/styles/reset.css'],
 
   vite: {

@@ -1,29 +1,71 @@
-export function useFetchReviews(toolData: Ref<Tool | null>) {
-  const reviews = ref<Review[]>([]);
+// Composable function to fetch reviews
+// Used in: pages/tool/[name]/index.vue and pages/tool/[name]/reviews.vue
 
-  const fetchReviews = async () => {
-    if (toolData.value && toolData.value._id) {
+export function useFetchReviews(toolId?: string, initialAmount?: number) {
+  // Reactive state to hold the fetched reviews and any errors that occur
+  const reviews = ref<Review[]>([]);
+  const error = ref<Error | null>(null);
+
+  // Function to fetch reviews
+  const fetchReviews = async (amount = initialAmount) => {
+    // If toolId is not provided -> fetch it based on the name
+    if (!toolId) {
+      // Get toolName from the URL if toolId is not provided
+      const route = useRoute();
+      const toolName = route.params.name;
+
+      // Fetch tool data to get toolId if it's not provided
       try {
-        const data = await $fetch('/api/tool/reviews', {
-          params: { toolId: toolData.value._id },
+        const toolData = await $fetch<Tool>(`/api/tool/${toolName}`, {
+          params: { reviewsOnly: 'true' },
         });
-        reviews.value = data || [];
+        toolId = toolData._id; // Assign the fetched toolId
+      } catch (e) {
+        console.error('Failed to fetch tool data:', e);
+        error.value =
+          e instanceof Error ? e : new Error('Unknown error occurred');
+        return;
+      }
+    }
+
+    // If toolId is availabl, or we fetched it -> fetch reviews for the tool
+    if (toolId) {
+      try {
+        const params: any = { toolId };
+        if (amount) {
+          params.limit = amount; // Apply limit if provided
+        }
+        // Fetch reviews from the API
+        const data = await $fetch('/api/tool/reviews', { params });
+        reviews.value = data || []; // Set fetched reviews or an empty array if no data
       } catch (e) {
         console.error('Failed to fetch reviews:', e);
+        error.value =
+          e instanceof Error ? e : new Error('Unknown error occurred');
       }
+    } else {
+      error.value = new Error('Tool ID is missing');
     }
   };
 
-  watchEffect(() => {
+  // Watch effect to automatically trigger fetching whenever the reactive dependencies change
+  const stopWatch = watchEffect(() => {
     fetchReviews();
   });
 
-  const retryFetch = () => {
-    fetchReviews();
+  // Function to retry fetching
+  const retryFetch = (amount?: number) => {
+    fetchReviews(amount);
   };
+
+  // Cleanup watcher on component unmount
+  onUnmounted(() => {
+    stopWatch();
+  });
 
   return {
     reviews,
+    error,
     retryFetch,
   };
 }

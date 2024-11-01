@@ -126,12 +126,19 @@ export type Alternative = {
 };
 
 export type Review = {
-  _id: string;
-  tool: string;
-  user: string;
   comment: string;
   rating: number;
   date: string;
+  username: string;
+  userHandle: string;
+  userContributions: number | string;
+  userProfilePic: string;
+};
+
+export type Resources = {
+  link: string;
+  type: string;
+  category: string;
 };
 
 export type Category = {
@@ -155,7 +162,8 @@ export type Tag = {
 export type User = {
   id: string;
   username: string;
-  email: string;
+  picture: string;
+  handle: string;
 };
 
 export type ToolSuggestion = {

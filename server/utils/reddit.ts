@@ -4,6 +4,7 @@ interface RedditPostData {
   author: string;
   thumbnail: string;
   num_comments: number;
+  created: string;
 }
 
 export async function getRedditDiscussionInfo(url: string): Promise<{
@@ -12,6 +13,7 @@ export async function getRedditDiscussionInfo(url: string): Promise<{
   authorName: string;
   thumbnailUrl: string;
   replyCount: number;
+  created: string;
 }> {
   try {
     // Remove trailing slash if present and add .json
@@ -49,7 +51,8 @@ export async function getRedditDiscussionInfo(url: string): Promise<{
       content: postData.selftext,
       authorName: postData.author,
       thumbnailUrl: postData.thumbnail !== 'self' ? postData.thumbnail : '',
-      replyCount: postData.num_comments
+      replyCount: postData.num_comments,
+      created: postData.created
     };
   } catch (error) {
     console.error('Error fetching Reddit discussion info:', error);
@@ -58,7 +61,8 @@ export async function getRedditDiscussionInfo(url: string): Promise<{
       content: '',
       authorName: 'Unknown Author',
       thumbnailUrl: '',
-      replyCount: 0
+      replyCount: 0,
+      created: ''
     };
   }
 }

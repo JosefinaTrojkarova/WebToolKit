@@ -1,10 +1,12 @@
 <template>
   <Teleport to="body">
-    <div v-if="isOpen" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
-        <slot></slot>
+    <Transition name="modal-fade">
+      <div v-if="isOpen" class="modal-overlay" @click="closeModal" @wheel.prevent @scroll.prevent @touchmove.prevent>
+        <div class="modal-content" @click.stop>
+          <slot></slot>
+        </div>
       </div>
-    </div>
+    </Transition>
   </Teleport>
 </template>
 
@@ -31,11 +33,32 @@ const closeModal = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background-color: $system-bg;
-  padding: $xxl;
+  padding: $xl;
   border-radius: $s;
+  scale: 1;
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+
+  .modal-content {
+    scale: 1;
+    transition: scale 0.3s ease;
+  }
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+
+  .modal-content {
+    scale: 0;
+  }
 }
 </style>

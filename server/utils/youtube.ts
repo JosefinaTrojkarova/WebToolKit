@@ -21,22 +21,29 @@ function formatDuration(isoDuration: string): string {
   return `${hours ? hours + ':' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 }
 
-export async function getVideoDurationFromYouTube(videoId: string): Promise<string> {
+export async function getVideoDetailsFromYouTube(videoId: string): Promise<{ duration: string, uploadDate: string }> {
   try {
     const response = await youtube.videos.list({
-      part: ['contentDetails'],
+      part: ['contentDetails', 'snippet'],
       id: [videoId]
     })
 
-    const isoDuration = response.data.items?.[0]?.contentDetails?.duration
-    if (!isoDuration) {
-      console.warn('Duration not found in the response')
-      return 'Unknown'
+    const videoItem = response.data.items?.[0]
+
+    if (!videoItem) {
+      console.warn('Video details not found in the response')
+      return { duration: 'Unknown', uploadDate: 'Unknown' }
     }
 
-    return formatDuration(isoDuration)
+    const isoDuration = videoItem.contentDetails?.duration
+    const uploadDate = videoItem.snippet?.publishedAt
+
+    return {
+      duration: isoDuration ? formatDuration(isoDuration) : 'Unknown',
+      uploadDate: uploadDate || 'Unknown'
+    }
   } catch (error) {
-    console.error('Error fetching YouTube video duration:', error)
-    return 'Unknown'
+    console.error('Error fetching YouTube video details:', error)
+    return { duration: 'Unknown', uploadDate: 'Unknown' }
   }
 }

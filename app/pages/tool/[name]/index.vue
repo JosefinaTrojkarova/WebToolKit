@@ -2,7 +2,7 @@
     <NuxtLayout name="tool">
         <!-- Error state -->
         <div v-if="error">
-            <p>Error: {{ error.message }}</p>
+            <p>Error: {{ error?.message || alternativesError?.message }}</p>
             <button @click="retryFetch">Retry</button>
         </div>
         <!-- Working state -->
@@ -19,7 +19,7 @@
                             <h4>Rankings</h4>
                             <h3>#1 in Nevhodne Slovo</h3>
                         </div>
-                        <NuxtLink :to="data.pricingLink" target="_blank" class="pricing">
+                        <NuxtLink :to="data.pricingLink" target="_blank" title="See current pricing" class="pricing">
                             <h4>Pricing <span class="material-symbols-rounded">captive_portal</span></h4>
                             <div class="tag--static--pricing">
                                 <span class="material-symbols-rounded">attach_money</span>
@@ -53,12 +53,12 @@
             </section>
             <section class="resources">
                 <h3>Resources</h3>
-                <ul class="resources-wrapper">
+                <div class="resources-wrapper">
                     <ResourceCard v-for="(resource, index) in data.resources.slice(0, 5)" :key="index"
                         :link="resource.link" :type="resource.type">
                     </ResourceCard>
-                </ul>
-                <NuxtLink :to="`${data.name}/resources`" class="view-resources-btn">
+                </div>
+                <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/resources`" class="view-resources-btn">
                     <p>View All</p>
                 </NuxtLink>
             </section>
@@ -108,7 +108,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <NuxtLink :to="`${data.name}/reviews`" class="contribute-btn">
+                            <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
+                                class="contribute-btn">
                                 <p>Contribute</p>
                             </NuxtLink>
                         </div>
@@ -119,31 +120,13 @@
                             <button class="btn--secondary--small">Leave a Review</button>
                         </div>
                         <ul class="review-wrapper">
-                            <li v-for="review in reviews" :key="review._id" class="review">
-                                <div class="review-content-wrapper">
-                                    <div class="comment-header">
-                                        <div class="user-info">
-                                            <img src="https://play-lh.googleusercontent.com/L5OfSFUWZlLLgBrexrjWyIbKgFAzzuepGEmO6erE-9766GFA3hxRahjF2oshJZrHFw=w1400-h720"
-                                                alt="pfp" class="user-pfp">
-                                            <div class="user-details">
-                                                <p class="b1">{{ review.user }}</p>
-                                                <p class="p3">15 contributions</p>
-                                            </div>
-                                        </div>
-                                        <span class="material-symbols-rounded report-btn">report</span>
-                                    </div>
-                                    <div class="star-rating">
-                                        <span v-for="star in 5" :key="star" class="material-symbols-rounded"
-                                            :class="{ 'filled': star <= review.rating, 'empty': star > review.rating }">
-                                            star_rate
-                                        </span>
-                                    </div>
-                                    <p>{{ review.comment }}</p>
-                                </div>
-                                <p class="date p3">{{ new Date(review.date).toLocaleDateString() }}</p>
-                            </li>
+                            <div v-if="reviews.length === 0" class="no-reviews">
+                                <p>No reviews yet :(</p>
+                            </div>
+                            <Review v-else v-for="review in reviews" :data="review" :limit="6" class="review"></Review>
                         </ul>
-                        <NuxtLink :to="`${data.name}/reviews`" class="view-reviews-btn">
+                        <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
+                            class="view-reviews-btn">
                             <p>View All</p>
                         </NuxtLink>
                     </div>
@@ -155,7 +138,8 @@
                     <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
                     <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
                 </div>
-                <NuxtLink :to="`${data.name}/alternatives`" class="view-alternatives-btn">
+                <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/alternatives`"
+                    class="view-alternatives-btn">
                     <p>View All</p>
                 </NuxtLink>
             </section>
@@ -173,14 +157,21 @@ const isMounted = ref(false)
 onMounted(() => {
     isMounted.value = true
 })
+onUnmounted(() => {
+    isMounted.value = false
+})
 
 // Setup the route and data fetching
 const route = useRoute()
 const { name } = route.params
 
 const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
-const { alternatives, mainTool, retryFetch: retryAlternatives } = useFetchAlternatives(data)
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data)
+const { alternatives, mainTool, error: alternativesError, retryFetch: retryAlternatives } = useFetchAlternatives(
+    data?.value?._id,
+    data?.value?.alternatives,
+    3
+)
+const { reviews, retryFetch: retryReviews } = useFetchReviews(data?.value?._id, 3)
 
 const retryFetch = () => {
     retryToolData()
@@ -361,6 +352,7 @@ main {
             display: grid;
             grid-template-columns: repeat(5, minmax(20rem, 1fr));
             width: 100%;
+            height: 30rem;
 
             gap: $m;
         }
@@ -528,6 +520,10 @@ main {
 
                             gap: $m;
 
+                            p {
+                                text-wrap: nowrap;
+                            }
+
                             .votes-wrapper {
                                 display: flex;
                                 flex-direction: row;
@@ -620,109 +616,17 @@ main {
 
                     gap: $m;
 
-                    .review {
+                    .no-reviews {
                         display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
+                        justify-content: center;
+                        align-items: center;
 
-                        flex-grow: 1;
+                        width: 100%;
+                        height: 100%;
+                    }
 
-                        padding: $xl;
-
-                        border: 1px solid $primary-200;
-                        border-radius: $m;
-
-                        cursor: pointer;
-                        transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
-
-                        .review-content-wrapper {
-                            display: flex;
-                            flex-direction: column;
-
-                            gap: $xs;
-
-                            .comment-header {
-                                display: flex;
-                                flex-direction: row;
-                                justify-content: space-between;
-                                align-items: flex-start;
-
-                                gap: $s;
-                                padding-bottom: $s;
-
-                                .user-info {
-                                    display: flex;
-                                    flex-direction: row;
-                                    align-items: center;
-
-                                    gap: $m;
-
-                                    .user-pfp {
-                                        width: 3rem;
-                                        height: 3rem;
-
-                                        border-radius: 50%;
-                                    }
-
-                                    .user-details {
-                                        display: flex;
-                                        flex-direction: column;
-
-                                        .p3 {
-                                            color: $primary-300;
-                                        }
-                                    }
-                                }
-
-                                .report-btn {
-                                    color: $primary-400;
-                                    cursor: pointer;
-                                    user-select: none;
-
-                                    font-size: 2rem;
-                                    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
-                                }
-                            }
-
-                            .star-rating {
-                                display: inline-flex;
-
-                                gap: 0.2rem;
-
-                                user-select: none;
-
-                                .material-symbols-rounded {
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-
-                                    width: 1.1rem;
-                                    height: 1.1rem;
-
-                                    font-size: 1.6rem;
-                                    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
-
-                                    user-select: none;
-
-                                    &.filled {
-                                        color: $secondary-400;
-                                    }
-
-                                    &.empty {
-                                        color: $primary-100;
-                                    }
-                                }
-                            }
-                        }
-
-                        .date {
-                            color: $gray-50;
-                        }
-
-                        &:hover {
-                            box-shadow: $shadow-300;
-                            transform: translateY(-0.3rem);
-                        }
+                    .review {
+                        flex: 1;
                     }
                 }
 
