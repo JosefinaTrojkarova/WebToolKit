@@ -17,7 +17,7 @@
         <div class="buttons">
           <NuxtLink class="btn--primary--large web-btn" :to="headerData.website" target="_blank">Visit Website <span
               class="material-symbols-rounded">captive_portal</span></NuxtLink>
-          <button class="btn--secondary--large--icon dropdown-btn" @click="openDropdown(0)">Contribute <span
+          <!-- <button class="btn--secondary--large--icon dropdown-btn" @click="openDropdown(0)">Contribute <span
               class="material-symbols-rounded">keyboard_arrow_down</span>
             <Dropdown :open="isDropdownOpen" :id="0" @close="closeDropdown" class="dropdown">
               <button class="dropdown--item">
@@ -33,7 +33,7 @@
                 <span class="material-symbols-rounded">warning</span>
               </button>
             </Dropdown>
-          </button>
+          </button> -->
           <button class="save" @click="toggleActive" :class="{ active: isActive }" title="Save to list">
             <span class="material-symbols-rounded">bookmark</span>
           </button>
@@ -51,13 +51,13 @@
 <script lang="ts" setup>
 const route = useRoute()
 const { headerData, fetchHeaderData } = useFetchHeaderData()
-const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0])
+// const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0])
 
 const links = [
   { name: 'Overview', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}` },
   { name: 'Reviews', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/reviews` },
   { name: 'Alternatives', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/alternatives` },
-  { name: 'Resources', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/resources` },
+  // { name: 'Resources', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/resources` },
 ]
 
 const isPathActive = (path: string) => {

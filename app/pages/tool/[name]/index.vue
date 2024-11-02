@@ -51,7 +51,7 @@
                         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
             </section>
-            <section class="resources">
+            <!-- <section class="resources">
                 <h3>Resources</h3>
                 <div class="resources-wrapper">
                     <ResourceCard v-for="(resource, index) in data.resources.slice(0, 5)" :key="index"
@@ -61,7 +61,7 @@
                 <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/resources`" class="view-resources-btn">
                     <p>View All</p>
                 </NuxtLink>
-            </section>
+            </section> -->
             <section class="user-sentiment">
                 <h3>User Sentiment</h3>
                 <div class="user-sentiment-wrapper">

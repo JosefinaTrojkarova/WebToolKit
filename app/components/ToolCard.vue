@@ -20,12 +20,12 @@
           <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
         </div>
       </div>
-      <label class="select" @click.stop>
+      <!-- <label class="select" @click.stop>
         <input class="checkbox-default" type="checkbox">
         <span class="checkbox">
           <span class="material-symbols-rounded check-icon">check</span>
         </span>
-      </label>
+      </label> -->
     </div>
     <div class="main">
       <p class="item-description">{{ data.description }}</p>
@@ -38,12 +38,12 @@
   </div>
 
   <div v-else-if="alt === 'main'" class="alternative" id="main">
-    <label class="select" @click.stop>
+    <!-- <label class="select" @click.stop>
       <input class="checkbox-default" type="checkbox">
       <span class="checkbox">
         <span class="material-symbols-rounded check-icon">check</span>
       </span>
-    </label>
+    </label> -->
     <img class="logo" :src="data.logo || ''" :alt="data.name" />
     <div class="info">
       <h3>{{ data.name }}</h3>
@@ -95,12 +95,12 @@
 
   <NuxtLink v-else :to="`/tool/${data.name.toLowerCase().replace(/\s+/g, '-')}`">
     <div v-if="data.pros !== undefined" class="alternative">
-      <label class="select" @click.stop>
+      <!-- <label class="select" @click.stop>
         <input class="checkbox-default" type="checkbox">
         <span class="checkbox">
           <span class="material-symbols-rounded check-icon">check</span>
         </span>
-      </label>
+      </label> -->
       <img class="logo" :src="data.logo" :alt="data.name" />
       <div class="info">
         <h3>{{ data.name }}</h3>
@@ -171,12 +171,12 @@
             <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
           </div>
         </div>
-        <label class="select" @click.stop>
+        <!-- <label class="select" @click.stop>
           <input class="checkbox-default" type="checkbox">
           <span class="checkbox">
             <span class="material-symbols-rounded check-icon">check</span>
           </span>
-        </label>
+        </label> -->
       </div>
       <div class="main">
         <p class="item-description">{{ data.description }}</p>

@@ -8,8 +8,8 @@
     </div>
     <div class="buttons">
       <NuxtLink to="/explore" class="btn--primary--large">Explore</NuxtLink>
-      <p>or</p>
-      <NuxtLink to="/quiz" class="btn--secondary--large">Quiz</NuxtLink>
+      <!-- <p>or</p>
+      <NuxtLink to="/quiz" class="btn--secondary--large">Quiz</NuxtLink> -->
       <p>or</p>
       <span class="material-symbols-rounded" @click="startSlowdownEffect(engine)()">bomb</span>
     </div>
