@@ -39,7 +39,7 @@
             <slot />
         </main>
 
-        <footer v-if="name !== 'index'" class="layout__footer">
+        <footer v-if="$route.path !== '/'" class="layout__footer">
             <div class="footer__links">
                 <div class="links">
                     <p class="links__title b1">Use cases</p>
