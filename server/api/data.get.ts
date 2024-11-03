@@ -1,18 +1,18 @@
-// API endpoint to get basic data about all the tools from the database.
+// API endpoint to get basic data about all the tools from the database and search throught them.
+
+import mongoose from 'mongoose';
 
 export default defineEventHandler(async (event) => {
   try {
-    const mongoClient = await getMongoClient();
+    await connectToDatabase();
+
+    const database = mongoose.connection.useDb('Tools');
+    const collection = database.collection('Main');
 
     // Parse query parameters from the request
     const query = getQuery(event);
     const explore = query.explore === 'true';
-    const contribute = query.contribute === 'true';
     const searchQuery = query.search as string;
-
-    // Connect to the 'Tools' database and the 'Main' collection
-    const database = mongoClient.db('Tools');
-    const collection = database.collection('Main');
 
     let data;
 
@@ -77,8 +77,6 @@ export default defineEventHandler(async (event) => {
                   saves: 1,
                 },
               }
-            : contribute
-            ? { name: 1 }
             : {},
         },
       ];
@@ -99,8 +97,6 @@ export default defineEventHandler(async (event) => {
             'rating.reviews': 1,
             'rating.saves': 1,
           }
-        : contribute
-        ? { name: 1 }
         : {};
 
       // Execute the regular query and store the results

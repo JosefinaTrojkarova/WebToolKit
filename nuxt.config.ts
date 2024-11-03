@@ -8,7 +8,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
-    youtubeApiKey: process.env.YOUTUBE_API_KEY
+    youtubeApiKey: process.env.YOUTUBE_API_KEY,
   },
 
   nitro: {
@@ -22,6 +22,7 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData: '@use "~/assets/styles/global.scss" as *;',
+          api: 'modern-compiler',
         },
       },
     },

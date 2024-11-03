@@ -12,13 +12,12 @@
   },
   "dependencies": {
     "@types/matter-js": "^0.19.7",
-    "@types/mongodb": "^4.0.7",
     "@vercel/speed-insights": "^1.0.14",
     "cheerio": "^1.0.0",
     "googleapis": "^144.0.0",
     "matter-js": "^0.20.0",
     "matter-wrap": "^0.2.0",
-    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.0",
     "v-click-outside": "^3.2.0",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"

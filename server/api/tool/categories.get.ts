@@ -1,11 +1,13 @@
 // API endpoint to get data about categories from the database
 
+import mongoose from 'mongoose';
+
 export default defineEventHandler(async (event) => {
   try {
-    const mongoClient = await getMongoClient();
+    await connectToDatabase();
 
-    const database = mongoClient.db('Tools');
-    const collection = database.collection('Categories');
+    const database = mongoose.connection.useDb('Tools');
+    const collection = database.collection('Main');
 
     // Fetch all categories from the collection
     const data = await collection.find({}).toArray();
