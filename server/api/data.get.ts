@@ -1,5 +1,4 @@
-// Purpose: API endpoint to get basic data about all the tools from the database.
-// Used in: pages\explore.vue and pages\wiki\contribute
+// API endpoint to get basic data about all the tools from the database.
 
 export default defineEventHandler(async (event) => {
   try {
