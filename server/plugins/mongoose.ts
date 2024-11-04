@@ -1,3 +1,5 @@
+// Plugin to connect to database
+
 import mongoose from 'mongoose';
 
 export default defineNitroPlugin(async (nitroApp) => {

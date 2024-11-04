@@ -1,6 +1,6 @@
 <template>
     <div class="sign">
-        <NuxtLink class="sign__logo" to="/">WebToolKit</NuxtLink>
+        <!-- <NuxtLink class="sign__logo" to="/">WebToolKit</NuxtLink> -->
         <h2 class="sign__title">Sign In</h2>
         <div class="sign__options">
             <button class="option option--google" @click="signInWithProvider('google')">
@@ -8,7 +8,7 @@
                 Continue with Google
             </button>
 
-            <div class="options__social">
+            <!-- <div class="options__social">
                 <button class="option option--apple" @click="signInWithProvider('apple')">
                     <span class="search-icon material-symbols-rounded">search</span>
                 </button>
@@ -18,7 +18,7 @@
                 <button class="option option--github" @click="signInWithProvider('github')">
                     <span class="search-icon material-symbols-rounded">search</span>
                 </button>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -26,7 +26,7 @@
 <script setup lang="ts">
 const signInWithProvider = (provider: string) => {
     // Handle social login here
-    // For example, use $auth.loginWith(provider) if using Nuxt Auth
+    // For example, use $auth.loginWith(provider) 
     console.log(`Sign in with ${provider}`)
 }
 </script>
