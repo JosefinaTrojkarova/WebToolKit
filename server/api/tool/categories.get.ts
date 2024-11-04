@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     await connectToDatabase();
 
     const database = mongoose.connection.useDb('Tools');
-    const collection = database.collection('Main');
+    const collection = database.collection('Categories');
 
     // Fetch all categories from the collection
     const data = await collection.find({}).toArray();
