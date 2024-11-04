@@ -10,6 +10,10 @@ export default defineNuxtConfig({
     mongodbUri: process.env.MONGODB_URI,
     youtubeApiKey: process.env.YOUTUBE_API_KEY,
 
+    public: {
+      authOrigin: process.env.AUTH_ORIGIN,
+    },
+
     auth: {
       secret: process.env.AUTH_SECRET,
     },
