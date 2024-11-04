@@ -1,8 +1,15 @@
-export default defineNitroPlugin(async () => {
+import mongoose from 'mongoose';
+
+export default defineNitroPlugin(async (nitroApp) => {
   try {
     await connectToDatabase();
-    console.log('MongoDB connected successfully.');
+
+    nitroApp.hooks.hook('request', async () => {
+      if (!mongoose.connection.readyState) {
+        await connectToDatabase();
+      }
+    });
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
+    console.error('Failed to connect to MongoDB in plugin:', error);
   }
 });
