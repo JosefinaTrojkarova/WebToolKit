@@ -24,10 +24,14 @@
 </template>
 
 <script setup lang="ts">
-const signInWithProvider = (provider: string) => {
-    // Handle social login here
-    // For example, use $auth.loginWith(provider) 
-    console.log(`Sign in with ${provider}`)
+const { signIn } = useAuth()
+
+const signInWithProvider = async (provider: string) => {
+    try {
+        await signIn(provider)
+    } catch (error) {
+        console.error(`Error signing in with ${provider}:`, error)
+    }
 }
 </script>
 

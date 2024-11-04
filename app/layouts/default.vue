@@ -27,7 +27,9 @@
                     <!-- <button class="btn btn--secondary--small">
                         <NuxtLink class="link" to="/wiki/contribute">Add a Tool</NuxtLink>
                     </button> -->
-                    <button class="btn btn--primary--small" @click="openModal">Sign In</button>
+                    <NuxtLink v-if="data" class="btn btn--primary--small" :to="`/user/@${data.user?.name}`">View Profile
+                    </NuxtLink>
+                    <button v-else class="btn btn--primary--small" @click="openModal">Sign In</button>
                 </div>
                 <Modal :is-open="isModalOpen" @close="closeModal">
                     <SignIn />
@@ -109,6 +111,7 @@
 <script setup lang="ts">
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
 const { name } = useRoute()
+const { data } = useAuth();
 
 const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 

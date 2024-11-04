@@ -9,6 +9,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     mongodbUri: process.env.MONGODB_URI,
     youtubeApiKey: process.env.YOUTUBE_API_KEY,
+
+    auth: {
+      secret: process.env.AUTH_SECRET,
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
   },
 
   nitro: {
@@ -71,7 +79,20 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@nuxt/test-utils/module', '~~/modules/auto-import-types'],
+  modules: [
+    '@nuxt/test-utils/module',
+    '~~/modules/auto-import-types',
+    '@sidebase/nuxt-auth',
+  ],
+
+  auth: {
+    provider: {
+      type: 'authjs',
+      trustHost: false,
+      defaultProvider: 'google',
+      addDefaultCallbackUrl: true,
+    },
+  },
 
   typescript: {
     typeCheck: true,
@@ -79,7 +100,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ['server/utils'],
+    dirs: ['server/utils', 'server/models'],
   },
 
   compatibilityDate: '2024-07-31',

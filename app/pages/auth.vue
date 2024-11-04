@@ -1,7 +1,5 @@
 <template>
     <div>
-        <Register />
-        <Login />
     </div>
 </template>
 
