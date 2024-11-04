@@ -26,6 +26,7 @@ export default NuxtAuthHandler({
           handle: user.name,
           email: user.email,
           image: user.image,
+          contributions: 0,
         });
       }
       return true;
