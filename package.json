@@ -28,7 +28,7 @@
     "@nuxt/types": "^2.18.1",
     "@sidebase/nuxt-auth": "^0.9.4",
     "@vue/test-utils": "^2.4.6",
-    "happy-dom": "^15.8.3",
+    "happy-dom": "^15.9.0",
     "nuxt": "^3.14.0",
     "playwright-core": "^1.48.2",
     "sass": "^1.80.6",
