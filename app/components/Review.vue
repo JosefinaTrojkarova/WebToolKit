@@ -64,8 +64,6 @@ const props = defineProps<{
   limit?: number
 }>()
 
-const clickable = props.limit ? 'clickable' : ''
-
 const handleOpenModal = () => {
   openModal()
 }
