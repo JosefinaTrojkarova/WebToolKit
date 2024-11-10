@@ -1,10 +1,16 @@
-// import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
-// const userSchema = new mongoose.Schema({
-//   username: String,
-//   handle: String,
-//   email: { type: String, unique: true },
-//   picture: String,
-// });
+const User = mongoose.model(
+  'User',
+  new mongoose.Schema({
+    name: String,
+    handle: String,
+    email: String,
+    image: String,
+    contributions: Number,
+  })
+);
 
-// export default mongoose.models.User || mongoose.model('User', userSchema);
+export default mongoose.models.User || mongoose.model('User');
+
+// Not Used Yet

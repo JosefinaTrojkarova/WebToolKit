@@ -27,7 +27,7 @@
                     <!-- <button class="btn btn--secondary--small">
                         <NuxtLink class="link" to="/wiki/contribute">Add a Tool</NuxtLink>
                     </button> -->
-                    <NuxtLink v-if="data" class="btn btn--primary--small" :to="`/user/@${data.user?.name}`" external>
+                    <NuxtLink v-if="data" class="btn btn--primary--small" :to="`/user/@${handle}`" external>
                         View Profile
                     </NuxtLink>
                     <button v-else class="btn btn--primary--small" @click="openModal">Sign In</button>
@@ -113,6 +113,13 @@
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
 const { name } = useRoute()
 const { data } = useAuth();
+const { handle, fetchHandle } = useUserHandle()
+
+watchEffect(async () => {
+    if (data.value?.user?.email) {
+        await fetchHandle(data.value.user.email)
+    }
+})
 
 const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 
