@@ -6,7 +6,7 @@
         <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <button class="sort" @click="openDropdown(0)">
+    <!-- <button class="sort" @click="openDropdown(0)">
       <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
@@ -14,7 +14,7 @@
       <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
       <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
       <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
-    </Dropdown>
+    </Dropdown> -->
   </div>
   <div v-else-if="type === 'alternatives'" class="search-tools"
     :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
@@ -29,7 +29,7 @@
         <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <button class="sort" @click="openDropdown(1)">
+    <!-- <button class="sort" @click="openDropdown(1)">
       <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
@@ -37,7 +37,7 @@
       <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
       <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
       <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
-    </Dropdown>
+    </Dropdown> -->
   </div>
   <div v-else-if="type === 'resources'" class="search-tools"
     :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">

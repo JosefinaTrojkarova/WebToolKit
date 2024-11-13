@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@types/matter-js": "^0.19.7",
-    "@vercel/speed-insights": "^1.0.14",
+    "@vercel/speed-insights": "^1.1.0",
     "cheerio": "^1.0.0",
     "googleapis": "^144.0.0",
     "matter-js": "^0.20.0",
     "matter-wrap": "^0.2.0",
-    "mongoose": "^8.8.0",
+    "mongoose": "^8.8.1",
     "next-auth": "4.21.1",
     "v-click-outside": "^3.2.0",
     "vue": "^3.5.12",
@@ -28,10 +28,10 @@
     "@nuxt/types": "^2.18.1",
     "@sidebase/nuxt-auth": "^0.9.4",
     "@vue/test-utils": "^2.4.6",
-    "happy-dom": "^15.9.0",
-    "nuxt": "^3.14.0",
+    "happy-dom": "^15.11.4",
+    "nuxt": "^3.14.159",
     "playwright-core": "^1.48.2",
-    "sass": "^1.80.6",
+    "sass": "^1.80.7",
     "typescript": "^5.6.3",
     "vue-tsc": "^2.1.10"
   }

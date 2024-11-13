@@ -1,42 +1,30 @@
 <template>
     <div>
-        <h1>{{ data?.user?.name }}</h1>
+        <h1>@{{ handle }}</h1>
         <div v-if="data">
-            <p>Welcome, {{ data?.user?.name }}!</p>
-            <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image" />
-            <p>Email: {{ data?.user?.email }}</p>
+            <p>Welcome, {{ data.name }}!</p>
+            <img v-if="data.image" :src="data.image" alt="Profile picture" class="profile-image" />
+            <p>Email: {{ data.email }}</p>
         </div>
-        <div v-else>
-            <p>You are not logged in.</p>
+        <div v-else-if="error">
+            <p>{{ error.message }}</p>
         </div>
-
-        <h2>Profile Functions:</h2>
-        <button class="signOut" @click="signOut({ callbackUrl: '/' })">Sign
-            Out</button>
-        <br>
-        <button class="deleteAcc" @click="handleDeleteAccount">
-            Delete Account
-        </button>
     </div>
 </template>
 
 <script lang="ts" setup>
-const { data, signOut } = useAuth()
-
-const { deleteAccount } = useAccount()
-
-const handleDeleteAccount = async () => {
-    if (!data.value?.user?.email) return
-
-    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        try {
-            await deleteAccount(data.value.user.email)
-            await signOut({ callbackUrl: '/' })
-        } catch (e) {
-            console.error('Failed to delete account:', e)
-        }
-    }
+interface publicUser {
+    handle: string;
+    name: string;
+    email: string;
+    image: string;
 }
+
+const route = useRoute();
+const handle = route.params.handle as string;
+
+const { data, error } = await useFetch<publicUser>(`/api/user/${handle}`, { method: 'GET' });
+console.log(data)
 </script>
 
 <style scoped>
