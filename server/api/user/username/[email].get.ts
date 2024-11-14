@@ -2,14 +2,13 @@ import mongoose from 'mongoose';
 
 export default defineEventHandler(async (event) => {
   const params = event.context.params;
-
-  if (!params) {
+  if (!params || !params.email) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Handle parameter is missing',
+      statusMessage: 'Email parameter is missing',
     });
   }
-  const handle = params.email;
+  const { email } = params;
 
   try {
     await connectToDatabase();
@@ -18,8 +17,8 @@ export default defineEventHandler(async (event) => {
     const collection = database.collection('Users');
 
     const user = await collection.findOne(
-      { handle },
-      { projection: { handle: 1, email: 1, name: 1, image: 1 } }
+      { email },
+      { projection: { username: 1 } }
     );
 
     if (!user) {
@@ -29,7 +28,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    return { user };
+    return { username: user.username };
   } catch (error) {
     console.error('Detailed error:', error);
 

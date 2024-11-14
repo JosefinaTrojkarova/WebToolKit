@@ -1,17 +1,17 @@
-export const useUserHandle = () => {
-  const handle = ref<string | null>(null);
+export const useUsername = () => {
+  const username = ref<string | null>(null);
   const error = ref<string | null>(null);
-  interface UserHandleResponse {
-    handle: string;
+  interface UsernameResponse {
+    username: string;
   }
 
-  const fetchHandle = async (email: string) => {
+  const fetchUsername = async (email: string) => {
     error.value = null;
-    handle.value = null;
+    username.value = null;
 
     try {
-      const response = await useFetch<UserHandleResponse>(
-        `/api/user/handle/${email}`,
+      const response = await useFetch<UsernameResponse>(
+        `/api/user/username/${email}`,
         { method: 'GET' }
       );
 
@@ -25,23 +25,23 @@ export const useUserHandle = () => {
             error.value = 'User not found';
             break;
           default:
-            error.value = 'Failed to fetch user handle';
+            error.value = 'Failed to fetch user username';
         }
         return;
       }
 
       if (response.data.value) {
-        handle.value = response.data.value.handle;
+        username.value = response.data.value.username;
       }
     } catch (e) {
       error.value = 'An unexpected error occurred';
-      console.error('Error fetching user handle:', e);
+      console.error('Error fetching user username:', e);
     }
   };
 
   return {
-    handle,
+    username,
     error,
-    fetchHandle,
+    fetchUsername,
   };
 };

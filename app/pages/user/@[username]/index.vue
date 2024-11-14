@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>@{{ handle }}</h1>
+        <h1>@{{ username }}</h1>
         <div v-if="data">
             <p>Welcome, {{ data.name }}!</p>
             <img v-if="data.image" :src="data.image" alt="Profile picture" class="profile-image" />
@@ -14,17 +14,16 @@
 
 <script lang="ts" setup>
 interface publicUser {
-    handle: string;
+    username: string;
     name: string;
     email: string;
     image: string;
 }
 
 const route = useRoute();
-const handle = route.params.handle as string;
+const username = route.params.username as string;
 
-const { data, error } = await useFetch<publicUser>(`/api/user/${handle}`, { method: 'GET' });
-console.log(data)
+const { data, error } = await useFetch<publicUser>(`/api/user/${username}`, { method: 'GET' });
 </script>
 
 <style scoped>

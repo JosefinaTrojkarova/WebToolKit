@@ -1,4 +1,4 @@
-// Function to generate unique handle
+// Function to generate unique username
 
 export async function generateUniqueUsername(
   name: string | undefined | null,
@@ -8,27 +8,29 @@ export async function generateUniqueUsername(
     return `user-${Date.now()}`;
   }
 
-  const baseHandle = name
+  const baseUsername = name
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, '-');
 
-  const existingWithHandle = await collection
+  const existingWithUsername = await collection
     .find({
-      handle: new RegExp(`^${baseHandle}(-\\d+)?$`),
+      username: new RegExp(`^${baseUsername}(-\\d+)?$`),
     })
     .toArray();
 
-  if (existingWithHandle.length === 0) {
-    return baseHandle;
+  if (existingWithUsername.length === 0) {
+    return baseUsername;
   }
 
-  const handles = existingWithHandle.map((u: { handle: string }) => u.handle);
+  const usernames = existingWithUsername.map(
+    (u: { username: string }) => u.username
+  );
   let maxNum = 0;
 
-  handles.forEach((handle: string) => {
-    const match = handle.match(/-(\d+)$/);
+  usernames.forEach((username: string) => {
+    const match = username.match(/-(\d+)$/);
     if (match && match[1]) {
       const num = parseInt(match[1], 10);
       if (num > maxNum) {
@@ -37,5 +39,5 @@ export async function generateUniqueUsername(
     }
   });
 
-  return `${baseHandle}-${maxNum + 1}`;
+  return `${baseUsername}-${maxNum + 1}`;
 }

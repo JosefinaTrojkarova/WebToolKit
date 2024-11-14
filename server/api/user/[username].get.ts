@@ -1,14 +1,17 @@
+// Fetch user by username
+
 import mongoose from 'mongoose';
 
 export default defineEventHandler(async (event) => {
   const params = event.context.params;
-  if (!params || !params.email) {
+
+  if (!params) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Email parameter is missing',
+      statusMessage: 'Username parameter is missing',
     });
   }
-  const { email } = params;
+  const username = params.email;
 
   try {
     await connectToDatabase();
@@ -17,8 +20,8 @@ export default defineEventHandler(async (event) => {
     const collection = database.collection('Users');
 
     const user = await collection.findOne(
-      { email },
-      { projection: { handle: 1 } }
+      { username },
+      { projection: { username: 1, email: 1, name: 1, image: 1 } }
     );
 
     if (!user) {
@@ -28,7 +31,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    return { handle: user.handle };
+    return { user };
   } catch (error) {
     console.error('Detailed error:', error);
 
