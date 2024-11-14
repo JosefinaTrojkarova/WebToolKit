@@ -1,6 +1,6 @@
 // Function to generate unique handle
 
-export async function generateUniqueHandle(
+export async function generateUniqueUsername(
   name: string | undefined | null,
   collection: any
 ): Promise<string> {
@@ -28,10 +28,12 @@ export async function generateUniqueHandle(
   let maxNum = 0;
 
   handles.forEach((handle: string) => {
-    const match = handle.match(new RegExp(`^${baseHandle}-?(\\d*)$`));
+    const match = handle.match(/-(\d+)$/);
     if (match && match[1]) {
-      const num = parseInt(match[1]);
-      if (num > maxNum) maxNum = num;
+      const num = parseInt(match[1], 10);
+      if (num > maxNum) {
+        maxNum = num;
+      }
     }
   });
 

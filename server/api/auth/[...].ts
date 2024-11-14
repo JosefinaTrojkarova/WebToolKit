@@ -1,7 +1,7 @@
 import { NuxtAuthHandler } from '#auth';
 import GoogleProvider from 'next-auth/providers/google';
 import mongoose from 'mongoose';
-import { generateUniqueHandle } from '../../utils/generateHandle';
+import { generateUniqueUsername } from '../../utils/generateUsername';
 
 export default NuxtAuthHandler({
   secret: process.env.AUTH_SECRET,
@@ -18,23 +18,34 @@ export default NuxtAuthHandler({
   },
   callbacks: {
     async signIn({ user }) {
-      await connectToDatabase();
+      try {
+        await connectToDatabase();
 
-      const database = mongoose.connection.useDb('User');
-      const collection = database.collection('Users');
+        const database = mongoose.connection.useDb('User');
+        const collection = database.collection('Users');
 
-      const existingUser = await collection.findOne({ email: user.email });
+        const existingUser = await collection.findOne({ email: user.email });
 
-      if (!existingUser && user.name) {
-        await collection.insertOne({
-          name: user.name,
-          handle: await generateUniqueHandle(user.name, collection),
-          email: user.email,
-          image: user.image,
-          contributions: 0,
-        });
+        if (!existingUser && user.name) {
+          const username = await generateUniqueUsername(user.name, collection);
+
+          if (!username) {
+            throw new Error('Failed to generate a unique username.');
+          }
+
+          await collection.insertOne({
+            name: user.name,
+            username,
+            email: user.email,
+            image: user.image,
+          });
+        }
+
+        return true;
+      } catch (error) {
+        console.error('SignIn error:', error);
+        return false;
       }
-      return true;
     },
     async session({ session }: { session: any }) {
       await connectToDatabase();
