@@ -10,31 +10,20 @@ export const useUsername = () => {
     username.value = null;
 
     try {
-      const response = await useFetch<UsernameResponse>(
+      const response = await $fetch<UsernameResponse>(
         `/api/user/username/${email}`,
         { method: 'GET' }
       );
 
-      if (response.error.value) {
-        const statusCode = response.error.value?.statusCode;
-        switch (statusCode) {
-          case 400:
-            error.value = 'Email is required';
-            break;
-          case 404:
-            error.value = 'User not found';
-            break;
-          default:
-            error.value = 'Failed to fetch user username';
-        }
-        return;
+      username.value = response.username;
+    } catch (e: any) {
+      if (e.response?.status === 400) {
+        error.value = 'Email is required';
+      } else if (e.response?.status === 404) {
+        error.value = 'User not found';
+      } else {
+        error.value = 'Failed to fetch user username';
       }
-
-      if (response.data.value) {
-        username.value = response.data.value.username;
-      }
-    } catch (e) {
-      error.value = 'An unexpected error occurred';
       console.error('Error fetching user username:', e);
     }
   };
