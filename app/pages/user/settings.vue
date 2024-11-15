@@ -5,24 +5,22 @@
             <p>Welcome, {{ data?.user?.name }}!</p>
             <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image" />
             <p>Email: {{ data?.user?.email }}</p>
+            <h2>Profile Functions:</h2>
+            <button class="signOut" @click="signOut({ callbackUrl: '/' })">Sign
+                Out</button>
+            <br>
+            <button class="deleteAcc" @click="handleDeleteAccount">
+                Delete Account
+            </button>
         </div>
         <div v-else>
             <p>You are not logged in.</p>
         </div>
-
-        <h2>Profile Functions:</h2>
-        <button class="signOut" @click="signOut({ callbackUrl: '/' })">Sign
-            Out</button>
-        <br>
-        <button class="deleteAcc" @click="handleDeleteAccount">
-            Delete Account
-        </button>
     </div>
 </template>
 
 <script lang="ts" setup>
 const { data, signOut } = useAuth()
-
 const { deleteAccount } = useAccount()
 
 const handleDeleteAccount = async () => {

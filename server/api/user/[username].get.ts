@@ -3,25 +3,23 @@
 import mongoose from 'mongoose';
 
 export default defineEventHandler(async (event) => {
-  const params = event.context.params;
+  const username = event.context.params?.email;
 
-  if (!params) {
+  if (!username) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Username parameter is missing',
     });
   }
-  const username = params.email;
 
   try {
     await connectToDatabase();
 
-    const database = mongoose.connection.useDb('User');
-    const collection = database.collection('Users');
+    const collection = mongoose.connection.useDb('User').collection('Users');
 
     const user = await collection.findOne(
       { username },
-      { projection: { username: 1, email: 1, name: 1, image: 1 } }
+      { projection: { _id: 0, username: 1, name: 1, image: 1 } }
     );
 
     if (!user) {

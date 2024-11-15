@@ -27,7 +27,7 @@
                     <!-- <button class="btn btn--secondary--small">
                         <NuxtLink class="link" to="/wiki/contribute">Add a Tool</NuxtLink>
                     </button> -->
-                    <NuxtLink v-if="data" class="btn btn--primary--small" :to="`/user/@${username}/settings`" external>
+                    <NuxtLink v-if="data" class="btn btn--primary--small" :to="`/user/settings`" external>
                         View Profile
                     </NuxtLink>
                     <button v-else class="btn btn--primary--small" @click="openModal">Sign In</button>

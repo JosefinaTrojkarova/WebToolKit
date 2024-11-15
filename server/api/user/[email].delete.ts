@@ -20,8 +20,7 @@ export default defineEventHandler(async (event) => {
 
     await connectToDatabase();
 
-    const database = mongoose.connection.useDb('User');
-    const collection = database.collection('Users');
+    const collection = mongoose.connection.useDb('User').collection('Users');
 
     const result = await collection.deleteOne({ email });
 
