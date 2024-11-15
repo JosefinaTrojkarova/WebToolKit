@@ -65,9 +65,9 @@ const isPathActive = (path: string) => {
 }
 
 // Fetch header data when the layout is created
-onMounted(() => {
+onMounted(async () => {
   if (route.params.name) {
-    fetchHeaderData()
+    await fetchHeaderData()
   }
 })
 

@@ -204,7 +204,7 @@ onMounted(() => {
         hasSlowedDown = false,
         speedUpTime: number | null = null;
 
-      console.log("Slowdown effect started");
+      //console.log("Slowdown effect started");
 
       eventListener = (event: any) => {
         let timeScale = (event.delta || (1000 / 60)) / 1000;
@@ -230,7 +230,7 @@ onMounted(() => {
             setTimeout(() => {
               Events.off(engine, 'afterUpdate', eventListener);
               isRunning = false;
-              console.log("Slowdown effect completed");
+              //console.log("Slowdown effect completed");
             }, 1500);
           }
 
@@ -238,7 +238,7 @@ onMounted(() => {
           lastTime = currentTime;
         }
 
-        console.log("Current timeScale:", engine.timing.timeScale);
+        //console.log("Current timeScale:", engine.timing.timeScale);
       };
 
       Events.on(engine, 'afterUpdate', eventListener);

@@ -1,12 +1,12 @@
 <template>
   <NuxtLayout name="tool">
     <!-- Error state -->
-    <div v-if="error">
+    <!-- <div v-if="error">
       <p>Error: {{ error?.message }}</p>
       <button @click="retryFetch">Retry</button>
-    </div>
+    </div> -->
     <!-- Working state -->
-    <main v-else-if="isMounted && data">
+    <!-- <main v-else-if="isMounted && data">
       <div class="resource-cta">
         <p>Got any valuable videos, articles or discussions about {{ name }}? Help us by suggesting them!</p>
         <button class="btn--secondary--small">Suggest a Resource</button>
@@ -52,16 +52,16 @@
           </div>
         </div>
       </div>
-    </main>
+    </main> -->
     <!-- Loading state -->
-    <div v-else class="loading">
+    <div class="loading">
       <h4>One moment please...</h4>
     </div>
   </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
-// Hydration mismatch prevention
+/* // Hydration mismatch prevention
 const isMounted = ref(false)
 onMounted(() => {
   isMounted.value = true
@@ -100,7 +100,7 @@ const comparisonResources = computed(() => {
 
 const fromCreatorsResources = computed(() => {
   return filteredItems.value.filter((resource: Resources) => resource.category === 'From the creators')
-})
+}) */
 </script>
 
 <style scoped lang="scss">

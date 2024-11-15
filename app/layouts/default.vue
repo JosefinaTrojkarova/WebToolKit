@@ -118,7 +118,6 @@ const { username, fetchUsername } = useUsername()
 watchEffect(async () => {
     if (data.value?.user?.email) {
         await fetchUsername(data.value.user.email)
-        console.log(username)
     }
 })
 

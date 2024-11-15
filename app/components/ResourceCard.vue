@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div v-if="loading" class="loading"></div>
   <div v-else-if="error" class="resource" id="error">
     <main>
@@ -185,4 +185,4 @@ const { preview, loading, error } = useLinkPreview(props.link, props.type)
     transform: none;
   }
 }
-</style>
+</style> -->
