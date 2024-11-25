@@ -6,6 +6,7 @@ export function useFetchToolData(name: string) {
 
   // Fetch specific tool data and cache it
   const { data, error, refresh } = useFetch<ToolMain>(`/api/tool/${name}`, {
+    method: 'GET',
     key: cacheKey,
     getCachedData: () => getCachedData(cacheKey),
     onResponse: ({ response }) => {

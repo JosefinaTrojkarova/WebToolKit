@@ -1,6 +1,6 @@
 // API endpoint to get the reviews of specific tool
 
-import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -16,11 +16,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient = await getMongoClient();
-    const database = mongoClient.db('Tools');
+    await connectToDatabase();
+
+    const database = mongoose.connection.useDb('Tools');
     const collection = database.collection('Comments');
 
-    const usersDatabase = mongoClient.db('User');
+    const usersDatabase = mongoose.connection.useDb('User');
     const usersCollection = usersDatabase.collection('Users');
 
     // Fetch the tool document by toolId
@@ -53,7 +54,7 @@ export default defineEventHandler(async (event) => {
           { _id: { $in: userIds } },
           {
             _id: {
-              $in: userIds.map((id: any) => ObjectId.createFromHexString(id)),
+              $in: userIds.map((id: any) => new mongoose.Types.ObjectId(id)),
             },
           },
         ],

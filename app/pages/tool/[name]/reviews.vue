@@ -5,7 +5,7 @@
       <p>Error: {{ reviewsError.message }}</p>
       <button @click="retryFetch">Retry</button>
     </div>
-    <main v-else-if="reviews && toolData && isMounted" class="reviews">
+    <main v-else-if="reviews && toolData && toolData.rating && isMounted" class="reviews">
       <div class="review-cta">
         <p>Got something to say about {{ reviews.name }}? Leave a review!</p>
         <button class="btn--secondary--small">Leave a Review</button>

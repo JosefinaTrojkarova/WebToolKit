@@ -1,4 +1,5 @@
 // Composable function to fetch alternatives
+
 export function useFetchAlternatives(
   toolId?: string,
   alternativeIds?: string[],
@@ -43,10 +44,7 @@ export function useFetchAlternatives(
 
         // Fetch alternatives using query parameters
         const response = await $fetch(
-          `/api/tool/alternatives?${params.toString()}`,
-          {
-            method: 'GET',
-          }
+          `/api/tool/alternatives?${params.toString()}`
         );
 
         mainTool.value = response.mainTool || null;

@@ -1,5 +1,5 @@
 // API endpoint to get the data about tool's alternatives
-import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 
 export default defineEventHandler(async (event) => {
   // Get query parameters instead of body
@@ -20,13 +20,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient = await getMongoClient();
-    const database = mongoClient.db('Tools');
+    await connectToDatabase();
+
+    const database = mongoose.connection.useDb('Tools');
     const collection = database.collection('Main');
 
-    const mainObjectId = ObjectId.createFromHexString(mainToolId);
-    const alternativeObjectIds = alternativeIds.map((id) =>
-      ObjectId.createFromHexString(id)
+    const mainObjectId = new mongoose.Types.ObjectId(mainToolId);
+    const alternativeObjectIds = alternativeIds.map(
+      (id) => new mongoose.Types.ObjectId(id)
     );
 
     const projection = {

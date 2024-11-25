@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <header v-if="headerData">
+  <div v-if="headerData">
+    <header>
       <main>
         <div class="content">
           <img :src="headerData.logo" alt="" class="logo">
@@ -51,7 +51,13 @@
 <script lang="ts" setup>
 const route = useRoute()
 const { headerData, fetchHeaderData } = useFetchHeaderData()
-// const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0])
+
+// Fetch header data when the layout is created
+onMounted(() => {
+  if (route.params.name) {
+    fetchHeaderData()
+  }
+})
 
 const links = [
   { name: 'Overview', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}` },
@@ -63,13 +69,6 @@ const links = [
 const isPathActive = (path: string) => {
   return route.path === path
 }
-
-// Fetch header data when the layout is created
-onMounted(() => {
-  if (route.params.name) {
-    fetchHeaderData()
-  }
-})
 
 // Re-fetch when the route changes
 watch(() => route.params.name, (newName) => {
@@ -312,5 +311,14 @@ header {
       transform: translateY(0.0625rem);
     }
   }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: $primary-400;
 }
 </style>

@@ -1,5 +1,7 @@
 // API endpoint to get all the data about one specific tool from the database
 
+import mongoose from 'mongoose';
+
 export default defineEventHandler(async (event) => {
   const { name } = event.context.params as { name: string };
   const query = getQuery(event);
@@ -16,8 +18,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const mongoClient = await getMongoClient();
-    const database = mongoClient.db('Tools');
+    await connectToDatabase();
+
+    const database = mongoose.connection.useDb('Tools');
     const collection = database.collection('Main');
 
     // Define projection based on the query parameter

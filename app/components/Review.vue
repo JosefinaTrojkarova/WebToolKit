@@ -1,5 +1,5 @@
 <template>
-  <div :class="`review ${clickable}`" @click="handleOpenModal">
+  <div :class="`review clickable`" @click="handleOpenModal">
     <div class="review-content-wrapper">
       <div class="comment-header">
         <NuxtLink :to="`/user/@${data.userHandle}`" class="user-info">
@@ -10,8 +10,8 @@
             <p v-else class="p3">{{ data.userContributions }} contributions</p>
           </div>
         </NuxtLink>
-        <span class="material-symbols-rounded report-btn" title="Report review"
-          @click.stop="toggleReportModal">report</span>
+        <!-- <span class="material-symbols-rounded report-btn" title="Report review"
+          @click.stop="toggleReportModal">report</span> -->
       </div>
       <div class="star-rating">
         <span v-for="star in 5" :key="star" class="material-symbols-rounded"
@@ -35,8 +35,8 @@
                 <p class="p3">{{ data.userContributions }}</p>
               </div>
             </NuxtLink>
-            <span class="material-symbols-rounded report-btn" title="Report review"
-              @click="toggleReportModal">report</span>
+            <!-- <span class="material-symbols-rounded report-btn" title="Report review"
+              @click="toggleReportModal">report</span> -->
           </div>
           <div class="star-rating">
             <span v-for="star in 5" :key="star" class="material-symbols-rounded"
@@ -49,11 +49,11 @@
         <p class="date p3">{{ formatDate(data.date) }}</p>
       </div>
     </Modal>
-    <Modal :is-open="isReportModalOpen" @close="toggleReportModal">
+    <!-- <Modal :is-open="isReportModalOpen" @close="toggleReportModal">
       <div class="modal">
         <h1>REPORT!!!</h1>
       </div>
-    </Modal>
+    </Modal> -->
   </div>
 </template>
 
@@ -64,12 +64,8 @@ const props = defineProps<{
   limit?: number
 }>()
 
-const clickable = props.limit ? 'clickable' : ''
-
 const handleOpenModal = () => {
-  if (props.limit) {
-    openModal()
-  }
+  openModal()
 }
 
 const formatDate = (dateString: string) => {
@@ -77,11 +73,11 @@ const formatDate = (dateString: string) => {
 }
 
 const { isModalOpen, openModal, closeModal } = useModal()
-const isReportModalOpen = ref(false)
+// const isReportModalOpen = ref(false)
 
-const toggleReportModal = () => {
-  isReportModalOpen.value = !isReportModalOpen.value
-}
+// const toggleReportModal = () => {
+//   isReportModalOpen.value = !isReportModalOpen.value
+// }
 
 const handleLineLimit = ref(props.limit || '')
 </script>
