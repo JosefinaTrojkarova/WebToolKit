@@ -16,8 +16,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await connectToDatabase();
-
     const database = mongoose.connection.useDb('Tools');
     const collection = database.collection('Comments');
 

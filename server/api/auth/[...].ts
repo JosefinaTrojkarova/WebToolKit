@@ -19,8 +19,6 @@ export default NuxtAuthHandler({
   callbacks: {
     async signIn({ user }) {
       try {
-        await connectToDatabase();
-
         const database = mongoose.connection.useDb('User');
         const collection = database.collection('Users');
 

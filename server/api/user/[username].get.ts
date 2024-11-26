@@ -13,8 +13,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await connectToDatabase();
-
     const collection = mongoose.connection.useDb('User').collection('Users');
 
     const user = await collection.findOne(

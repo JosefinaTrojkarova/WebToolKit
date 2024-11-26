@@ -11,8 +11,6 @@ export default defineEventHandler(async (event) => {
   const { email } = params;
 
   try {
-    await connectToDatabase();
-
     const collection = mongoose.connection.useDb('User').collection('Users');
 
     const user = await collection.findOne(
