@@ -10,7 +10,7 @@
             <div class="rating">
               <Stars :rating="headerData.rating.stars" />
               <p class="p2"><span class="b2">{{ headerData.rating.reviews }}</span> reviews</p>
-              <p class="p2"><span class="b2">{{ headerData.rating.saves }}</span> saves</p>
+              <p class="p2"><span class="b2">{{ headerData.rating.saves + localSaveCount }}</span> saves</p>
             </div>
           </div>
         </div>
@@ -37,6 +37,9 @@
           <button class="save" @click="toggleActive" :class="{ active: isActive }" title="Save to list">
             <span class="material-symbols-rounded">bookmark</span>
           </button>
+          <Modal :is-open="isModalOpen" @close="closeModal">
+            <SignIn />
+          </Modal>
         </div>
       </main>
       <nav>
@@ -51,18 +54,31 @@
 <script lang="ts" setup>
 const route = useRoute()
 const { headerData, fetchHeaderData } = useFetchHeaderData()
+const { isModalOpen, openModal, closeModal } = useModal()
+const { data } = useAuth()
+const { postSaveTool, deleteSaveTool, getSaveTool } = useSaveTool()
+
+const toolName = route.params.name as string
 
 // Fetch header data when the layout is created
-onMounted(() => {
-  if (route.params.name) {
+const checkIfSaved = async () => {
+  if (data.value?.user?.email) {
+    const response = await getSaveTool(data.value.user.email)
+    isActive.value = response.saves?.includes(toolName) ?? false
+  }
+}
+
+onMounted(async () => {
+  if (toolName) {
     fetchHeaderData()
+    await checkIfSaved()
   }
 })
 
 const links = [
-  { name: 'Overview', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}` },
-  { name: 'Reviews', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/reviews` },
-  { name: 'Alternatives', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/alternatives` },
+  { name: 'Overview', path: `/tool/${(toolName).toLowerCase().replace(/\s+/g, '-')}` },
+  { name: 'Reviews', path: `/tool/${(toolName).toLowerCase().replace(/\s+/g, '-')}/reviews` },
+  { name: 'Alternatives', path: `/tool/${(toolName).toLowerCase().replace(/\s+/g, '-')}/alternatives` },
   // { name: 'Resources', path: `/tool/${(route.params.name as string).toLowerCase().replace(/\s+/g, '-')}/resources` },
 ]
 
@@ -70,17 +86,39 @@ const isPathActive = (path: string) => {
   return route.path === path
 }
 
+const isActive = ref<boolean>(false)
+const localSaveCount = ref<number>(0)
+
+const toggleActive = () => {
+  if (data.value?.user) {
+    isActive.value = !isActive.value
+    if (data.value.user.email && toolName && isActive.value) {
+      postSaveTool(data.value.user.email, toolName)
+      localSaveCount.value++
+    }
+    if (data.value.user.email && toolName && !isActive.value) {
+      deleteSaveTool(data.value.user.email, toolName)
+      localSaveCount.value--
+    }
+  } else {
+    openModal()
+  }
+}
+
 // Re-fetch when the route changes
-watch(() => route.params.name, (newName) => {
+watch(() => toolName, async (newName) => {
   if (newName) {
     fetchHeaderData()
+    await checkIfSaved()
   }
 })
 
-const isActive = ref<boolean>(false)
-const toggleActive = () => {
-  isActive.value = !isActive.value;
-}
+// Check saves when user logs in
+watch(() => data.value?.user, async (newUser) => {
+  if (newUser) {
+    await checkIfSaved()
+  }
+}, { deep: true })
 </script>
 
 <style scoped lang="scss">

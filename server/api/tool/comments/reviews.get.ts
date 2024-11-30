@@ -49,7 +49,6 @@ export default defineEventHandler(async (event) => {
     // Map reviews to the required format, including user data
     const mappedReviews = validReviews.map((review: any) => {
       const userData = userMap.get(review.user);
-      console.log('userData:', userData);
       return {
         comment: review.comment,
         rating: review.rating,

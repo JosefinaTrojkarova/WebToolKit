@@ -113,7 +113,7 @@
 // Vercel speed insights      import { SpeedInsights } from "@vercel/speed-insights";
 const { name } = useRoute()
 const { data } = useAuth();
-const { username, fetchUsername } = useUsername()
+const { fetchUsername } = useUsername()
 
 watchEffect(async () => {
     if (data.value?.user?.email) {

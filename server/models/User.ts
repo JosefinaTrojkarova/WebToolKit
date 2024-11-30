@@ -6,7 +6,7 @@ interface IUser {
   email: string;
   image?: string;
   contributions?: string[];
-  reviews?: string[];
+  saves?: string[];
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema<IUser>({
   email: { type: String, required: true, unique: true },
   image: { type: String, required: false },
   contributions: { type: [String], required: false },
-  reviews: { type: [String], required: false },
+  saves: { type: [String], required: false },
 });
 
 const userDb = mongoose.connection.useDb('User');

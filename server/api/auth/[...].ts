@@ -33,7 +33,7 @@ export default NuxtAuthHandler({
             username,
             email: user.email,
             image: user.image,
-            reviews: [],
+            contributions: [],
             saves: [],
           });
         }

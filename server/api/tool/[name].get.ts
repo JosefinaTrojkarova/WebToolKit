@@ -1,6 +1,5 @@
 // API endpoint to get all the data about one specific tool from the database
-
-import mongoose from 'mongoose';
+import Tool from '../../models/Tool';
 
 export default defineEventHandler(async (event) => {
   const { name } = event.context.params as { name: string };
@@ -18,9 +17,6 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const database = mongoose.connection.useDb('Tools');
-    const collection = database.collection('Main');
-
     // Define projection based on the query parameter
     let projection;
     if (isAlternativesOnly) {
@@ -110,9 +106,9 @@ export default defineEventHandler(async (event) => {
     }
 
     // Find single tool by name and ignore case
-    const data = await collection.findOne(
+    const data = await Tool.findOne(
       { name: { $regex: new RegExp(`^${name}$`, 'i') } },
-      { projection }
+      projection
     );
 
     if (!data) {
