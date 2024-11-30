@@ -7,11 +7,11 @@
         <div class="tags">
           <div class="tag tag--pricing">
             <span class="icon material-symbols-rounded">attach_money</span>
-            <p class="text p2">{{ data.tags.pricing }}</p>
+            <p class="text p2">{{ data.tags?.pricing || 'Not available' }}</p>
           </div>
           <div class="tag tag--licensing">
             <span class="icon material-symbols-rounded">license</span>
-            <p class="text p2">{{ data.tags.licensing }}</p>
+            <p class="text p2">{{ data.tags?.licensing || 'Not available' }}</p>
           </div>
         </div>
         <div class="rating">
@@ -130,7 +130,7 @@
       <div class="rating">
         <Stars :rating="data.rating.stars" />
         <p class="b2">{{ data.rating.stars.toFixed(1) }}/5</p>
-        <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
+        <!-- <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p> -->
       </div>
       <div class="pros">
         <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
@@ -158,11 +158,11 @@
           <div class="tags">
             <div class="tag tag--pricing">
               <span class="icon material-symbols-rounded">attach_money</span>
-              <p class="text p2">{{ data.tags.pricing }}</p>
+              <p class="text p2">{{ data.tags?.pricing || 'Not available' }}</p>
             </div>
             <div class="tag tag--licensing">
               <span class="icon material-symbols-rounded">license</span>
-              <p class="text p2">{{ data.tags.licensing }}</p>
+              <p class="text p2">{{ data.tags?.licensing || 'Not available' }}</p>
             </div>
           </div>
           <div class="rating">

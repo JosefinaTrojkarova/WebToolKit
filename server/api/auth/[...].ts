@@ -1,7 +1,7 @@
 import { NuxtAuthHandler } from '#auth';
 import GoogleProvider from 'next-auth/providers/google';
-import mongoose from 'mongoose';
 import { generateUniqueUsername } from '../../utils/generateUsername';
+import User from '../../models/User';
 
 export default NuxtAuthHandler({
   secret: process.env.AUTH_SECRET,
@@ -19,23 +19,22 @@ export default NuxtAuthHandler({
   callbacks: {
     async signIn({ user }) {
       try {
-        const database = mongoose.connection.useDb('User');
-        const collection = database.collection('Users');
-
-        const existingUser = await collection.findOne({ email: user.email });
+        const existingUser = await User.findOne({ email: user.email });
 
         if (!existingUser && user.name) {
-          const username = await generateUniqueUsername(user.name, collection);
+          const username = await generateUniqueUsername(user.name);
 
           if (!username) {
             throw new Error('Failed to generate a unique username.');
           }
 
-          await collection.insertOne({
+          await User.create({
             name: user.name,
             username,
             email: user.email,
             image: user.image,
+            reviews: [],
+            saves: [],
           });
         }
 
@@ -47,10 +46,7 @@ export default NuxtAuthHandler({
     },
     async session({ session }: { session: any }) {
       await connectToDatabase();
-
-      const database = mongoose.connection.useDb('User');
-      const collection = database.collection('Users');
-      const existingUser = await collection.findOne({
+      const existingUser = await User.findOne({
         email: session.user.email,
       });
 

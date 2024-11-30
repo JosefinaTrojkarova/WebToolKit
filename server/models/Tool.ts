@@ -1,6 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
-
-// Define interfaces for nested objects
+import mongoose from 'mongoose';
 interface Tags {
   pricing: string[];
   licensing: string[];
@@ -12,21 +10,34 @@ interface Rating {
   saves: number;
 }
 
-// Define the main Tool interface
-export type ITool = {
+interface Pros {
+  name: string;
+  votes: number;
+}
+
+export interface ITool {
   name: string;
   description: string;
+  shortDescription: string;
+  website: string;
+  pricingLink: string;
+  video: string;
   logo: string;
   categories: string[];
   tags: Tags;
   rating: Rating;
-} & Document;
+  pros: Pros[];
+  cons: Pros[];
+}
 
-// Create the Mongoose schema
-const toolSchema = new Schema<ITool>({
+const ToolSchema = new mongoose.Schema<ITool>({
   name: { type: String, required: true },
-  description: { type: String, required: true },
-  logo: { type: String, required: true },
+  description: { type: String },
+  shortDescription: { type: String },
+  video: { type: String },
+  website: { type: String },
+  pricingLink: { type: String },
+  logo: { type: String },
   categories: [{ type: String }],
   tags: {
     pricing: [{ type: String }],
@@ -37,6 +48,24 @@ const toolSchema = new Schema<ITool>({
     reviews: { type: Number, default: 0 },
     saves: { type: Number, default: 0 },
   },
+  pros: [
+    {
+      name: { type: String },
+      votes: { type: Number },
+    },
+  ],
+  cons: [
+    {
+      name: { type: String },
+      votes: { type: Number },
+    },
+  ],
 });
 
-export const ToolModel = mongoose.model<ITool>('Tool', toolSchema);
+const toolDb = mongoose.connection.useDb('Tools');
+
+const Tool =
+  (toolDb.models.Tool as mongoose.Model<ITool>) ||
+  toolDb.model<ITool>('Tool', ToolSchema, 'Main');
+
+export default Tool;

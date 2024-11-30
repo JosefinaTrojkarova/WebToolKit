@@ -1,5 +1,4 @@
 // Composable function to fetch reviews
-
 export function useFetchReviews(toolId?: string, initialAmount?: number) {
   const reviews = ref<Review[]>([]);
   const toolData = ref<ReviewPage[]>([]);
@@ -34,7 +33,7 @@ export function useFetchReviews(toolId?: string, initialAmount?: number) {
           params.limit = amount; // Apply limit if provided
         }
         // Fetch reviews from the API
-        const data = await $fetch('/api/tool/reviews', { params });
+        const data = await $fetch('/api/tool/comments/reviews', { params });
         reviews.value = data || [];
       } catch (e) {
         console.error('Failed to fetch reviews or tool data:', e);

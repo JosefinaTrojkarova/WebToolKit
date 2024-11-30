@@ -5,6 +5,8 @@ interface IUser {
   username: string;
   email: string;
   image?: string;
+  contributions?: string[];
+  reviews?: string[];
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -12,6 +14,8 @@ const UserSchema = new mongoose.Schema<IUser>({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   image: { type: String, required: false },
+  contributions: { type: [String], required: false },
+  reviews: { type: [String], required: false },
 });
 
 const userDb = mongoose.connection.useDb('User');
