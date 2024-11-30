@@ -1,26 +1,18 @@
-import mongoose from 'mongoose';
+// API endpoint to delete a user account by email
+import User from '../../models/User';
 
 export default defineEventHandler(async (event) => {
-  const params = event.context.params;
-  if (!params || !params.email) {
+  const { email } = event.context.params || {};
+
+  if (!email) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Email parameter is missing',
     });
   }
-  const { email } = params;
 
   try {
-    if (!email) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Email is required',
-      });
-    }
-
-    const collection = mongoose.connection.useDb('User').collection('Users');
-
-    const result = await collection.deleteOne({ email });
+    const result = await User.deleteOne({ email });
 
     if (result.deletedCount === 0) {
       throw createError({
@@ -32,7 +24,6 @@ export default defineEventHandler(async (event) => {
     return { message: 'Account deleted successfully' };
   } catch (error) {
     console.error('Error deleting account:', error);
-
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to delete account',

@@ -1,6 +1,5 @@
-// Fetch user by username
-
-import mongoose from 'mongoose';
+// API endpoint to get user data by username
+import User from '../../models/User';
 
 export default defineEventHandler(async (event) => {
   const username = event.context.params?.email;
@@ -13,11 +12,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const collection = mongoose.connection.useDb('User').collection('Users');
-
-    const user = await collection.findOne(
+    const user = await User.findOne(
       { username },
-      { projection: { _id: 0, username: 1, name: 1, image: 1 } }
+      { _id: 0, username: 1, name: 1, image: 1 }
     );
 
     if (!user) {
@@ -30,7 +27,6 @@ export default defineEventHandler(async (event) => {
     return { user };
   } catch (error) {
     console.error('Detailed error:', error);
-
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

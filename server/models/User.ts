@@ -1,14 +1,23 @@
 import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+interface IUser {
+  name: string;
+  username: string;
+  email: string;
+  image?: string;
+}
+
+const UserSchema = new mongoose.Schema<IUser>({
   name: { type: String, required: true },
-  username: { type: String, required: true },
-  email: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   image: { type: String, required: false },
-  // contributions: { type: Number, required: false, default: 0 },
 });
 
+const userDb = mongoose.connection.useDb('User');
+
 const User =
-  mongoose.models.User || mongoose.model('User', UserSchema, 'Users');
+  (userDb.models.User as mongoose.Model<IUser>) ||
+  userDb.model<IUser>('User', UserSchema, 'Users');
 
 export default User;
