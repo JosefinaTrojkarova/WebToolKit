@@ -7,6 +7,8 @@
         <div v-else-if="data">
             <p>Profile: {{ data.user.name }}</p>
             <img :src="data.user.image" alt="Profile picture" class="profile-image" />
+            <h2>save:</h2>
+            <p>{{ saves }}</p>
         </div>
     </div>
 </template>
@@ -21,10 +23,19 @@ type PublicUser = {
     }
 }
 
+const { getSaveTool } = useSaveTool();
+
+const saves = ref<string | null>(null);
+
 const route = useRoute();
 const username = route.params.username as string;
 
 const { data, error } = await useFetch<PublicUser>(`/api/user/${username}`);
+
+if (data.value?.user.email) {
+    const saveToolResult = await getSaveTool(data.value?.user.email);
+    saves.value = saveToolResult?.saves?.join(', ') || null;
+}
 </script>
 
 <style scoped>

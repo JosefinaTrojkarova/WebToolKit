@@ -12,6 +12,9 @@
             <button class="deleteAcc" @click="handleDeleteAccount">
                 Delete Account
             </button>
+            <br>
+            <h3>Saved Tools:</h3>
+            <p>{{ saves }}</p>
         </div>
         <div v-else>
             <p>You are not logged in.</p>
@@ -22,18 +25,27 @@
 <script lang="ts" setup>
 const { data, signOut } = useAuth()
 const { deleteAccount } = useAccount()
+const { getSaveTool } = useSaveTool();
+
+const email = data.value?.user?.email;
+const saves = ref<string | null>(null);
 
 const handleDeleteAccount = async () => {
-    if (!data.value?.user?.email) return
+    if (!email) return
 
     if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
         try {
-            await deleteAccount(data.value.user.email)
+            await deleteAccount(email)
             await signOut({ callbackUrl: '/' })
         } catch (e) {
             console.error('Failed to delete account:', e)
         }
     }
+}
+
+if (email) {
+    const saveToolResult = await getSaveTool(email);
+    saves.value = saveToolResult?.saves?.join(', ') || null;
 }
 </script>
 
