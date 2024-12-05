@@ -1,5 +1,4 @@
 // API endpoint to get the reviews of specific tool
-import mongoose from 'mongoose';
 import Comments from '../../../models/Comments';
 import User from '../../../models/User';
 

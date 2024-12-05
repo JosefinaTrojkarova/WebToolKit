@@ -14,7 +14,11 @@
             </button>
             <br>
             <h3>Saved Tools:</h3>
-            <p>{{ saves }}</p>
+            <ul>
+                <li v-for="(save, index) in saves" :key="index" @click="deleteSave(save)">
+                    {{ save }}
+                </li>
+            </ul>
         </div>
         <div v-else>
             <p>You are not logged in.</p>
@@ -25,10 +29,10 @@
 <script lang="ts" setup>
 const { data, signOut } = useAuth()
 const { deleteAccount } = useAccount()
-const { getSaveTool } = useSaveTool();
+const { getSaveTool, deleteSaveTool } = useSaveTool();
 
 const email = data.value?.user?.email;
-const saves = ref<string | null>(null);
+const saves = ref<string[] | null>(null);
 
 const handleDeleteAccount = async () => {
     if (!email) return
@@ -45,7 +49,22 @@ const handleDeleteAccount = async () => {
 
 if (email) {
     const saveToolResult = await getSaveTool(email);
-    saves.value = saveToolResult?.saves?.join(', ') || null;
+    saves.value = saveToolResult?.saves || null;
+}
+
+const deleteSave = async (toolName: string) => {
+    if (!email) return
+
+    if (confirm('Are you sure you want to delete this save? This action cannot be undone.')) {
+        try {
+            await deleteSaveTool(email, toolName)
+            if (saves.value) {
+                saves.value = saves.value.filter((item) => item !== toolName);
+            }
+        } catch (e) {
+            console.error('Failed to delete save:', e)
+        }
+    }
 }
 </script>
 
@@ -57,5 +76,16 @@ button {
     font-weight: 800;
     background-color: rgb(255, 101, 101);
     cursor: pointer;
+}
+
+li {
+    width: fit-content;
+    margin: 12px;
+
+    &:hover {
+        text-decoration: line-through;
+        color: red;
+        cursor: pointer;
+    }
 }
 </style>
