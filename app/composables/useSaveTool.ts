@@ -9,7 +9,6 @@ export const useSaveTool = () => {
         method: 'POST',
         body: { toolName },
       });
-      console.log('Save tool response:', response);
       return response;
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Failed to save tool.';
@@ -25,7 +24,6 @@ export const useSaveTool = () => {
         method: 'DELETE',
         body: { toolName },
       });
-      console.log('Delete tool response:', response);
       return response;
     } catch (e) {
       error.value =
@@ -41,7 +39,6 @@ export const useSaveTool = () => {
       const response = await $fetch(`/api/tool/saves/${email}`, {
         method: 'GET',
       });
-      console.log('Fetched saved tools:', response);
       return response;
     } catch (e) {
       error.value =
