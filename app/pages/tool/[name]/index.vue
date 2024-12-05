@@ -117,7 +117,10 @@
                     <div class="reviews">
                         <div class="review-cta">
                             <p>Got something to say about {{ data.name }}? Leave a review!</p>
-                            <button class="btn--secondary--small">Leave a Review</button>
+                            <button class="btn--secondary--small" @click="openModal">Leave a Review</button>
+                            <Modal :is-open="isModalOpen" @close="closeModal">
+                                <LeaveReview :tool-name="data.name" />
+                            </Modal>
                         </div>
                         <ul class="review-wrapper">
                             <div v-if="reviews.length === 0" class="no-reviews">
@@ -178,6 +181,8 @@ const retryFetch = () => {
     retryAlternatives()
     retryReviews()
 }
+
+const { isModalOpen, openModal, closeModal } = useModal()
 
 const getLabelForRating = (rating: number) => {
     const labels: { [key: number]: string } = {
