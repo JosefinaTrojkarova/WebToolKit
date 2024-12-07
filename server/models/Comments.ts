@@ -5,7 +5,6 @@ interface IReviewItem {
   comment: string;
   rating: number;
   date: Date;
-  id: mongoose.Types.ObjectId;
 }
 
 interface IComments {
@@ -14,11 +13,10 @@ interface IComments {
 }
 
 const ReviewItemSchema = new Schema<IReviewItem>({
-  user: { type: String, required: true },
+  user: { type: String, ref: 'User', required: true },
   comment: { type: String, required: true },
   rating: { type: Number, required: true },
   date: { type: Date, required: true },
-  id: { type: Schema.Types.ObjectId, required: true },
 });
 
 const CommentsSchema = new Schema<IComments>({

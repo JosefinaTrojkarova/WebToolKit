@@ -5,28 +5,24 @@
     </NuxtLink>
     <main class="review__main">
       <h2 class="review__title">What do you think of {{ toolName }}?</h2>
-      <form class="review__form">
+      <form class="review__form" @submit.prevent="handleSubmit">
+        <div v-if="error" class="error-message">{{ error }}</div>
+
         <label for="reviewStars" class="review__stars-label">
           How would you rate {{ toolName }}?
         </label>
         <div class="review__stars" id="reviewStars">
-          <input type="radio" name="rating" value="1">
-          <input type="radio" name="rating" value="2">
-          <input type="radio" name="rating" value="3">
-          <input type="radio" name="rating" value="4">
-          <input type="radio" name="rating" value="5">
+          <input v-for="n in 5" :key="n" type="radio" name="rating" :value="n" v-model="formData.rating">
         </div>
+
         <label for="reviewText" class="review__textarea-label">
           Do you have something to say about {{ toolName }}?
         </label>
-        <textarea class="review__textarea" id="reviewText"></textarea>
-        <div class="review__checkbox-container">
-          <input type="checkbox" id="useCheckbox" class="review__checkbox">
-          <label for="useCheckbox" class="review__checkbox-label">
-            I use {{ toolName }}?
-          </label>
-        </div>
-        <button class="review__submit">Submit</button>
+        <textarea class="review__textarea" id="reviewText" v-model="formData.comment" required></textarea>
+
+        <button class="review__submit" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+        </button>
       </form>
     </main>
   </div>
@@ -35,9 +31,46 @@
 <script lang="ts" setup>
 interface Props {
   toolName: string;
+  toolId: string;
 }
 
-defineProps<Props>();
+const { postReview, error } = useReviewTool();
+const { data } = useAuth()
+
+const props = defineProps<Props>();
+const emit = defineEmits(['reviewSubmitted']);
+
+const user: string = data.value?.user?.email || '';
+
+const isSubmitting = ref(false);
+const formData = reactive({
+  rating: null as number | null,
+  comment: ''
+});
+
+const handleSubmit = async () => {
+  if (!formData.rating || !formData.comment || !user) {
+    return;
+  }
+
+  isSubmitting.value = true;
+
+  try {
+    await postReview(
+      props.toolId,
+      user,
+      formData.comment,
+      formData.rating
+    );
+    emit('reviewSubmitted');
+    formData.comment = '';
+    formData.rating = null;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -104,5 +137,15 @@ defineProps<Props>();
       }
     }
   }
+}
+
+.error-message {
+  color: red;
+  margin-bottom: $m;
+}
+
+.review__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

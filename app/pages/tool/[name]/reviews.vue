@@ -8,7 +8,12 @@
     <main v-else-if="reviews && toolData && toolData.rating && isMounted" class="reviews">
       <div class="review-cta">
         <p>Got something to say about {{ reviews.name }}? Leave a review!</p>
-        <button class="btn--secondary--small">Leave a Review</button>
+        <button class="btn--secondary--small" @click="openModal">Leave a Review</button>
+        <Modal :is-open="isModalOpen" @close="closeModal">
+          <LeaveReview v-if="status == 'authenticated'" :tool-name="toolData.name" :tool-id="toolData._id"
+            @review-submitted="handleReviewSubmitted" />
+          <SignIn v-else />
+        </Modal>
       </div>
       <div class="content-wrapper">
         <div class="info">
@@ -34,8 +39,8 @@
               thing.</p>
             <p class="downvote"><span class="material-symbols-rounded">shift</span>Downvote if you completely disagree
               or think it's spam.</p>
-            <p class="add"><span class="material-symbols-rounded">add</span>Add a new item if your situation isn't
-              present.</p>
+            <!-- <p class="add"><span class="material-symbols-rounded">add</span>Add a new item if your situation isn't
+              present.</p> -->
           </div>
           <div class="pros-and-cons">
             <div class="pros">
@@ -52,10 +57,10 @@
                 </div>
               </div>
               <hr>
-              <div class="add">
+              <!-- <div class="add">
                 <p class="b1">Add</p>
                 <span class="material-symbols-rounded">add</span>
-              </div>
+              </div> -->
             </div>
             <div class="cons">
               <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
@@ -71,10 +76,10 @@
                 </div>
               </div>
               <hr>
-              <div class="add">
+              <!-- <div class="add">
                 <p class="b1">Add</p>
                 <span class="material-symbols-rounded">add</span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -106,8 +111,12 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+const { status } = useAuth()
+
+const { isModalOpen, openModal, closeModal } = useModal()
+
 // Data fetching
-const { reviews, toolData, error: reviewsError, retryFetch: retryReviews } = useFetchReviews()
+const { reviews, toolData, error: reviewsError, retryAll } = useFetchReviews();
 
 // Filter
 const filterConfig: any = {
@@ -117,8 +126,13 @@ const { handleFilterToggle, filteredItems: filteredReviews } = useFilters(review
 
 // Retry fetch on error
 const retryFetch = () => {
-  retryReviews()
+  retryAll()
 }
+
+const handleReviewSubmitted = () => {
+  retryAll();
+  closeModal();
+};
 
 // Rating
 const getLabelForRating = (rating: number) => {

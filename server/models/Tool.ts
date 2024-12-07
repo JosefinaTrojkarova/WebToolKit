@@ -8,6 +8,7 @@ interface Rating {
   stars: number;
   reviews: number;
   saves: number;
+  stats: { [key: string]: number };
 }
 
 interface Pros {
@@ -47,6 +48,13 @@ const ToolSchema = new mongoose.Schema<ITool>({
     stars: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
     saves: { type: Number, default: 0 },
+    stats: {
+      '1': { type: Number, default: 0 },
+      '2': { type: Number, default: 0 },
+      '3': { type: Number, default: 0 },
+      '4': { type: Number, default: 0 },
+      '5': { type: Number, default: 0 },
+    },
   },
   pros: [
     {
