@@ -46,22 +46,18 @@ export const useReviewTool = () => {
     }
   };
 
-  const deleteReview = async (email: string) => {
-    const contributions = ref<object[]>([]);
-    const error = ref<string | null>(null);
+  const deleteReview = async (reviewId: string) => {
     error.value = null;
 
     try {
-      const response = await $fetch<{ contributions: object[] }>(
-        `/api/tool/reviews/${email}`,
-        {
-          method: 'GET',
-        }
-      );
-      contributions.value = response.contributions;
-      return contributions.value;
+      const response = await $fetch('/api/tool/reviews/reviews', {
+        method: 'DELETE',
+        body: { reviewId },
+      });
+
+      return response;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to fetch reviews.';
+      error.value = e instanceof Error ? e.message : 'Failed to delete review';
       throw error.value;
     }
   };
@@ -69,6 +65,7 @@ export const useReviewTool = () => {
   return {
     postReview,
     getUserReview,
+    deleteReview,
     error,
   };
 };

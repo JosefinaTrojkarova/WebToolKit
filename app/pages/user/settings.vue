@@ -19,14 +19,13 @@
                     {{ save }}
                 </li>
             </ul>
-            <h3>Contributions:</h3>
+            <h3>Reviews:</h3>
             <ul>
-                <li v-for="(contribution, index) in contributions" :key="contribution._id">
-                    <!-- @click="deleteReview(contribution)" -->
-                    {{ contribution.toolId }}
-                    {{ contribution.comment }}
-                    {{ contribution.rating }}
-                    {{ contribution.date }}
+                <li v-for="(review, index) in reviews" :key="review._id" @click="deleteUserReview(review._id)">
+                    {{ review.toolId }}
+                    {{ review.comment }}
+                    {{ review.rating }}
+                    {{ review.date }}
                 </li>
             </ul>
         </div>
@@ -40,9 +39,9 @@
 const { data, signOut } = useAuth()
 const { deleteAccount } = useAccount()
 const { getSaveTool, deleteSaveTool } = useSaveTool();
-const { getUserReview } = useReviewTool();
+const { getUserReview, deleteReview } = useReviewTool();
 
-interface Contribution {
+interface Review {
     _id: string;
     toolId: string;
     comment: string;
@@ -53,7 +52,7 @@ interface Contribution {
 const email = data.value?.user?.email;
 const saves = ref<string[] | null>(null);
 
-const contributions = ref<Contribution[] | null>(null);
+const reviews = ref<Review[] | null>(null);
 
 const handleDeleteAccount = async () => {
     if (!email) return
@@ -71,8 +70,8 @@ const handleDeleteAccount = async () => {
 if (email) {
     const saveToolResult = await getSaveTool(email);
     saves.value = saveToolResult?.saves || null;
-    const contributionsResult = await getUserReview(email) as Contribution[];
-    contributions.value = contributionsResult;
+    const contributionsResult = await getUserReview(email) as Review[];
+    reviews.value = contributionsResult;
 }
 
 const deleteSave = async (toolName: string) => {
@@ -90,20 +89,22 @@ const deleteSave = async (toolName: string) => {
     }
 }
 
-// const deleteReview = async (reviewId: string) => {
-//     if (!email) return
+const deleteUserReview = async (reviewId: string) => {
+    if (!email) return;
 
-//     if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
-//         try {
-//             await deleteReviewTool(email, reviewId)
-//             if (contributions.value) {
-//                 contributions.value = contributions.value.filter((item) => item !== reviewId);
-//             }
-//         } catch (e) {
-//             console.error('Failed to delete save:', e)
-//         }
-//     }
-// }
+    if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+        try {
+            await deleteReview(reviewId);
+            if (reviews.value) {
+                reviews.value = reviews.value.filter(
+                    reviews => reviews._id !== reviewId
+                );
+            }
+        } catch (e) {
+            console.error('Failed to delete review:', e);
+        }
+    }
+};
 </script>
 
 <style scoped lang="scss">
