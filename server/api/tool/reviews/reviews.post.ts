@@ -1,7 +1,7 @@
 // Api endpoint for adding a review to a tool
-import Comments from '../../../../server/models/Comments';
-import User from '../../../../server/models/User';
-import Tool from '../../../../server/models/Tool';
+import Reviews from '../../../models/Review';
+import User from '../../../models/User';
+import Tool from '../../../models/Tool';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -25,13 +25,14 @@ export default defineEventHandler(async (event) => {
 
     const reviewItem = {
       user: user._id,
+      toolId: tool,
       comment,
       rating,
       date: new Date(),
     };
 
-    // Add review to Comments
-    await Comments.findOneAndUpdate(
+    // Add review to Reviews collection
+    const result = await Reviews.findOneAndUpdate(
       { tool },
       {
         $push: {
@@ -41,7 +42,15 @@ export default defineEventHandler(async (event) => {
           },
         },
       },
-      { upsert: true }
+      { upsert: true, new: true }
+    );
+
+    const newReview = result.reviews[0];
+
+    // Update user's contributions
+    await User.findOneAndUpdate(
+      { _id: user },
+      { $push: { contributions: newReview } }
     );
 
     // Get the tool document to calculate new rating

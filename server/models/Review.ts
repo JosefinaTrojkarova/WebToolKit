@@ -2,32 +2,34 @@ import mongoose, { Schema } from 'mongoose';
 
 interface IReviewItem {
   user: string;
+  toolId: string;
   comment: string;
   rating: number;
   date: Date;
 }
 
-interface IComments {
+interface IReviews {
   tool: string;
   reviews: IReviewItem[];
 }
 
 const ReviewItemSchema = new Schema<IReviewItem>({
   user: { type: String, ref: 'User', required: true },
+  toolId: { type: String, ref: 'Tool', required: true },
   comment: { type: String, required: true },
   rating: { type: Number, required: true },
   date: { type: Date, required: true },
 });
 
-const CommentsSchema = new Schema<IComments>({
+const ReviewsSchema = new Schema<IReviews>({
   tool: { type: String, required: true },
   reviews: [ReviewItemSchema],
 });
 
-const CommentsDb = mongoose.connection.useDb('Tools');
+const ReviewsDb = mongoose.connection.useDb('Tools');
 
-const Comments =
-  (CommentsDb.models.Comments as mongoose.Model<IComments>) ||
-  CommentsDb.model<IComments>('Comments', CommentsSchema, 'Comments');
+const Reviews =
+  (ReviewsDb.models.Reviews as mongoose.Model<IReviews>) ||
+  ReviewsDb.model<IReviews>('Reviews', ReviewsSchema, 'Reviews');
 
-export default Comments;
+export default Reviews;

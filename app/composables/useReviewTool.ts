@@ -10,7 +10,7 @@ export const useReviewTool = () => {
     error.value = null;
 
     try {
-      const response = await $fetch('/api/tool/comments/reviews', {
+      const response = await $fetch('/api/tool/reviews/reviews', {
         method: 'POST',
         body: {
           tool: toolId,
@@ -26,8 +26,49 @@ export const useReviewTool = () => {
     }
   };
 
+  const getUserReview = async (email: string) => {
+    const contributions = ref<object[]>([]);
+    const error = ref<string | null>(null);
+    error.value = null;
+
+    try {
+      const response = await $fetch<{ contributions: object[] }>(
+        `/api/tool/reviews/${email}`,
+        {
+          method: 'GET',
+        }
+      );
+      contributions.value = response.contributions;
+      return contributions.value;
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : 'Failed to fetch reviews.';
+      throw error.value;
+    }
+  };
+
+  const deleteReview = async (email: string) => {
+    const contributions = ref<object[]>([]);
+    const error = ref<string | null>(null);
+    error.value = null;
+
+    try {
+      const response = await $fetch<{ contributions: object[] }>(
+        `/api/tool/reviews/${email}`,
+        {
+          method: 'GET',
+        }
+      );
+      contributions.value = response.contributions;
+      return contributions.value;
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : 'Failed to fetch reviews.';
+      throw error.value;
+    }
+  };
+
   return {
     postReview,
+    getUserReview,
     error,
   };
 };

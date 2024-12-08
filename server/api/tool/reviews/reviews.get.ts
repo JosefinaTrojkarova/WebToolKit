@@ -1,5 +1,5 @@
 // API endpoint to get the reviews of specific tool
-import Comments from '../../../models/Comments';
+import Reviews from '../../../models/Review';
 import User from '../../../models/User';
 
 export default defineEventHandler(async (event) => {
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Fetch the tool document by toolId
-    const toolDocument = await Comments.findOne({
+    const toolDocument = await Reviews.findOne({
       tool: toolId,
     });
 

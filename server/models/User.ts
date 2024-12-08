@@ -5,7 +5,7 @@ interface IUser {
   username: string;
   email: string;
   image?: string;
-  contributions?: string[];
+  contributions?: object[];
   saves?: string[];
 }
 
@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema<IUser>({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   image: { type: String, required: false },
-  contributions: { type: [String], required: false },
+  contributions: { type: [Object], required: false },
   saves: { type: [String], required: false },
 });
 

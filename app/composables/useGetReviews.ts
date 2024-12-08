@@ -31,7 +31,7 @@ export function useFetchReviews(toolId?: string, initialAmount?: number) {
     try {
       const params: any = { toolId: currentToolId };
       if (amount) params.limit = amount;
-      const data = await $fetch('/api/tool/comments/reviews', { params });
+      const data = await $fetch('/api/tool/reviews/reviews', { params });
       reviews.value = data || [];
     } catch (e) {
       console.error('Failed to fetch reviews:', e);
