@@ -90,9 +90,9 @@
                                 <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
                                     <p>{{ pro.name }}</p>
                                     <div class="votes-wrapper">
-                                        <span class="material-symbols-rounded upvote">shift</span>
+                                        <!-- <span class="material-symbols-rounded upvote">shift</span>
                                         <p>{{ pro.votes }}</p>
-                                        <span class="material-symbols-rounded downvote">shift</span>
+                                        <span class="material-symbols-rounded downvote">shift</span> -->
                                     </div>
                                 </div>
                             </div>
@@ -102,9 +102,9 @@
                                 <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
                                     <p>{{ con.name }}</p>
                                     <div class="votes-wrapper">
-                                        <span class="material-symbols-rounded upvote">shift</span>
+                                        <!-- <span class="material-symbols-rounded upvote">shift</span>
                                         <p>{{ con.votes }}</p>
-                                        <span class="material-symbols-rounded downvote">shift</span>
+                                        <span class="material-symbols-rounded downvote">shift</span> -->
                                     </div>
                                 </div>
                             </div>

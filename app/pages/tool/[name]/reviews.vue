@@ -33,15 +33,15 @@
               <p>{{ toolData.rating.reviews }} reviews</p>
             </div>
           </div>
-          <div class="tutorial">
+          <!-- <div class="tutorial">
             <h4>Pros and Cons are community-driven</h4>
             <p class="upvote"><span class="material-symbols-rounded">shift</span>Upvote if you've encountered the same
               thing.</p>
             <p class="downvote"><span class="material-symbols-rounded">shift</span>Downvote if you completely disagree
               or think it's spam.</p>
-            <!-- <p class="add"><span class="material-symbols-rounded">add</span>Add a new item if your situation isn't
-              present.</p> -->
-          </div>
+            <p class="add"><span class="material-symbols-rounded">add</span>Add a new item if your situation isn't
+              present.</p>
+          </div> -->
           <div class="pros-and-cons">
             <div class="pros">
               <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
@@ -50,14 +50,14 @@
                 <div v-for="(pro) in sortItems(toolData.pros)" class="opinion-row">
                   <p>{{ pro.name }}</p>
                   <div class="votes-wrapper">
-                    <span class="material-symbols-rounded upvote">shift</span>
+                    <!-- <span class="material-symbols-rounded upvote">shift</span>
                     <p>{{ pro.votes }}</p>
-                    <span class="material-symbols-rounded downvote">shift</span>
+                    <span class="material-symbols-rounded downvote">shift</span> -->
                   </div>
                 </div>
               </div>
-              <hr>
-              <!-- <div class="add">
+              <!-- <hr>
+              <div class="add">
                 <p class="b1">Add</p>
                 <span class="material-symbols-rounded">add</span>
               </div> -->
@@ -69,14 +69,14 @@
                 <div v-for="(con) in sortItems(toolData.cons)" class="opinion-row">
                   <p>{{ con.name }}</p>
                   <div class="votes-wrapper">
-                    <span class="material-symbols-rounded upvote">shift</span>
+                    <!-- <span class="material-symbols-rounded upvote">shift</span>
                     <p>{{ con.votes }}</p>
-                    <span class="material-symbols-rounded downvote">shift</span>
+                    <span class="material-symbols-rounded downvote">shift</span> -->
                   </div>
                 </div>
               </div>
-              <hr>
-              <!-- <div class="add">
+              <!-- <hr>
+              <div class="add">
                 <p class="b1">Add</p>
                 <span class="material-symbols-rounded">add</span>
               </div> -->
