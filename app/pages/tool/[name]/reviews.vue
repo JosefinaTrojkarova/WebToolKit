@@ -24,7 +24,7 @@
             </div>
             <div class="stars">
               <h1>{{ toolData.rating.stars.toFixed(1) }}</h1>
-              <Stars :rating="toolData.rating.stars" />
+              <Stars :rating="toolData.rating.stars"/>
               <p>{{ toolData.rating.reviews }} reviews</p>
             </div>
           </div>
@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="reviews-wrapper">
-          <Filters type="reviews" :trigger="490" @filter-toggled="handleFilterToggle" />
+          <Filters type="reviews" :trigger="490" @filter-toggled="handleFilterToggle"/>
           <div class="reviews">
             <div v-if="reviews.length === 0" class="no-reviews">
               <p>No reviews yet :(</p>
@@ -107,13 +107,13 @@ onUnmounted(() => {
 })
 
 // Data fetching
-const { reviews, toolData, error: reviewsError, retryFetch: retryReviews } = useFetchReviews()
+const {reviews, toolData, error: reviewsError, retryFetch: retryReviews} = useFetchReviews()
 
 // Filter
 const filterConfig: any = {
   rating: (review: Review, selected: number[]) => selected.some((rating: number) => Math.abs(review.rating - rating) <= 0.5),
 };
-const { handleFilterToggle, filteredItems: filteredReviews } = useFilters(reviews, filterConfig);
+const {handleFilterToggle, filteredItems: filteredReviews} = useFilters(reviews, filterConfig);
 
 // Retry fetch on error
 const retryFetch = () => {
@@ -143,7 +143,7 @@ type Opinion = {
 }
 const sortItems = (items: Opinion[]) => {
   return items
-    .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
+      .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
 }
 </script>
 
@@ -156,6 +156,7 @@ main {
   width: 100%;
 
   padding: 0 $xxl;
+  padding-bottom: $xxl;
   gap: $xxl;
 
   .review-cta {
