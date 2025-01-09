@@ -1,24 +1,18 @@
-import mongoose from 'mongoose';
+// API endpoint to get the username of a specific user by email
+import User from '../../../models/User';
 
 export default defineEventHandler(async (event) => {
-  const params = event.context.params;
-  if (!params || !params.email) {
+  const { email } = event.context.params || {};
+
+  if (!email) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Email parameter is missing',
     });
   }
-  const { email } = params;
 
   try {
-    await connectToDatabase();
-
-    const collection = mongoose.connection.useDb('User').collection('Users');
-
-    const user = await collection.findOne(
-      { email },
-      { projection: { username: 1 } }
-    );
+    const user = await User.findOne({ email }, { username: 1, _id: 0 });
 
     if (!user) {
       throw createError({
@@ -30,7 +24,6 @@ export default defineEventHandler(async (event) => {
     return { username: user.username };
   } catch (error) {
     console.error('Detailed error:', error);
-
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal Server Error',

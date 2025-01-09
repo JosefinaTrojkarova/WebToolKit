@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>The WebToolKit Wiki</h1>
-        <NuxtLink to="/wiki/contribute">Contribute</NuxtLink>
+        <!-- <NuxtLink to="/wiki/contribute">Contribute</NuxtLink> -->
     </div>
 </template>
 
