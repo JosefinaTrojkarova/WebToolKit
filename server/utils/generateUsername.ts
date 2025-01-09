@@ -1,8 +1,8 @@
 // Function to generate unique username
+import User from '../models/User';
 
 export async function generateUniqueUsername(
-  name: string | undefined | null,
-  collection: any
+  name: string | undefined | null
 ): Promise<string> {
   if (!name) {
     return `user-${Date.now()}`;
@@ -14,11 +14,9 @@ export async function generateUniqueUsername(
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, '-');
 
-  const existingWithUsername = await collection
-    .find({
-      username: new RegExp(`^${baseUsername}(-\\d+)?$`),
-    })
-    .toArray();
+  const existingWithUsername = await User.find({
+    username: new RegExp(`^${baseUsername}(-\\d+)?$`),
+  });
 
   if (existingWithUsername.length === 0) {
     return baseUsername;

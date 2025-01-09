@@ -35,8 +35,7 @@ const signInWithProvider = async (provider: string) => {
 }
 </script>
 
-<style lang="scss">
-// scoped???
+<style lang="scss" scoped>
 .sign {
     display: flex;
     flex-direction: column;

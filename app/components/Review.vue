@@ -2,10 +2,10 @@
   <div :class="`review clickable`" @click="handleOpenModal">
     <div class="review-content-wrapper">
       <div class="comment-header">
-        <NuxtLink :to="`/user/@${data.userHandle}`" class="user-info">
+        <NuxtLink :to="`/user/${data.username}`" class="user-info">
           <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
-            <p class="b1">{{ data.username }}</p>
+            <p class="b1">{{ data.name }}</p>
             <p v-if="data.userContributions === 1" class="p3">{{ data.userContributions }} contribution</p>
             <p v-else class="p3">{{ data.userContributions }} contributions</p>
           </div>
@@ -28,7 +28,7 @@
       <div class="modal">
         <div class="review-content-wrapper">
           <div class="comment-header">
-            <NuxtLink :to="`/user/@${data.userHandle}`" class="user-info">
+            <NuxtLink :to="`/user/${data.username}`" class="user-info">
               <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
               <div class="user-details">
                 <p class="b1">{{ data.username }}</p>

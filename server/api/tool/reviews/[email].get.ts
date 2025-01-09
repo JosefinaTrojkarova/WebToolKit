@@ -1,5 +1,5 @@
-// API endpoint to delete a user account by email
-import User from '../../models/User';
+// API endpoint to get user contributions by email
+import User from '../../../models/User';
 
 export default defineEventHandler(async (event) => {
   const { email } = event.context.params || {};
@@ -12,21 +12,24 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const result = await User.deleteOne({ email });
+    const user = await User.findOne(
+      { email },
+      { contributions: 1, _id: 0 }
+    ).lean();
 
-    if (result.deletedCount === 0) {
+    if (!user) {
       throw createError({
         statusCode: 404,
         statusMessage: 'User not found',
       });
     }
 
-    return { message: 'Account deleted successfully' };
+    return { contributions: user.contributions || [] };
   } catch (error) {
-    console.error('Error deleting account:', error);
+    console.error('Error fetching user contributions:', error);
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to delete account',
+      statusMessage: 'Internal Server Error',
     });
   }
 });

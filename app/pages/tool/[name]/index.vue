@@ -90,9 +90,9 @@
                                 <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
                                     <p>{{ pro.name }}</p>
                                     <div class="votes-wrapper">
-                                        <span class="material-symbols-rounded upvote">shift</span>
+                                        <!-- <span class="material-symbols-rounded upvote">shift</span>
                                         <p>{{ pro.votes }}</p>
-                                        <span class="material-symbols-rounded downvote">shift</span>
+                                        <span class="material-symbols-rounded downvote">shift</span> -->
                                     </div>
                                 </div>
                             </div>
@@ -102,9 +102,9 @@
                                 <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
                                     <p>{{ con.name }}</p>
                                     <div class="votes-wrapper">
-                                        <span class="material-symbols-rounded upvote">shift</span>
+                                        <!-- <span class="material-symbols-rounded upvote">shift</span>
                                         <p>{{ con.votes }}</p>
-                                        <span class="material-symbols-rounded downvote">shift</span>
+                                        <span class="material-symbols-rounded downvote">shift</span> -->
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +117,14 @@
                     <div class="reviews">
                         <div class="review-cta">
                             <p>Got something to say about {{ data.name }}? Leave a review!</p>
-                            <button class="btn--secondary--small">Leave a Review</button>
+                            <button class="btn--secondary--small" @click="openModal">
+                                Leave a Review
+                            </button>
+                            <Modal :is-open="isModalOpen" @close="closeModal">
+                                <LeaveReview v-if="status == 'authenticated'" :tool-name="data.name" :tool-id="data._id"
+                                    @review-submitted="handleReviewSubmitted" />
+                                <SignIn v-else />
+                            </Modal>
                         </div>
                         <ul class="review-wrapper">
                             <div v-if="reviews.length === 0" class="no-reviews">
@@ -161,6 +168,8 @@ onUnmounted(() => {
     isMounted.value = false
 })
 
+const { status } = useAuth()
+
 // Setup the route and data fetching
 const route = useRoute()
 const { name } = route.params
@@ -171,13 +180,15 @@ const { alternatives, mainTool, error: alternativesError, retryFetch: retryAlter
     data?.value?.alternatives,
     3
 )
-const { reviews, retryFetch: retryReviews } = useFetchReviews(data?.value?._id, 3)
+const { reviews, retryReviews } = useFetchReviews(data?.value?._id, 3)
 
 const retryFetch = () => {
     retryToolData()
     retryAlternatives()
     retryReviews()
 }
+
+const { isModalOpen, openModal, closeModal } = useModal()
 
 const getLabelForRating = (rating: number) => {
     const labels: { [key: number]: string } = {
@@ -204,6 +215,12 @@ const sortAndLimitItems = (items: Opinion[]) => {
         .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
         .slice(0, 4);
 }
+
+const handleReviewSubmitted = () => {
+    retryReviews();
+    retryToolData()
+    closeModal();
+};
 </script>
 
 

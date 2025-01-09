@@ -1,6 +1,6 @@
 // API endpoint to get the reviews of specific tool
-
-import mongoose from 'mongoose';
+import Reviews from '../../../models/Review';
+import User from '../../../models/User';
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -16,16 +16,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    await connectToDatabase();
-
-    const database = mongoose.connection.useDb('Tools');
-    const collection = database.collection('Comments');
-
-    const usersDatabase = mongoose.connection.useDb('User');
-    const usersCollection = usersDatabase.collection('Users');
-
     // Fetch the tool document by toolId
-    const toolDocument = await collection.findOne({
+    const toolDocument = await Reviews.findOne({
       tool: toolId,
     });
 
@@ -48,18 +40,7 @@ export default defineEventHandler(async (event) => {
 
     // Fetch user data for all reviews
     const userIds = validReviews.map((review: any) => review.user);
-    const users = await usersCollection
-      .find({
-        $or: [
-          { _id: { $in: userIds } },
-          {
-            _id: {
-              $in: userIds.map((id: any) => new mongoose.Types.ObjectId(id)),
-            },
-          },
-        ],
-      })
-      .toArray();
+    const users = await User.find({ _id: userIds });
 
     // Create a map of user data for quick lookup
     const userMap = new Map(users.map((user) => [user._id.toString(), user]));
@@ -71,12 +52,14 @@ export default defineEventHandler(async (event) => {
         comment: review.comment,
         rating: review.rating,
         date: review.date.toISOString(),
-        username: userData ? userData.username : 'Anonymous',
-        userHandle: userData ? userData.handle : 'anonymous',
-        userContributions: userData ? userData.contributions : '?',
+        username: userData ? userData.username : 'unknown',
+        name: userData ? userData.name : 'anonymous',
         userProfilePic: userData
-          ? userData.picture
+          ? userData.image
           : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+        userContributions: userData?.contributions
+          ? userData.contributions?.length
+          : 0,
       };
     });
 

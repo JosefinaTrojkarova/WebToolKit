@@ -8,7 +8,12 @@
     <main v-else-if="reviews && toolData && toolData.rating && isMounted" class="reviews">
       <div class="review-cta">
         <p>Got something to say about {{ reviews.name }}? Leave a review!</p>
-        <button class="btn--secondary--small">Leave a Review</button>
+        <button class="btn--secondary--small" @click="openModal">Leave a Review</button>
+        <Modal :is-open="isModalOpen" @close="closeModal">
+          <LeaveReview v-if="status == 'authenticated'" :tool-name="toolData.name" :tool-id="toolData._id"
+            @review-submitted="handleReviewSubmitted" />
+          <SignIn v-else />
+        </Modal>
       </div>
       <div class="content-wrapper">
         <div class="info">
@@ -28,7 +33,7 @@
               <p>{{ toolData.rating.reviews }} reviews</p>
             </div>
           </div>
-          <div class="tutorial">
+          <!-- <div class="tutorial">
             <h4>Pros and Cons are community-driven</h4>
             <p class="upvote"><span class="material-symbols-rounded">shift</span>Upvote if you've encountered the same
               thing.</p>
@@ -36,7 +41,7 @@
               or think it's spam.</p>
             <p class="add"><span class="material-symbols-rounded">add</span>Add a new item if your situation isn't
               present.</p>
-          </div>
+          </div> -->
           <div class="pros-and-cons">
             <div class="pros">
               <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
@@ -45,17 +50,17 @@
                 <div v-for="(pro) in sortItems(toolData.pros)" class="opinion-row">
                   <p>{{ pro.name }}</p>
                   <div class="votes-wrapper">
-                    <span class="material-symbols-rounded upvote">shift</span>
+                    <!-- <span class="material-symbols-rounded upvote">shift</span>
                     <p>{{ pro.votes }}</p>
-                    <span class="material-symbols-rounded downvote">shift</span>
+                    <span class="material-symbols-rounded downvote">shift</span> -->
                   </div>
                 </div>
               </div>
-              <hr>
+              <!-- <hr>
               <div class="add">
                 <p class="b1">Add</p>
                 <span class="material-symbols-rounded">add</span>
-              </div>
+              </div> -->
             </div>
             <div class="cons">
               <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
@@ -64,17 +69,17 @@
                 <div v-for="(con) in sortItems(toolData.cons)" class="opinion-row">
                   <p>{{ con.name }}</p>
                   <div class="votes-wrapper">
-                    <span class="material-symbols-rounded upvote">shift</span>
+                    <!-- <span class="material-symbols-rounded upvote">shift</span>
                     <p>{{ con.votes }}</p>
-                    <span class="material-symbols-rounded downvote">shift</span>
+                    <span class="material-symbols-rounded downvote">shift</span> -->
                   </div>
                 </div>
               </div>
-              <hr>
+              <!-- <hr>
               <div class="add">
                 <p class="b1">Add</p>
                 <span class="material-symbols-rounded">add</span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -106,8 +111,12 @@ onUnmounted(() => {
   isMounted.value = false
 })
 
+const { status } = useAuth()
+
+const { isModalOpen, openModal, closeModal } = useModal()
+
 // Data fetching
-const { reviews, toolData, error: reviewsError, retryFetch: retryReviews } = useFetchReviews()
+const { reviews, toolData, error: reviewsError, retryAll } = useFetchReviews();
 
 // Filter
 const filterConfig: any = {
@@ -117,8 +126,13 @@ const { handleFilterToggle, filteredItems: filteredReviews } = useFilters(review
 
 // Retry fetch on error
 const retryFetch = () => {
-  retryReviews()
+  retryAll()
 }
+
+const handleReviewSubmitted = () => {
+  retryAll();
+  closeModal();
+};
 
 // Rating
 const getLabelForRating = (rating: number) => {
