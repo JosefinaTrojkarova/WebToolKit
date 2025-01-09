@@ -7,7 +7,6 @@
     </div>
     <!-- Working state -->
     <main v-else-if="isMounted && data">
-      <!-- <div class="question-notification"></div> -->
       <section class="general">
         <div class="info">
           <div class="description">
@@ -44,24 +43,12 @@
           </div>
         </div>
         <div class="banner">
-          <!-- Temporary solution, needs improvement -->
           <iframe src="https://www.youtube.com/embed/Cx2dkpBxst8?si=tdXp6g5WOCc632tr"
                   title="YouTube video player" frameborder="0"
                   allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
       </section>
-      <!-- <section class="resources">
-          <h3>Resources</h3>
-          <div class="resources-wrapper">
-              <ResourceCard v-for="(resource, index) in data.resources.slice(0, 5)" :key="index"
-                  :link="resource.link" :type="resource.type">
-              </ResourceCard>
-          </div>
-          <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/resources`" class="view-resources-btn">
-              <p>View All</p>
-          </NuxtLink>
-      </section> -->
       <section class="user-sentiment">
         <h3>User Sentiment</h3>
         <div class="user-sentiment-wrapper">
@@ -71,102 +58,28 @@
                 <div v-for="(count, rating) in data.rating.stats" :key="rating" class="rating-row">
                   <p class="label">{{ getLabelForRating(rating) }}</p>
                   <div class="bar-background">
-                    <div class="bar"
-                         :style="{ width: calculateBarWidth(count, data.rating.reviews) }"></div>
+                    <div class="bar" :style="{ width: calculateBarWidth(count, data.rating.reviews) }"></div>
                   </div>
                   <p class="count">{{ count }}</p>
                 </div>
-                <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/resources`" class="view-resources-btn">
-                    <p>View All</p>
-                </NuxtLink>
-            </section> -->
-            <section class="user-sentiment">
-                <h3>User Sentiment</h3>
-                <div class="user-sentiment-wrapper">
-                    <div class="sentiment">
-                        <div class="rating">
-                            <div class="stats">
-                                <div v-for="(count, rating) in data.rating.stats" :key="rating" class="rating-row">
-                                    <p class="label">{{ getLabelForRating(rating) }}</p>
-                                    <div class="bar-background">
-                                        <div class="bar"
-                                            :style="{ width: calculateBarWidth(count, data.rating.reviews) }"></div>
-                                    </div>
-                                    <p class="count">{{ count }}</p>
-                                </div>
-                            </div>
-                            <div class="stars">
-                                <h1>{{ data.rating.stars.toFixed(1) }}</h1>
-                                <Stars :rating="data.rating.stars" />
-                                <p>{{ data.rating.reviews }} reviews</p>
-                            </div>
-                        </div>
-                        <div class="pros-and-cons">
-                            <div class="pros">
-                                <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
-                                </p>
-                                <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
-                                    <p>{{ pro.name }}</p>
-                                    <div class="votes-wrapper">
-                                        <!-- <span class="material-symbols-rounded upvote">shift</span>
-                                        <p>{{ pro.votes }}</p>
-                                        <span class="material-symbols-rounded downvote">shift</span> -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="cons">
-                                <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
-                                </p>
-                                <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
-                                    <p>{{ con.name }}</p>
-                                    <div class="votes-wrapper">
-                                        <!-- <span class="material-symbols-rounded upvote">shift</span>
-                                        <p>{{ con.votes }}</p>
-                                        <span class="material-symbols-rounded downvote">shift</span> -->
-                                    </div>
-                                </div>
-                            </div>
-                            <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
-                                class="contribute-btn">
-                                <p>Contribute</p>
-                            </NuxtLink>
-                        </div>
-                    </div>
-                    <div class="reviews">
-                        <div class="review-cta">
-                            <p>Got something to say about {{ data.name }}? Leave a review!</p>
-                            <button class="btn--secondary--small" @click="openModal">
-                                Leave a Review
-                            </button>
-                            <Modal :is-open="isModalOpen" @close="closeModal">
-                                <LeaveReview v-if="status == 'authenticated'" :tool-name="data.name" :tool-id="data._id"
-                                    @review-submitted="handleReviewSubmitted" />
-                                <SignIn v-else />
-                            </Modal>
-                        </div>
-                        <ul class="review-wrapper">
-                            <div v-if="reviews.length === 0" class="no-reviews">
-                                <p>No reviews yet :(</p>
-                            </div>
-                            <Review v-else v-for="review in reviews" :data="review" :limit="6" class="review"></Review>
-                        </ul>
-                        <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
-                            class="view-reviews-btn">
-                            <p>View All</p>
-                        </NuxtLink>
-                    </div>
+              </div>
+              <div class="stars">
+                <h1>{{ data.rating.stars.toFixed(1) }}</h1>
+                <Stars :rating="data.rating.stars" />
+                <p>{{ data.rating.reviews }} reviews</p>
+              </div>
+            </div>
+            <div class="pros-and-cons">
+              <div class="pros">
+                <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros</p>
+                <div v-for="(pro) in sortAndLimitItems(data.pros)" :key="pro.name" class="opinion-row">
+                  <p>{{ pro.name }}</p>
                 </div>
               </div>
               <div class="cons">
-                <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons
-                </p>
-                <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
+                <p class="cons-header b1"><span class="material-symbols-rounded">thumb_down</span> Cons</p>
+                <div v-for="(con) in sortAndLimitItems(data.cons)" :key="con.name" class="opinion-row">
                   <p>{{ con.name }}</p>
-                  <div class="votes-wrapper">
-                    <span class="material-symbols-rounded upvote">shift</span>
-                    <p>{{ con.votes }}</p>
-                    <span class="material-symbols-rounded downvote">shift</span>
-                  </div>
                 </div>
               </div>
               <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
@@ -178,13 +91,20 @@
           <div class="reviews">
             <div class="review-cta">
               <p>Got something to say about {{ data.name }}? Leave a review!</p>
-              <button class="btn--secondary--small">Leave a Review</button>
+              <button class="btn--secondary--small" @click="openModal">
+                Leave a Review
+              </button>
+              <Modal :is-open="isModalOpen" @close="closeModal">
+                <LeaveReview v-if="status == 'authenticated'" :tool-name="data.name" :tool-id="data._id"
+                             @review-submitted="handleReviewSubmitted" />
+                <SignIn v-else />
+              </Modal>
             </div>
             <ul class="review-wrapper">
               <div v-if="reviews.length === 0" class="no-reviews">
                 <p>No reviews yet :(</p>
               </div>
-              <Review v-else v-for="review in reviews" :data="review" :limit="6" class="review"></Review>
+              <Review v-else v-for="review in reviews" :key="review._id" :data="review" class="review"></Review>
             </ul>
             <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
                       class="view-reviews-btn">
@@ -196,8 +116,8 @@
       <section class="alternatives">
         <h3>Popular Alternatives</h3>
         <div class="content">
-          <ToolCard v-if="mainTool" :data="mainTool" :main="true"/>
-          <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt"/>
+          <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
+          <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
         </div>
         <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/alternatives`"
                   class="view-alternatives-btn">
