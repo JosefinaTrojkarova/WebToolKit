@@ -29,7 +29,7 @@
             </div>
             <div class="stars">
               <h1>{{ toolData.rating.stars.toFixed(1) }}</h1>
-              <Stars :rating="toolData.rating.stars"/>
+              <Stars :rating="toolData.rating.stars" />
               <p>{{ toolData.rating.reviews }} reviews</p>
             </div>
           </div>
@@ -84,12 +84,10 @@
           </div>
         </div>
         <div class="reviews-wrapper">
-          <Filters type="reviews" :trigger="490" @filter-toggled="handleFilterToggle"/>
+          <Filters type="reviews" :trigger="490" @filter-toggled="handleFilterChange"
+            @sort-changed="handleSortChange" />
           <div class="reviews">
-            <div v-if="reviews.length === 0" class="no-reviews">
-              <p>No reviews yet :(</p>
-            </div>
-            <Review v-else v-for="review in filteredReviews" :data="review" :key="review.date" class="review"></Review>
+            <Review v-for="review in filteredReviews" :key="review._id" :data="review" />
           </div>
         </div>
       </div>
@@ -119,10 +117,21 @@ const { isModalOpen, openModal, closeModal } = useModal()
 const { reviews, toolData, error: reviewsError, retryAll } = useFetchReviews();
 
 // Filter
-const filterConfig: any = {
-  rating: (review: Review, selected: number[]) => selected.some((rating: number) => Math.abs(review.rating - rating) <= 0.5),
-};
-const {handleFilterToggle, filteredItems: filteredReviews} = useFilters(reviews, filterConfig);
+const filterConfig = {
+  rating: (review: Review, selected: number[]) =>
+    selected.some((rating) => Math.abs(review.rating - rating) <= 0.5)
+}
+
+// Setup filters
+const { handleFilterToggle, handleSort, filteredItems: filteredReviews } = useFilters(reviews, filterConfig)
+
+const handleFilterChange = (filter: { type: string, value: any }) => {
+  handleFilterToggle(filter)
+}
+
+const handleSortChange = (sortOption: SortOption) => {
+  handleSort(sortOption)
+}
 
 // Retry fetch on error
 const retryFetch = () => {
@@ -157,7 +166,7 @@ type Opinion = {
 }
 const sortItems = (items: Opinion[]) => {
   return items
-      .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
+    .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
 }
 </script>
 
