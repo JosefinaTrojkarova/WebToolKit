@@ -1,8 +1,8 @@
 export function useGetToolName() {
-  const getToolName = async (toolId: string) => {
+  const getToolName = async (identifier: string) => {
     try {
       const response = await $fetch<{ name: string }>(
-        `/api/tool/name/${toolId}`,
+        `/api/tool/name/${identifier}`,
         {
           method: 'GET',
         }
@@ -10,7 +10,7 @@ export function useGetToolName() {
       return response.name
     } catch (error) {
       console.error('Error fetching tool name:', error)
-      return null
+      return identifier
     }
   }
 

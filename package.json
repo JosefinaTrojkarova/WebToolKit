@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@types/matter-js": "^0.19.8",
-    "@types/mongoose": "^5.11.96",
+    "@types/mongoose": "^5.11.97",
     "@vercel/speed-insights": "^1.1.0",
     "cheerio": "^1.0.0",
     "googleapis": "^144.0.0",
@@ -29,7 +29,7 @@
     "@nuxt/types": "^2.18.1",
     "@sidebase/nuxt-auth": "0.9.4",
     "@vue/test-utils": "^2.4.6",
-    "happy-dom": "^17.0.0",
+    "happy-dom": "15.11.7",
     "nuxt": "^3.15.4",
     "playwright-core": "^1.50.1",
     "sass": "^1.84.0",
