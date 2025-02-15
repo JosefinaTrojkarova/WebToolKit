@@ -27,19 +27,21 @@
           <!-- <button class="btn btn--secondary--small">
               <NuxtLink class="link" to="/wiki/contribute">Add a Tool</NuxtLink>
           </button> -->
-          <NuxtLink v-if="data" class="btn btn--primary--small" :to="`/user/settings`" external>
+          <NuxtLink v-if="username" class="btn btn--primary--small" :to="`/user/${username}`">
             View Profile
           </NuxtLink>
-          <button v-else class="btn btn--primary--small" @click="openModal">Sign In</button>
+          <button v-else class="btn btn--primary--small" @click="openModal">
+            Sign In
+          </button>
         </div>
         <Modal :is-open="isModalOpen" @close="closeModal">
-          <SignIn/>
+          <SignIn />
         </Modal>
       </nav>
     </header>
 
     <main class="layout__main">
-      <slot/>
+      <slot />
     </main>
 
     <footer class="layout__footer">
@@ -114,12 +116,28 @@
 const { name } = useRoute()
 const { data } = useAuth();
 const { fetchUsername } = useUsername()
+const username = ref('')
+const isLoading = ref(true)
 
-watchEffect(async () => {
-  if (data.value?.user?.email) {
-    await fetchUsername(data.value.user.email)
+watch(() => data.value?.user?.email, async (newEmail) => {
+  if (newEmail) {
+    isLoading.value = true
+    try {
+      const result = await fetchUsername(newEmail)
+      if (result) {
+        username.value = result
+      } else {
+        console.error('No username returned')
+      }
+    } catch (error) {
+      console.error('Error fetching username:', error)
+    } finally {
+      isLoading.value = false
+    }
+  } else {
+    username.value = ''
   }
-})
+}, { immediate: true })
 
 const showScrollTopButton = ref<'true' | 'false' | 'bottom'>('false')
 
@@ -157,7 +175,7 @@ onUnmounted(() => {
   window.removeEventListener('scroll', checkScroll)
 })
 
-const {isModalOpen, openModal, closeModal} = useModal()
+const { isModalOpen, openModal, closeModal } = useModal()
 </script>
 
 <style lang="scss" scoped>

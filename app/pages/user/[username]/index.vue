@@ -1,12 +1,25 @@
 <template>
   <main>
     <header>
-      <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image"/>
+      <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image" />
       <section class="user-info">
         <section class="name">
           <h1 class="h2">{{ data?.user?.name }}</h1>
           <p class="username">@{{ username }}</p>
         </section>
+
+        <!-- Account settings actions -->
+        <div v-if="isOwnProfile" class="account-actions">
+          <button class="signOut" @click="signOut({ callbackUrl: '/' })">
+            <span class="material-symbols-rounded">logout</span>
+            Sign Out
+          </button>
+          <button class="deleteAcc" @click="handleDeleteAccount">
+            <span class="material-symbols-rounded">delete</span>
+            Delete Account
+          </button>
+        </div>
+
         <ul class="details">
           <li class="detail" id="contributions">
             <p class="h4">Contributions:</p>
@@ -39,7 +52,7 @@
       <h2>Reviews:</h2>
       <ul>
         <li v-for="review in contributions" :key="review._id">
-          <Review :data="review"/>
+          <Review :data="review" />
         </li>
       </ul>
     </section>
@@ -64,8 +77,10 @@ interface Contribution {
   date: Date;
 }
 
-const {getSaveTool} = useSaveTool();
-const {getUserReview} = useReviewTool();
+const { data: authData, signOut } = useAuth();
+const { deleteAccount } = useAccount();
+const { getSaveTool } = useSaveTool();
+const { getUserReview } = useReviewTool();
 
 const saves = ref<string[] | null>(null);
 const contributions = ref<Contribution[] | null>(null);
@@ -73,7 +88,7 @@ const contributions = ref<Contribution[] | null>(null);
 const route = useRoute();
 const username = route.params.username as string;
 
-const {data, error} = await useFetch<PublicUser>(`/api/user/${username}`);
+const { data, error } = await useFetch<PublicUser>(`/api/user/${username}`);
 
 if (data.value?.user.email) {
   const saveToolResult = await getSaveTool(data.value?.user.email);
@@ -81,9 +96,48 @@ if (data.value?.user.email) {
   const contributionsResult = await getUserReview(data.value?.user.email) as Contribution[];
   contributions.value = contributionsResult;
 }
+
+const isOwnProfile = computed(() =>
+  authData.value?.user?.email === data.value?.user.email
+);
+
+const handleDeleteAccount = async () => {
+  const email = authData.value?.user?.email;
+  if (!email) return;
+
+  if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+    try {
+      await deleteAccount(email)
+      await signOut({ callbackUrl: '/' })
+    } catch (e) {
+      console.error('Failed to delete account:', e)
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
+// Account action btns styles from the old settings page
+@use 'sass:color';
+
+.signOut {
+  background-color: $primary-400;
+  color: white;
+
+  &:hover {
+    background-color: $primary-500;
+  }
+}
+
+.deleteAcc {
+  background-color: $system-error;
+  color: white;
+
+  &:hover {
+    background-color: color.scale($system-error, $lightness: -10%);
+  }
+}
+
 main {
   display: flex;
   flex-direction: column;
