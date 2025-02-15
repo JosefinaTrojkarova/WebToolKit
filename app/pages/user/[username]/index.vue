@@ -1,144 +1,168 @@
 <template>
-    <main>
-        <div v-if="error" class="error">
-            <p>Error: {{ error.message }}</p>
-        </div>
-        <div v-else-if="data" class="profile">
-            <section class="profile-header">
-                <img :src="data.user.image" alt="Profile picture" class="profile-image" />
-                <div class="profile-info">
-                    <h1>{{ data.user.name }}</h1>
-                    <p class="name">@{{ username }}</p>
-                </div>
-            </section>
+  <main>
+    <header>
+      <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image"/>
+      <section class="user-info">
+        <section class="name">
+          <h1 class="h2">{{ data?.user?.name }}</h1>
+          <p class="username">@{{ username }}</p>
+        </section>
+        <ul class="details">
+          <li class="detail" id="contributions">
+            <p class="h4">Contributions:</p>
+            <p class="h3">{{ contributions?.length }}</p>
+          </li>
+          <!--
+          <li class="detail" id="member-since">
+              <p class="h4">Member Since:</p>
+              <p>{{ data?.user?.createdAt }}</p>
+          </li>
 
-            <UserTools :saves="saves" :reviews="contributions" reviews-title="Contributions" />
-        </div>
-    </main>
+          <li class="detail" id="join-rank">
+              <p class="h4">Join Rank:</p>
+              <p>{{ data?.user?.joinRank }}</p>
+          </li>
+           -->
+          <li class="detail" id="stack">
+            <p class="h4">Stack:</p>
+            <ul class="stack">
+              <li v-for="save in saves" :key="save">
+                <img :src="data?.user?.image" :alt="save">
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+    </header>
+
+    <section class="reviews">
+      <h2>Reviews:</h2>
+      <ul>
+        <li v-for="review in contributions" :key="review._id">
+          <Review :data="review"/>
+        </li>
+      </ul>
+    </section>
+  </main>
 </template>
 
-<script setup lang="ts">
-const { getSaveTool } = useSaveTool();
-const { getUserReview } = useReviewTool();
-const { getToolName } = useGetToolName();
-
-interface SavedTool {
-    id: string;
+<script lang="ts" setup>
+type PublicUser = {
+  user: {
+    username: string;
     name: string;
+    email: string;
+    image: string;
+  }
 }
 
 interface Contribution {
-    _id: string;
-    toolId: string;
-    toolName?: string;
-    comment: string;
-    rating: number;
-    date: Date;
+  _id: string;
+  toolId: string;
+  comment: string;
+  rating: number;
+  date: Date;
 }
 
-type PublicUser = {
-    user: {
-        username: string;
-        name: string;
-        email: string;
-        image: string;
-    }
-}
+const {getSaveTool} = useSaveTool();
+const {getUserReview} = useReviewTool();
+
+const saves = ref<string[] | null>(null);
+const contributions = ref<Contribution[] | null>(null);
 
 const route = useRoute();
 const username = route.params.username as string;
 
-const saves = ref<SavedTool[] | null>(null);
-const contributions = ref<Contribution[] | null>(null);
-
-const { data, error } = await useFetch<PublicUser>(`/api/user/${username}`);
+const {data, error} = await useFetch<PublicUser>(`/api/user/${username}`);
 
 if (data.value?.user.email) {
-    const saveToolResult = await getSaveTool(data.value?.user.email);
-    if (saveToolResult?.saves) {
-        const savedToolsWithNames = await Promise.all(
-            saveToolResult.saves.map(async (toolId: string) => {
-                try {
-                    const toolName = await getToolName(toolId);
-                    return { id: toolId, name: toolName || toolId };
-                } catch (error) {
-                    console.error('Error fetching tool name:', error);
-                    return { id: toolId, name: toolId };
-                }
-            })
-        );
-        saves.value = savedToolsWithNames;
-    }
-
-    const contributionsResult = await getUserReview(data.value?.user.email) as Contribution[];
-    const contributionsWithNames = await Promise.all(
-        contributionsResult.map(async (contribution) => {
-            try {
-                const toolName = await getToolName(contribution.toolId);
-                return { ...contribution, toolName: toolName || contribution.toolId };
-            } catch (error) {
-                console.error('Error fetching tool name:', error);
-                return { ...contribution, toolName: contribution.toolId };
-            }
-        })
-    );
-    contributions.value = contributionsWithNames;
+  const saveToolResult = await getSaveTool(data.value?.user.email);
+  saves.value = saveToolResult?.saves || null;
+  const contributionsResult = await getUserReview(data.value?.user.email) as Contribution[];
+  contributions.value = contributionsResult;
 }
 </script>
 
 <style scoped lang="scss">
 main {
-    display: flex;
-    flex-direction: column;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: $xxl;
-    gap: $xxl;
-}
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding: 2rem;
 
-.profile {
+  header {
     display: flex;
-    flex-direction: column;
-    gap: $xxl;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: $xl;
-    padding: $xl;
-    background-color: $system-bg;
-    border-radius: $m;
-    border: 1px solid $primary-200;
+    gap: 2rem;
 
     .profile-image {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        border: 3px solid $primary-200;
+      width: 9.375rem;
+      height: 9.375rem;
+      border-radius: 50%;
+      border: 1px solid $primary-200;
     }
 
-    .profile-info {
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .name {
         display: flex;
         flex-direction: column;
-        gap: $s;
 
-        h1 {
-            color: $primary-400;
-            font-size: 2rem;
+        .username {
+          color: $primary-300;
         }
+      }
 
-        .name {
-            color: $primary-300;
-            font-size: 1.2rem;
+      .details {
+        display: flex;
+        gap: 2rem;
+
+        .detail {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .stack {
+            display: flex;
+
+            li {
+              list-style-type: none;
+              width: 1.3rem;
+              transform-origin: center;
+
+              &:nth-child(odd) {
+                transform: rotate(-15deg);
+              }
+
+              &:nth-child(even) {
+                transform: rotate(15deg) translateY(-0.2rem);
+              }
+
+              img {
+                width: 2rem;
+                height: 2rem;
+                border-radius: .5rem;
+                border: 1px solid $primary-200;
+              }
+            }
+          }
         }
+      }
     }
-}
+  }
 
-.error {
-    padding: $l;
-    color: $system-error;
-    background-color: rgba($system-error, 0.1);
-    border-radius: $m;
+  .reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
 }
 </style>
