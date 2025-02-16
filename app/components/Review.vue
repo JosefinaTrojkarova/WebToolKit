@@ -2,7 +2,8 @@
   <div :class="`review clickable`" @click="handleOpenModal">
     <div class="review-content-wrapper">
       <div class="comment-header">
-        <NuxtLink :to="`/user/${data.username}`" class="user-info">
+        <!-- Add @click.stop to prevent modal from opening -->
+        <NuxtLink :to="`/user/${data.username}`" class="user-info" @click.stop>
           <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
             <p class="b1">{{ data.name }}</p>
@@ -32,7 +33,8 @@
               <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
               <div class="user-details">
                 <p class="b1">{{ data.username }}</p>
-                <p class="p3">{{ data.userContributions }}</p>
+                <p v-if="data.userContributions === 1" class="p3">{{ data.userContributions }} contribution</p>
+                <p v-else class="p3">{{ data.userContributions }} contributions</p>
               </div>
             </NuxtLink>
             <!-- <span class="material-symbols-rounded report-btn" title="Report review"
@@ -134,10 +136,21 @@ const handleLineLimit = ref(props.limit || '')
       display: flex;
       flex-direction: row;
       align-items: center;
-
+      text-decoration: none;
+      transition: transform 0.2s ease;
       gap: $m;
 
       cursor: pointer;
+
+      &:hover {
+        transform: translateY(-2px);
+
+        .user-details {
+          .b1 {
+            color: $primary-600;
+          }
+        }
+      }
 
       .user-pfp {
         width: 3rem;
@@ -149,6 +162,11 @@ const handleLineLimit = ref(props.limit || '')
       .user-details {
         display: flex;
         flex-direction: column;
+
+        .b1 {
+          color: $primary-400;
+          transition: color 0.2s ease;
+        }
 
         .p3 {
           color: $primary-300;

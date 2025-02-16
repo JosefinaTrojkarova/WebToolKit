@@ -1,23 +1,22 @@
 <template>
   <div v-if="type === 'reviews'" class="search-tools"
-    :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
-    <div class="filters">
+    :style="`z-index: ${40 + searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
+    <div class=" filters">
       <li class="rating">
         <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <!-- <button class="sort" @click="openDropdown(0)">
+    <button class="sort" @click="openDropdown(0)">
       <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
     <Dropdown :open="isDropdownOpen" :id="0" @close="closeDropdown">
-      <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
       <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
-      <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
-    </Dropdown> -->
+      <p class="dropdown--item" @click="handleSortChange('Oldest')">Oldest</p>
+    </Dropdown>
   </div>
   <div v-else-if="type === 'alternatives'" class="search-tools"
-    :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
+    :style="`z-index: ${40 + searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
     <div class="filters">
       <li class="pricing">
         <Tags variant="pricing" @tag-toggled="handleTagToggle" />
@@ -29,34 +28,15 @@
         <Tags variant="rating" @tag-toggled="handleTagToggle" />
       </li>
     </div>
-    <!-- <button class="sort" @click="openDropdown(1)">
+    <button class="sort" @click="openDropdown(1)">
       <p class="p2">{{ currentSort }}</p>
       <span class="material-symbols-rounded">sort</span>
     </button>
     <Dropdown :open="isDropdownOpen" :id="1" @close="closeDropdown">
-      <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
-      <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
-      <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
-    </Dropdown> -->
-  </div>
-  <div v-else-if="type === 'resources'" class="search-tools"
-    :style="`z-index: ${searchToolsStyle}; border-bottom-width: ${searchToolsStyle};`">
-    <div class="filters">
-      <li class="sources">
-        <Tags variant="resource-src" @tag-toggled="handleTagToggle" />
-      </li>
-      <li class="types">
-        <Tags variant="resource-types" @tag-toggled="handleTagToggle" />
-      </li>
-    </div>
-    <button class="sort" @click="openDropdown(2)">
-      <p class="p2">{{ currentSort }}</p>
-      <span class="material-symbols-rounded">sort</span>
-    </button>
-    <Dropdown :open="isDropdownOpen" :id="2" @close="closeDropdown">
-      <p class="dropdown--item" @click="handleSortChange('Most Relevant')">Most Relevant</p>
-      <p class="dropdown--item" @click="handleSortChange('Most Recent')">Most Recent</p>
-      <p class="dropdown--item" @click="handleSortChange('Most Helpful')">Most Helpful</p>
+      <p class="dropdown--item" @click="handleSortChange('Highest Rated')">Highest Rated</p>
+      <p class="dropdown--item" @click="handleSortChange('Lowest Rated')">Lowest Rated</p>
+      <p class="dropdown--item" @click="handleSortChange('A to Z')">A to Z</p>
+      <p class="dropdown--item" @click="handleSortChange('Z to A')">Z to A</p>
     </Dropdown>
   </div>
 </template>
@@ -66,45 +46,46 @@ const props = defineProps({
   type: {
     type: String,
     required: true,
-    validator: (value: string) => ['reviews', 'alternatives', 'resources'].includes(value)
+    validator: (value: string) => ['reviews', 'alternatives'].includes(value)
   },
-  // Scroll transition trigger point
   trigger: {
     type: Number,
     required: true
   }
 })
 
-// Filters emit
-const emit = defineEmits(['sort-changed', 'filter-toggled']);
+const emit = defineEmits(['sort-changed', 'filter-toggled'])
+const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0, 1])
 
-// Dropdown filters
-const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown([0, 1, 2])
+// Default sort based on type
+const getDefaultSort = (type: string) => {
+  switch (type) {
+    case 'reviews':
+      return 'Most Recent'
+    case 'alternatives':
+      return 'Highest Rated'
+    default:
+      return 'Most Recent'
+  }
+}
 
-const currentSort = ref('Most Relevant');
+const currentSort = ref(getDefaultSort(props.type))
+
+watch(() => props.type, (newType) => {
+  currentSort.value = getDefaultSort(newType)
+})
 
 const handleSortChange = (sortOption: string) => {
-  currentSort.value = sortOption;
-  emit('sort-changed', sortOption);
-  switch (props.type) {
-    case 'reviews':
-      closeDropdown(0);
-      break;
-    case 'alternatives':
-      closeDropdown(1);
-      break;
-    case 'resources':
-      closeDropdown(2);
-      break;
-  }
-};
+  currentSort.value = sortOption
+  emit('sort-changed', sortOption)
+  closeDropdown(props.type === 'reviews' ? 0 : 1)
+}
 
-// Tag filters
 const handleTagToggle = (filter: Tag) => {
-  emit('filter-toggled', { type: filter.variant, value: filter.tag.name });
-};
+  emit('filter-toggled', { type: filter.variant, value: filter.tag.name })
+}
 
-// Scroll
+// Scroll handling
 const searchToolsStyle = ref(0)
 
 const checkScroll = () => {

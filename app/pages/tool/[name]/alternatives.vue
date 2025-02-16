@@ -8,12 +8,13 @@
     <!-- Working state -->
     <main v-else-if="isMounted && alternatives">
       <div class="main-tool">
-        <ToolCard v-if="mainTool" :data="mainTool" :main="true"/>
+        <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
       </div>
       <div class="alternatives-wrapper">
-        <Filters type="alternatives" :trigger="360" @filter-toggled="handleFilterToggle" style="z-index: 100;"/>
+        <Filters type="alternatives" :trigger="360" @filter-toggled="handleFilterChange"
+          @sort-changed="handleSortChange" class="alternatives-filter" />
         <div class="alternatives">
-          <ToolCard v-for="alt in filteredAlternatives" :key="alt._id" :data="alt"/>
+          <ToolCard v-for="alt in filteredAlternatives" :key="alt._id" :data="alt" />
         </div>
       </div>
     </main>
@@ -35,16 +36,28 @@ onUnmounted(() => {
 })
 
 // Data fetching
-const {alternatives, mainTool, error: alternativesError, retryFetch} = useFetchAlternatives();
+const { alternatives, mainTool, error: alternativesError, retryFetch } = useFetchAlternatives();
 
 // Fiter
-const filterConfig: any = {
-  categories: (alt: Alternative, selected: string[]) => selected.some((cat: Category) => alt.categories.includes(cat)),
-  pricing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.pricing),
-  licensing: (alt: Alternative, selected: string[]) => selected.includes(alt.tags.licensing),
-  rating: (alt: Alternative, selected: number[]) => selected.some((rating: number) => Math.abs(alt.rating.stars - rating) <= 0.5),
-};
-const {handleFilterToggle, filteredItems: filteredAlternatives} = useFilters(alternatives, filterConfig);
+const filterConfig = {
+  pricing: (alt: Alternative, selected: string[]) =>
+    selected.length === 0 || selected.includes(alt.tags.pricing),
+  licensing: (alt: Alternative, selected: string[]) =>
+    selected.length === 0 || selected.includes(alt.tags.licensing),
+  rating: (alt: Alternative, selected: number[]) =>
+    selected.length === 0 || selected.some((rating) => Math.abs(alt.rating.stars - rating) <= 0.5)
+}
+
+// Setup filters
+const { handleFilterToggle, handleSort, filteredItems: filteredAlternatives } = useFilters(alternatives, filterConfig)
+
+const handleFilterChange = (filter: { type: string, value: any }) => {
+  handleFilterToggle(filter)
+}
+
+const handleSortChange = (sortOption: SortOption) => {
+  handleSort(sortOption)
+}
 
 // Retry fetch on error
 const handleRetryFetch = () => {

@@ -137,7 +137,7 @@
         </p>
         <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
           <p>{{ pro.name }}</p>
-          <p class="b1">{{ pro.votes }}</p>
+          <!-- <p class="b1">{{ pro.votes }}</p> -->
         </div>
       </div>
       <div class="cons">
@@ -145,7 +145,7 @@
         </p>
         <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
           <p>{{ con.name }}</p>
-          <p class="b1">{{ con.votes }}</p>
+          <!-- <p class="b1">{{ con.votes }}</p> -->
         </div>
       </div>
     </div>
