@@ -1,24 +1,12 @@
 <template>
   <main>
     <header>
-      <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image" />
+      <img v-if="data?.user?.image" :src="data.user.image" alt="Profile picture" class="profile-image"/>
       <section class="user-info">
         <section class="name">
           <h1 class="h2">{{ data?.user?.name }}</h1>
           <p class="username">@{{ username }}</p>
         </section>
-
-        <!-- Account settings actions -->
-        <div v-if="isOwnProfile" class="account-actions">
-          <button class="signOut" @click="signOut({ callbackUrl: '/' })">
-            <span class="material-symbols-rounded">logout</span>
-            Sign Out
-          </button>
-          <button class="deleteAcc" @click="handleDeleteAccount">
-            <span class="material-symbols-rounded">delete</span>
-            Delete Account
-          </button>
-        </div>
 
         <ul class="details">
           <li class="detail" id="contributions">
@@ -45,16 +33,26 @@
             </ul>
           </li>
         </ul>
+
+        <!-- Account settings actions -->
+        <section v-if="isOwnProfile" class="account-actions">
+          <button class="btn--secondary--small sign-out" @click="signOut({ callbackUrl: '/' })">
+            <span class="material-symbols-rounded">logout</span>
+            Sign Out
+          </button>
+          <button class="btn--secondary--small delete" @click="handleDeleteAccount">
+            <span class="material-symbols-rounded">delete</span>
+            Delete Account
+          </button>
+        </section>
       </section>
     </header>
 
     <section class="reviews">
       <h2>Reviews:</h2>
-      <ul>
-        <li v-for="review in contributions" :key="review._id">
-          <Review :data="review" />
-        </li>
-      </ul>
+      <section class="list">
+        <Review v-for="review in contributions" :key="review._id" :data="review"/>
+      </section>
     </section>
   </main>
 </template>
@@ -77,10 +75,10 @@ interface Contribution {
   date: Date;
 }
 
-const { data: authData, signOut } = useAuth();
-const { deleteAccount } = useAccount();
-const { getSaveTool } = useSaveTool();
-const { getUserReview } = useReviewTool();
+const {data: authData, signOut} = useAuth();
+const {deleteAccount} = useAccount();
+const {getSaveTool} = useSaveTool();
+const {getUserReview} = useReviewTool();
 
 const saves = ref<string[] | null>(null);
 const contributions = ref<Contribution[] | null>(null);
@@ -88,7 +86,7 @@ const contributions = ref<Contribution[] | null>(null);
 const route = useRoute();
 const username = route.params.username as string;
 
-const { data, error } = await useFetch<PublicUser>(`/api/user/${username}`);
+const {data, error} = await useFetch<PublicUser>(`/api/user/${username}`);
 
 if (data.value?.user.email) {
   const saveToolResult = await getSaveTool(data.value?.user.email);
@@ -98,7 +96,7 @@ if (data.value?.user.email) {
 }
 
 const isOwnProfile = computed(() =>
-  authData.value?.user?.email === data.value?.user.email
+    authData.value?.user?.email === data.value?.user.email
 );
 
 const handleDeleteAccount = async () => {
@@ -108,7 +106,7 @@ const handleDeleteAccount = async () => {
   if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
     try {
       await deleteAccount(email)
-      await signOut({ callbackUrl: '/' })
+      await signOut({callbackUrl: '/'})
     } catch (e) {
       console.error('Failed to delete account:', e)
     }
@@ -117,27 +115,6 @@ const handleDeleteAccount = async () => {
 </script>
 
 <style scoped lang="scss">
-// Account action btns styles from the old settings page
-@use 'sass:color';
-
-.signOut {
-  background-color: $primary-400;
-  color: white;
-
-  &:hover {
-    background-color: $primary-500;
-  }
-}
-
-.deleteAcc {
-  background-color: $system-error;
-  color: white;
-
-  &:hover {
-    background-color: color.scale($system-error, $lightness: -10%);
-  }
-}
-
 main {
   display: flex;
   flex-direction: column;
@@ -145,6 +122,7 @@ main {
   padding: 2rem;
 
   header {
+    position: relative;
     display: flex;
     gap: 2rem;
 
@@ -205,6 +183,28 @@ main {
         }
       }
     }
+
+    .account-actions {
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: flex;
+      gap: 1rem;
+
+      button {
+        gap: .5rem;
+      }
+
+      .delete {
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+          background-color: $system-error;
+          border-color: $system-error;
+          color: $system-white;
+        }
+      }
+    }
   }
 
   .reviews {
@@ -212,9 +212,9 @@ main {
     flex-direction: column;
     gap: 1rem;
 
-    ul {
-      display: flex;
-      flex-direction: column;
+    .list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
   }

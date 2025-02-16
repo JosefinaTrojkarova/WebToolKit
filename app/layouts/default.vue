@@ -44,7 +44,7 @@
       <slot />
     </main>
 
-    <footer class="layout__footer">
+    <footer v-if="!footerDisabled" class="layout__footer">
       <div class="footer__links">
         <div class="links">
           <p class="links__title b1">Use cases</p>
@@ -118,6 +118,10 @@ const { data } = useAuth();
 const { fetchUsername } = useUsername()
 const username = ref('')
 const isLoading = ref(true)
+
+defineProps({
+  footerDisabled: Boolean
+})
 
 watch(() => data.value?.user?.email, async (newEmail) => {
   if (newEmail) {
