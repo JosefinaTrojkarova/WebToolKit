@@ -12,28 +12,28 @@
   },
   "dependencies": {
     "@types/matter-js": "^0.19.8",
-    "@types/mongoose": "^5.11.96",
+    "@types/mongoose": "^5.11.97",
     "@vercel/speed-insights": "^1.1.0",
     "cheerio": "^1.0.0",
     "googleapis": "^144.0.0",
     "matter-js": "^0.20.0",
     "matter-wrap": "^0.2.0",
-    "mongoose": "^8.9.3",
+    "mongoose": "^8.10.0",
     "next-auth": "4.21.1",
     "v-click-outside": "^3.2.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.15.1",
+    "@nuxt/test-utils": "^3.15.4",
     "@nuxt/types": "^2.18.1",
     "@sidebase/nuxt-auth": "0.9.4",
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "15.11.7",
-    "nuxt": "^3.15.1",
-    "playwright-core": "^1.49.1",
-    "sass": "^1.83.1",
-    "typescript": "^5.7.2",
+    "nuxt": "^3.15.4",
+    "playwright-core": "^1.50.1",
+    "sass": "^1.84.0",
+    "typescript": "^5.7.3",
     "vue-tsc": "^2.2.0"
   }
 }

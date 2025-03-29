@@ -1,4 +1,4 @@
-import { defineNuxtModule, addImports } from '@nuxt/kit';
+import { defineNuxtModule, addImports } from '@nuxt/kit'
 
 export default defineNuxtModule({
   setup() {
@@ -16,7 +16,8 @@ export default defineNuxtModule({
       'User',
       'ToolSuggestion',
       'ReviewPage',
-    ];
+      'SortOption',
+    ]
 
     types.forEach((type) => {
       addImports({
@@ -24,7 +25,7 @@ export default defineNuxtModule({
         name: type,
         as: type,
         type: true,
-      });
-    });
+      })
+    })
   },
-});
+})

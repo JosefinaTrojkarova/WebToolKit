@@ -43,10 +43,13 @@
           </div>
         </div>
         <div class="banner">
-          <iframe src="https://www.youtube.com/embed/Cx2dkpBxst8?si=tdXp6g5WOCc632tr"
-                  title="YouTube video player" frameborder="0"
-                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe v-if="getEmbedUrl" :src="getEmbedUrl" title="YouTube video player" frameborder="0"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+          </iframe>
+          <div v-else class="no-video">
+            <p>No video available</p>
+          </div>
         </div>
       </section>
       <section class="user-sentiment">
@@ -82,8 +85,7 @@
                   <p>{{ con.name }}</p>
                 </div>
               </div>
-              <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
-                        class="contribute-btn">
+              <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`" class="contribute-btn">
                 <p>Contribute</p>
               </NuxtLink>
             </div>
@@ -96,7 +98,7 @@
               </button>
               <Modal :is-open="isModalOpen" @close="closeModal">
                 <LeaveReview v-if="status == 'authenticated'" :tool-name="data.name" :tool-id="data._id"
-                             @review-submitted="handleReviewSubmitted" />
+                  @review-submitted="handleReviewSubmitted" />
                 <SignIn v-else />
               </Modal>
             </div>
@@ -106,8 +108,7 @@
               </div>
               <Review v-else v-for="review in reviews" :key="review._id" :data="review" class="review"></Review>
             </ul>
-            <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`"
-                      class="view-reviews-btn">
+            <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`" class="view-reviews-btn">
               <p>View All</p>
             </NuxtLink>
           </div>
@@ -119,8 +120,7 @@
           <ToolCard v-if="mainTool" :data="mainTool" :main="true" />
           <ToolCard v-for="alt in alternatives.slice(0, 3)" :key="alt._id" :data="alt" />
         </div>
-        <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/alternatives`"
-                  class="view-alternatives-btn">
+        <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/alternatives`" class="view-alternatives-btn">
           <p>View All</p>
         </NuxtLink>
       </section>
@@ -146,13 +146,13 @@ const { status } = useAuth()
 
 // Setup the route and data fetching
 const route = useRoute()
-const {name} = route.params
+const { name } = route.params
 
-const {data, error, retryFetch: retryToolData} = useFetchToolData(name as string)
-const {alternatives, mainTool, error: alternativesError, retryFetch: retryAlternatives} = useFetchAlternatives(
-    data?.value?._id,
-    data?.value?.alternatives,
-    3
+const { data, error, retryFetch: retryToolData } = useFetchToolData(name as string)
+const { alternatives, mainTool, error: alternativesError, retryFetch: retryAlternatives } = useFetchAlternatives(
+  data?.value?._id,
+  data?.value?.alternatives,
+  3
 )
 const { reviews, retryReviews } = useFetchReviews(data?.value?._id, 3)
 
@@ -161,6 +161,16 @@ const retryFetch = () => {
   retryAlternatives()
   retryReviews()
 }
+
+const getEmbedUrl = computed(() => {
+  if (!data.value?.video) return null;
+
+  const url = new URL(data.value.video);
+  const videoId = url.searchParams.get('v');
+
+  if (!videoId) return null;
+  return `https://www.youtube.com/embed/${videoId}`;
+});
 
 const { isModalOpen, openModal, closeModal } = useModal()
 
@@ -186,14 +196,14 @@ type Opinion = {
 }
 const sortAndLimitItems = (items: Opinion[]) => {
   return items
-      .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
-      .slice(0, 4);
+    .sort((a, b) => parseInt(b.votes) - parseInt(a.votes))
+    .slice(0, 4);
 }
 
 const handleReviewSubmitted = () => {
-    retryReviews();
-    retryToolData()
-    closeModal();
+  retryReviews();
+  retryToolData()
+  closeModal();
 };
 </script>
 
@@ -328,6 +338,15 @@ main {
       iframe {
         width: 100%;
         height: 100%;
+      }
+
+      .no-video {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-color: $primary-100;
       }
     }
   }
