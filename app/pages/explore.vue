@@ -44,12 +44,12 @@
       </aside>
       <section class="section tools">
         <!-- Loading state -->
-        <div v-if="status === 'pending'" class="loading">
-          <p>Loading tools...</p>
+        <div v-if="status" class="loading">
+          <p>Loading tools and categories...</p>
         </div>
         <!-- Error state -->
         <div v-else-if="error" class="error">
-          <p class="error__message">{{ error.message || 'Failed to load tools' }}</p>
+          <p class="error__message">{{ error.message || 'Failed to load data' }}</p>
           <button @click="retryFetch" class="retry-button">Retry</button>
         </div>
         <!-- Data loaded -->

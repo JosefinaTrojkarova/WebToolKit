@@ -12,12 +12,14 @@ export function useExplore() {
   const categoriesCacheKey = 'categories-data' // key for caching categories data
 
   // Fetch categories and cache
-  const { error: categoriesError, refresh: refreshCategories } = useFetch<
-    CategoryDatabase[]
-  >('/api/tool/categories', {
+  const {
+    error: categoriesError,
+    refresh: refreshCategories,
+    status: categoriesStatus,
+  } = useFetch<CategoryDatabase[]>('/api/tool/categories', {
     key: categoriesCacheKey,
     transform: (response) =>
-      response.map((category: any) => ({ ...category, active: false })),
+      response?.map((category: any) => ({ ...category, active: false })) || [],
     getCachedData: () => getCachedData(categoriesCacheKey),
     onResponse: ({ response }) => {
       if (response.ok) {
@@ -151,10 +153,21 @@ export function useExplore() {
 
     try {
       await Promise.all([refreshCategories(), refresh()])
+
+      // Check the status after refresh
+      if (status.value === 'error' || categoriesStatus.value === 'error') {
+        throw new Error('Failed to fetch data')
+      }
     } catch (error) {
       console.error('Retry failed:', error)
+      hasShownError.value = true
     }
   }
+
+  // Combined loading state
+  const isLoading = computed(
+    () => status.value === 'pending' || categoriesStatus.value === 'pending'
+  )
 
   return {
     categories,
@@ -165,7 +178,7 @@ export function useExplore() {
     error,
     filteredTools,
     retryFetch,
-    status,
+    status: isLoading, // Use combined loading state
     data,
   }
 }
