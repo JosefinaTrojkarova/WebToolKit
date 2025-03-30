@@ -14,10 +14,10 @@
             <p>{{ data.description }}</p>
           </div>
           <div class="info-cards">
-            <div class="rankings">
+            <!-- <div class="rankings">
               <h4>Rankings</h4>
               <h3>#1 in Nevhodne Slovo</h3>
-            </div>
+            </div> -->
             <NuxtLink :to="data.pricingLink" target="_blank" title="See current pricing" class="pricing">
               <h4>Pricing <span class="material-symbols-rounded">captive_portal</span></h4>
               <div class="tag--static--pricing">
