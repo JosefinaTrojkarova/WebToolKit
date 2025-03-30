@@ -70,7 +70,8 @@ export function useExplore() {
         setCachedData(cacheKey, response)
         return response
       },
-      default: () => [], // Provide default empty array
+      default: () => [],
+      immediate: true,
     }
   )
 
@@ -131,37 +132,27 @@ export function useExplore() {
 
   watch(
     [error, categoriesError],
-    ([newError, newCategoriesError]) => {
-      if ((newError || newCategoriesError) && !hasShownError.value) {
-        console.error('Error occurred:', {
+    async ([newError, newCategoriesError]) => {
+      if (newError || newCategoriesError) {
+        console.warn('Initial load failed, retrying silently...', {
           exploreError: newError,
           categoriesError: newCategoriesError,
         })
-        hasShownError.value = true
-        alert('Failed to load data. Please refresh the page.')
-      } else if (!newError && !newCategoriesError) {
-        hasShownError.value = false
+
+        // Clear cache and retry silently
+        setCachedData(cacheKey, null)
+        setCachedData(categoriesCacheKey, null)
+        await Promise.all([refreshCategories(), refresh()])
       }
     },
     { immediate: false }
   )
 
+  // Keep the retryFetch for manual retries (button click)
   const retryFetch = async () => {
-    hasShownError.value = false
     setCachedData(cacheKey, null)
     setCachedData(categoriesCacheKey, null)
-
-    try {
-      await Promise.all([refreshCategories(), refresh()])
-
-      // Check the status after refresh
-      if (status.value === 'error' || categoriesStatus.value === 'error') {
-        throw new Error('Failed to fetch data')
-      }
-    } catch (error) {
-      console.error('Retry failed:', error)
-      hasShownError.value = true
-    }
+    await Promise.all([refreshCategories(), refresh()])
   }
 
   // Combined loading state
