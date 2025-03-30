@@ -128,37 +128,54 @@ export function useExplore() {
     })
   })
 
-  const hasShownError = ref(false)
+  const retryAttempts = ref(0)
+  const MAX_RETRIES = 3
+  const RETRY_DELAY = 1000
+
+  const retryWithDelay = async () => {
+    setCachedData(cacheKey, null)
+    setCachedData(categoriesCacheKey, null)
+
+    const delay = RETRY_DELAY * Math.pow(2, retryAttempts.value)
+    await new Promise((resolve) => setTimeout(resolve, delay))
+
+    await Promise.all([refreshCategories(), refresh()])
+    retryAttempts.value++
+  }
 
   watch(
     [error, categoriesError],
     async ([newError, newCategoriesError]) => {
-      if (newError || newCategoriesError) {
-        console.warn('Initial load failed, retrying silently...', {
-          exploreError: newError,
-          categoriesError: newCategoriesError,
-        })
+      if (
+        (newError || newCategoriesError) &&
+        retryAttempts.value < MAX_RETRIES
+      ) {
+        console.warn(
+          `Retry attempt ${retryAttempts.value + 1}/${MAX_RETRIES}...`,
+          {
+            exploreError: newError,
+            categoriesError: newCategoriesError,
+          }
+        )
 
-        // Clear cache and retry silently
-        setCachedData(cacheKey, null)
-        setCachedData(categoriesCacheKey, null)
-        await Promise.all([refreshCategories(), refresh()])
+        await retryWithDelay()
       }
     },
     { immediate: false }
   )
 
-  // Keep the retryFetch for manual retries (button click)
   const retryFetch = async () => {
-    setCachedData(cacheKey, null)
-    setCachedData(categoriesCacheKey, null)
-    await Promise.all([refreshCategories(), refresh()])
+    retryAttempts.value = 0
+    await retryWithDelay()
   }
 
-  // Combined loading state
-  const isLoading = computed(
-    () => status.value === 'pending' || categoriesStatus.value === 'pending'
-  )
+  const isLoading = computed(() => {
+    const isDataPending = status.value === 'pending'
+    const isCategoriesPending = categoriesStatus.value === 'pending'
+    const isInitialLoad = !data.value || categories.value.length === 0
+
+    return isDataPending || isCategoriesPending || isInitialLoad
+  })
 
   return {
     categories,
@@ -166,10 +183,12 @@ export function useExplore() {
     refreshCategories,
     handleCategoryToggle,
     handleTagToggle,
-    error,
+    error: computed(() =>
+      retryAttempts.value >= MAX_RETRIES ? error.value : null
+    ),
     filteredTools,
     retryFetch,
-    status: isLoading, // Use combined loading state
+    status: isLoading,
     data,
   }
 }
