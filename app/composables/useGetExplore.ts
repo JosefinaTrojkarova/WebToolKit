@@ -125,24 +125,35 @@ export function useExplore() {
     })
   })
 
+  const hasShownError = ref(false)
+
   watch(
     [error, categoriesError],
     ([newError, newCategoriesError]) => {
-      if (newError || newCategoriesError) {
+      if ((newError || newCategoriesError) && !hasShownError.value) {
         console.error('Error occurred:', {
           exploreError: newError,
           categoriesError: newCategoriesError,
         })
+        hasShownError.value = true
         alert('Failed to load data. Please refresh the page.')
+      } else if (!newError && !newCategoriesError) {
+        hasShownError.value = false
       }
     },
     { immediate: false }
   )
 
-  const retryFetch = () => {
-    refreshCategories()
+  const retryFetch = async () => {
+    hasShownError.value = false
     setCachedData(cacheKey, null)
-    refresh()
+    setCachedData(categoriesCacheKey, null)
+
+    try {
+      await Promise.all([refreshCategories(), refresh()])
+    } catch (error) {
+      console.error('Retry failed:', error)
+    }
   }
 
   return {

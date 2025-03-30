@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
-const MAX_RETRIES = 3
-const RETRY_DELAY = 2000
+const MAX_RETRIES = 4
+const RETRY_DELAY = 3000
 
 async function connectWithRetry(retryCount = 0): Promise<void> {
   try {
