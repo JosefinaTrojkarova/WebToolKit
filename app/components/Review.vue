@@ -1,8 +1,14 @@
 <template>
-  <div :class="`review clickable`" @click="handleOpenModal">
+  <div :class="`review clickable${inProfile ? ' profile-review' : ''}`" @click="handleOpenModal">
     <div class="review-content-wrapper">
+      <div v-if="(inProfile || data.tool) && data.tool" class="tool-info">
+        <NuxtLink :to="`/tool/${data.tool.name}`" class="tool-link" @click.stop>
+          <img :src="data.tool.logo" :alt="data.tool.name" class="tool-logo">
+          <span class="tool-name">{{ data.tool.name }}</span>
+        </NuxtLink>
+      </div>
+
       <div class="comment-header">
-        <!-- Add @click.stop to prevent modal from opening -->
         <NuxtLink :to="`/user/${data.username}`" class="user-info" @click.stop>
           <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
           <div class="user-details">
@@ -33,6 +39,12 @@
     <Modal :is-open="isModalOpen" @close="closeModal">
       <div class="modal">
         <div class="review-content-wrapper">
+          <div v-if="(inProfile || data.tool) && data.tool" class="tool-info">
+            <NuxtLink :to="`/tool/${data.tool.name}`" class="tool-link">
+              <img :src="data.tool.logo" :alt="data.tool.name" class="tool-logo">
+              <span class="tool-name">{{ data.tool.name }}</span>
+            </NuxtLink>
+          </div>
           <div class="comment-header">
             <NuxtLink :to="`/user/${data.username}`" class="user-info">
               <img :src="data.userProfilePic" alt="pfp" class="user-pfp">
@@ -67,8 +79,9 @@
 <script lang="ts" setup>
 const { data: authData } = useAuth()
 const props = defineProps<{
-  data: Review
+  data: Review & { tool?: { name: string, logo: string } }
   limit?: number
+  inProfile?: boolean
 }>()
 
 // Check if current user can delete the review
@@ -275,6 +288,50 @@ const handleLineLimit = ref(props.limit || '')
 
   .material-symbols-rounded {
     font-size: 1.25rem;
+  }
+}
+
+.tool-info {
+  margin-bottom: $m;
+  border-bottom: 1px solid $primary-100;
+  padding-bottom: $m;
+
+  .tool-link {
+    display: flex;
+    align-items: center;
+    gap: $s;
+    padding: $s;
+    text-decoration: none;
+    border-radius: $m;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $primary-100;
+      transform: translateY(-2px);
+
+      .tool-name {
+        color: $primary-600;
+      }
+    }
+
+    .tool-logo {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: $xs;
+    }
+
+    .tool-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: $primary-400;
+      transition: color 0.2s ease;
+    }
+  }
+}
+
+.profile-review {
+  .review-content-wrapper {
+    position: relative;
   }
 }
 </style>

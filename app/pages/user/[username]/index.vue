@@ -61,7 +61,7 @@
         <Review v-for="review in contributions" :key="review._id" :data="{
           ...review,
           userEmail: (review as any).userEmail || userData?.user?.email
-        }" @deleted="handleReviewDeleted" />
+        }" :in-profile="true" @deleted="handleReviewDeleted" />
       </section>
     </section>
   </main>
