@@ -58,7 +58,10 @@
     <section class="reviews">
       <h2>Reviews:</h2>
       <section class="list">
-        <Review v-for="review in contributions" :key="review._id" :data="review" />
+        <Review v-for="review in contributions" :key="review._id" :data="{
+          ...review,
+          userEmail: (review as any).userEmail || userData?.user?.email
+        }" @deleted="handleReviewDeleted" />
       </section>
     </section>
   </main>
@@ -90,6 +93,17 @@ const handleDeleteAccount = async () => {
       console.error('Failed to delete account:', e)
     }
   }
+}
+
+const handleReviewDeleted = async (reviewId: string) => {
+  if (contributions.value) {
+    contributions.value = contributions.value.filter(
+      review => review._id !== reviewId
+    )
+  }
+
+  // Refresh data from server
+  await fetchUserProfile(username)
 }
 </script>
 

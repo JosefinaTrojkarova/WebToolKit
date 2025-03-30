@@ -106,7 +106,8 @@
               <div v-if="reviews.length === 0" class="no-reviews">
                 <p>No reviews yet :(</p>
               </div>
-              <Review v-else v-for="review in reviews" :key="review._id" :data="review" class="review"></Review>
+              <Review v-else v-for="review in reviews" :key="review._id" :data="review" class="review"
+                @deleted="handleReviewDeleted" />
             </ul>
             <NuxtLink :to="`${data.name.toLowerCase().replace(/\s+/g, '-')}/reviews`" class="view-reviews-btn">
               <p>View All</p>
@@ -205,6 +206,12 @@ const handleReviewSubmitted = () => {
   retryToolData()
   closeModal();
 };
+
+const handleReviewDeleted = async (reviewId: string) => {
+  reviews.value = reviews.value.filter((review: { _id: string }) => review._id !== reviewId)
+
+  await retryToolData()
+}
 </script>
 
 

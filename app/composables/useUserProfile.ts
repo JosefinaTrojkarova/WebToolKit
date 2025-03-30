@@ -73,12 +73,20 @@ export function useUserProfile() {
       const enhancedContributions = await Promise.all(
         contributionsResult.map(async (contribution) => {
           try {
+            const tool = await $fetch<{ name: string; logo: string }>(
+              `/api/tool/${contribution.toolId}/stack`
+            )
             return {
               ...contribution,
               name: user.name,
               username: user.username,
+              userEmail: user.email,
               userProfilePic: user.image,
               userContributions: contributionsResult.length,
+              tool: {
+                name: tool.name,
+                logo: tool.logo,
+              },
             }
           } catch (e) {
             console.error(`Failed to enhance contribution:`, e)

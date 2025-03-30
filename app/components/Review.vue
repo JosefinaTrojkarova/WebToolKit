@@ -13,6 +13,11 @@
         </NuxtLink>
         <!-- <span class="material-symbols-rounded report-btn" title="Report review"
           @click.stop="toggleReportModal">report</span> -->
+        <div class="actions">
+          <button v-if="canDelete" class="delete-btn" title="Delete review" @click.stop="handleDelete">
+            <span class="material-symbols-rounded">delete</span>
+          </button>
+        </div>
       </div>
       <div class="star-rating">
         <span v-for="star in 5" :key="star" class="material-symbols-rounded"
@@ -60,11 +65,32 @@
 </template>
 
 <script lang="ts" setup>
+const { data: authData } = useAuth()
 const props = defineProps<{
   data: Review
-  // Prop to set the maximum number of lines of text to display, if not set, all lines will be displayed and no modal will be openable
   limit?: number
 }>()
+
+// Check if current user can delete the review
+const canDelete = computed(() =>
+  authData.value?.user?.email === props.data.userEmail
+)
+
+const emit = defineEmits(['deleted'])
+
+const handleDelete = async () => {
+  if (!confirm('Are you sure you want to delete this review?')) return
+
+  try {
+    await $fetch('/api/tool/reviews/reviews', {
+      method: 'DELETE',
+      body: { reviewId: props.data._id }
+    })
+    emit('deleted', props.data._id)
+  } catch (e) {
+    console.error('Failed to delete review:', e)
+  }
+}
 
 const handleOpenModal = () => {
   openModal()
@@ -224,5 +250,31 @@ const handleLineLimit = ref(props.limit || '')
 .date {
   color: $gray-50;
   padding-top: $s;
+}
+
+.actions {
+  display: flex;
+  gap: $xs;
+}
+
+.delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: $xs;
+  cursor: pointer;
+  color: $primary-300;
+  border-radius: $xs;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $system-error;
+  }
+
+  .material-symbols-rounded {
+    font-size: 1.25rem;
+  }
 }
 </style>
