@@ -43,17 +43,26 @@
         </div>
       </aside>
       <section class="section tools">
-        <!-- Error -->
-        <div class="error" v-if="error">
-          <p class="error__message">Error: {{ error.message }}</p>
+        <!-- Loading state -->
+        <div v-if="status" class="loading">
+          <p>Loading tools and categories...</p>
+        </div>
+        <!-- Error state -->
+        <div v-else-if="error" class="error">
+          <p class="error__message">{{ error.message || 'Failed to load data' }}</p>
+          <button @click="retryFetch" class="retry-button">Retry</button>
         </div>
         <!-- Data loaded -->
-        <div class="tools__list" v-else-if="filteredTools">
-          <!-- Display a list of tools -->
+        <div v-else-if="data && data.length > 0" class="tools__list">
           <ToolCard v-for="item in filteredTools" :key="item._id" :data="item" />
-
-          <!-- Display a message if no tools are found -->
-          <p v-if="filteredTools.length === 0">No tools found.</p>
+          <!-- Show "No tools found" only when filtering results in empty list -->
+          <p v-if="filteredTools.length === 0" class="no-results">
+            No tools match your filters.
+          </p>
+        </div>
+        <!-- No data available -->
+        <div v-else class="no-data">
+          <p>No tools available.</p>
         </div>
       </section>
     </main>
@@ -68,7 +77,10 @@ const {
   handleCategoryToggle,
   handleTagToggle,
   error,
-  filteredTools
+  filteredTools,
+  retryFetch,
+  status,
+  data
 } = useExplore()
 
 // Reset scroll position when filters change
@@ -167,6 +179,36 @@ onMounted(() => {
 
 .section {
   flex-grow: 1;
+
+  .loading,
+  .error,
+  .no-data {
+    text-align: center;
+    padding: $xl;
+    color: $primary-600;
+  }
+
+  .error {
+    .retry-button {
+      margin-top: $m;
+      padding: $s $m;
+      border: 1px solid $primary-400;
+      border-radius: $s;
+      background: $primary-100;
+      color: $primary-600;
+      cursor: pointer;
+
+      &:hover {
+        background: $primary-200;
+      }
+    }
+  }
+
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: $primary-600;
+  }
 
   .tools__list {
     display: grid;

@@ -1,20 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 interface IUserContribution {
-  _id: string;
-  comment: string;
-  rating: number;
-  date: Date;
-  toolId: string;
+  _id: string
+  comment: string
+  rating: number
+  date: Date
+  toolId: string
 }
 
 interface IUser {
-  name: string;
-  username: string;
-  email: string;
-  image?: string;
-  contributions?: IUserContribution[];
-  saves?: string[];
+  name: string
+  username: string
+  email: string
+  image?: string
+  contributions?: IUserContribution[]
+  saves?: string[]
 }
 
 const UserContributionSchema = new mongoose.Schema({
@@ -23,7 +23,7 @@ const UserContributionSchema = new mongoose.Schema({
   rating: Number,
   date: Date,
   toolId: String,
-});
+})
 
 const UserSchema = new mongoose.Schema<IUser>({
   name: { type: String, required: true },
@@ -32,12 +32,12 @@ const UserSchema = new mongoose.Schema<IUser>({
   image: { type: String, required: false },
   contributions: [UserContributionSchema],
   saves: { type: [String], required: false },
-});
+})
 
-const userDb = mongoose.connection.useDb('User');
+const userDb = mongoose.connection.useDb('User')
 
 const User =
   (userDb.models.User as mongoose.Model<IUser>) ||
-  userDb.model<IUser>('User', UserSchema, 'Users');
+  userDb.model<IUser>('User', UserSchema, 'Users')
 
-export default User;
+export default User
