@@ -219,49 +219,58 @@ const handleReviewDeleted = async (reviewId: string) => {
 main {
   display: flex;
   flex-direction: column;
-
   gap: $xxl;
-  padding: 0 $xxl;
+  padding: 0 $xl;
   padding-bottom: $xxl;
+  
+  @media (max-width: 768px) {
+    padding: 0 $m;
+    padding-bottom: $xl;
+    gap: $xl;
+  }
 
   .general {
     display: flex;
     flex-direction: row;
-
     width: 100%;
-
     gap: $xl;
+
+    @media (max-width: 1200px) {
+      flex-direction: column;
+    }
 
     .info {
       display: flex;
       flex-direction: column;
-
       flex-grow: 1;
-
       gap: $m;
 
       .description {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-
         flex-grow: 1;
         width: 100%;
-
         gap: $s;
         padding: $xl;
-
         border: 1px solid $primary-200;
         border-radius: $m;
+
+        @media (max-width: 768px) {
+          padding: $m;
+        }
       }
 
       .info-cards {
         display: flex;
         flex-direction: row;
-
         width: 100%;
-
         gap: $m;
+        flex-wrap: wrap;
+
+        @media (max-width: 900px) {
+          flex-direction: column;
+        }
 
         .rankings,
         .pricing,
@@ -270,14 +279,18 @@ main {
           flex-direction: column;
           justify-content: space-between;
           box-sizing: border-box;
-
           min-width: 12.5rem;
           height: 12.5rem;
-
           padding: $xl;
-
           border: 1px solid $primary-200;
           border-radius: $m;
+
+          @media (max-width: 900px) {
+            width: 100%;
+            min-width: unset;
+            height: auto;
+            padding: $m;
+          }
 
           h3 {
             display: flex;
@@ -292,7 +305,6 @@ main {
           h4 {
             display: flex;
             justify-content: space-between;
-
             width: 100%;
 
             span {
@@ -315,18 +327,19 @@ main {
           flex-direction: column;
           justify-content: space-between;
           box-sizing: border-box;
-
           flex-grow: 1;
-
           padding: $xl;
-
           border: 1px solid $primary-200;
           border-radius: $m;
 
+          @media (max-width: 900px) {
+            width: 100%;
+            padding: $m;
+          }
+
           .wrapper {
             display: flex;
-            flex-wrap: wrap-reverse;
-
+            flex-wrap: wrap;
             gap: $s;
           }
         }
@@ -338,9 +351,18 @@ main {
       overflow: hidden;
       height: 23.125rem;
       min-width: 41.1rem;
-
       border: 1px solid $primary-200;
       border-radius: $m;
+
+      @media (max-width: 1200px) {
+        min-width: unset;
+        width: 100%;
+      }
+
+      @media (max-width: 768px) {
+        height: auto;
+        aspect-ratio: 16/9;
+      }
 
       iframe {
         width: 100%;
@@ -361,18 +383,18 @@ main {
   .resources {
     display: flex;
     flex-direction: column;
-
     width: 100%;
-
     gap: $m;
 
     .resources-wrapper {
       display: grid;
-      grid-template-columns: repeat(5, minmax(20rem, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
       width: 100%;
-      height: 30rem;
-
       gap: $m;
+      
+      @media (max-width: 768px) {
+        height: auto;
+      }
     }
 
     .view-resources-btn {
@@ -380,14 +402,10 @@ main {
       justify-content: center;
       align-items: center;
       box-sizing: border-box;
-
       width: 100%;
-
       padding: $m;
-
       border: 1px solid $primary-200;
       border-radius: $m;
-
       cursor: pointer;
       transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
@@ -401,78 +419,95 @@ main {
   .user-sentiment {
     display: flex;
     flex-direction: column;
-
     width: 100%;
-
     gap: $m;
 
     .user-sentiment-wrapper {
       display: flex;
       flex-direction: row;
       box-sizing: border-box;
-
       width: 100%;
-
       gap: $xxl;
+
+      @media (max-width: 1024px) {
+        flex-direction: column;
+        gap: $xl;
+      }
 
       .sentiment {
         display: flex;
         flex-direction: column;
-
         gap: $m;
+        flex-basis: 50%;
+
+        @media (max-width: 1024px) {
+          width: 100%;
+        }
 
         .rating {
           display: flex;
           flex-direction: row;
-
           gap: $m;
+          
+          @media (max-width: 600px) {
+            flex-direction: column;
+          }
 
           .stats {
             display: flex;
             flex-direction: column-reverse;
-
             flex-grow: 1;
-
             padding: $xl;
             gap: $s;
-
             border: 1px solid $primary-200;
             border-radius: $m;
+
+            @media (max-width: 768px) {
+              padding: $m;
+            }
 
             .rating-row {
               display: flex;
               flex-direction: row;
               align-items: center;
-
               gap: $m;
+              
+              @media (max-width: 480px) {
+                gap: $xs;
+              }
 
               .label {
                 width: 5.5rem;
+                
+                @media (max-width: 480px) {
+                  width: 4.5rem;
+                  font-size: 0.85rem;
+                }
               }
 
               .bar-background {
                 display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
-
                 height: 0.5rem;
                 flex-grow: 1;
-
                 background-color: $primary-100;
-
                 border-radius: 1rem;
 
                 .bar {
                   height: 100%;
-
                   background-color: $secondary-400;
-
                   border-radius: 1rem;
                 }
               }
 
               .count {
                 width: 2.5rem;
+                
+                @media (max-width: 480px) {
+                  width: 1.5rem;
+                  font-size: 0.85rem;
+                }
               }
             }
           }
@@ -482,19 +517,35 @@ main {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-
             padding: $xl;
             gap: $xs;
-
             aspect-ratio: 1 / 1;
-
             border: 1px solid $primary-200;
             border-radius: $m;
-
             user-select: none;
+            
+            @media (max-width: 768px) {
+              padding: $m;
+            }
+            
+            @media (max-width: 600px) {
+              aspect-ratio: auto;
+              width: 100%;
+              flex-direction: row;
+              gap: $m;
+              justify-content: space-between;
+              
+              h1 {
+                height: auto;
+              }
+            }
 
             h1 {
               height: 5.3rem;
+              
+              @media (max-width: 768px) {
+                height: auto;
+              }
             }
           }
         }
@@ -502,28 +553,31 @@ main {
         .pros-and-cons {
           display: grid;
           grid-template-columns: 1fr 1fr;
-
           width: 100%;
-
           gap: $m;
+          
+          @media (max-width: 600px) {
+            grid-template-columns: 1fr;
+          }
 
           .pros,
           .cons {
             display: flex;
             flex-direction: column;
-
             padding: $xl;
             gap: $s;
-
             border: 1px solid $primary-200;
             border-radius: $m;
+            
+            @media (max-width: 768px) {
+              padding: $m;
+            }
 
             .pros-header,
             .cons-header {
               display: flex;
               flex-direction: row;
               align-items: center;
-
               gap: $s;
 
               .material-symbols-rounded {
@@ -535,20 +589,21 @@ main {
               display: flex;
               flex-direction: row;
               justify-content: space-between;
-
               gap: $m;
 
               p {
-                text-wrap: nowrap;
+                text-wrap: balance;
+                
+                @media (max-width: 480px) {
+                  text-wrap: wrap;
+                }
               }
 
               .votes-wrapper {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-
                 gap: $xs;
-
                 user-select: none;
 
                 .upvote {
@@ -583,16 +638,16 @@ main {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-
             grid-column: span 2;
-
             padding: $m;
-
             border: 1px solid $primary-200;
             border-radius: $m;
-
             cursor: pointer;
             transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+            
+            @media (max-width: 600px) {
+              grid-column: 1;
+            }
 
             &:hover {
               box-shadow: $shadow-300;
@@ -605,9 +660,8 @@ main {
       .reviews {
         display: flex;
         flex-direction: column;
-
         flex-grow: 1;
-
+        flex-basis: 50%;
         gap: $m;
 
         .review-cta {
@@ -616,35 +670,47 @@ main {
           justify-content: space-between;
           align-items: center;
           box-sizing: border-box;
-
           width: 100%;
-
           padding: $xl;
-
           border: 1px solid $primary-200;
           border-radius: $m;
+          
+          @media (max-width: 768px) {
+            padding: $m;
+          }
+          
+          @media (max-width: 600px) {
+            flex-direction: column;
+            gap: $m;
+            text-align: center;
+          }
         }
 
         .review-wrapper {
           display: flex;
           flex-direction: row;
-
           width: 100%;
           flex-grow: 1;
-
           gap: $m;
+          
+          @media (max-width: 768px) {
+            flex-direction: column;
+          }
 
           .no-reviews {
             display: flex;
             justify-content: center;
             align-items: center;
-
             width: 100%;
             height: 100%;
           }
 
           .review {
             flex: 1;
+            
+            @media (max-width: 768px) {
+              width: 100%;
+            }
           }
         }
 
@@ -652,12 +718,9 @@ main {
           display: inline-flex;
           justify-content: center;
           align-items: center;
-
           padding: $m;
-
           border: 1px solid $primary-200;
           border-radius: $m;
-
           cursor: pointer;
           transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
@@ -679,18 +742,27 @@ main {
       display: grid;
       grid-template-columns: repeat(4, minmax(20rem, 1fr));
       gap: $m;
+      
+      @media (max-width: 1400px) {
+        grid-template-columns: repeat(2, minmax(20rem, 1fr));
+      }
+      
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+      }
+      
+      @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+      }
     }
 
     .view-alternatives-btn {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-
       padding: $m;
-
       border: 1px solid $primary-200;
       border-radius: $m;
-
       cursor: pointer;
       transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
 
@@ -707,7 +779,6 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   height: 80vh;
   width: 100%;
 }

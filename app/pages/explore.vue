@@ -115,6 +115,10 @@ onMounted(() => {
   display: flex;
 
   gap: $xxl;
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+  }
 }
 
 .aside {
@@ -125,6 +129,11 @@ onMounted(() => {
   max-width: 26rem;
 
   gap: $m;
+
+  @media (max-width: 1000px) {
+    min-width: 100%;
+    max-width: 100%;
+  }
 
   .aside-wrapper {
     position: sticky;
@@ -142,6 +151,10 @@ onMounted(() => {
 
       gap: $m;
 
+      @media (max-width: 550px) {
+        flex-direction: column;
+      }
+
       .filter {
         display: flex;
         flex-direction: column;
@@ -155,6 +168,10 @@ onMounted(() => {
         border: 1px solid $primary-200;
         border-radius: $m;
 
+        @media (max-width: 550px) {
+          width: 100%;
+        }
+
         .filter__wrapper {
           display: flex;
           flex-direction: column;
@@ -166,6 +183,11 @@ onMounted(() => {
             flex-direction: column;
 
             gap: $s;
+
+            @media (max-width: 1000px) {
+              flex-direction: row;
+              flex-wrap: wrap;
+            }
           }
 
           &:not(:last-child) {
@@ -212,7 +234,7 @@ onMounted(() => {
 
   .tools__list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
 
     gap: $m;
   }

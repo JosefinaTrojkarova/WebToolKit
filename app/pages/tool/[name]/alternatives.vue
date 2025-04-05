@@ -76,6 +76,19 @@ main {
   padding: 0 $xxl;
   padding-bottom: $xxl;
   gap: $xxl;
+  
+  @media (max-width: 1024px) {
+    padding: 0 $xl;
+    padding-bottom: $xl;
+    gap: $xl;
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 0 $l;
+    padding-bottom: $l;
+    gap: $l;
+  }
 
   .main-tool {
     position: sticky;
@@ -83,6 +96,13 @@ main {
     flex: 1;
     height: min-content;
     margin-top: $xxl + $xl;
+    
+    @media (max-width: 768px) {
+      position: relative;
+      top: 0;
+      margin-top: $l;
+      width: 100%;
+    }
   }
 
   .alternatives-wrapper {
@@ -94,6 +114,18 @@ main {
       display: grid;
       grid-template-columns: repeat(3, minmax(300px, 1fr));
       gap: $m;
+      
+      @media (max-width: 1200px) {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+      }
+      
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+      }
     }
   }
 }

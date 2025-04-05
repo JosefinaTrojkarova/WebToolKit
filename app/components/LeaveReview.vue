@@ -81,6 +81,11 @@ const handleSubmit = async () => {
   gap: $m;
   width: 48.75rem;
   height: 28.125rem;
+  
+  @media (max-width: 768px) {
+    width: 90vw;
+    height: auto;
+  }
 
   background-color: $system-bg;
 
@@ -106,9 +111,19 @@ const handleSubmit = async () => {
   height: 100%;
 
   gap: $m;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+  }
 
   .review__title {
     width: 50%;
+    
+    @media (max-width: 768px) {
+      width: 100%;
+      text-align: center;
+    }
   }
 
   form {
@@ -117,12 +132,25 @@ const handleSubmit = async () => {
 
     gap: $m;
     width: 50%;
+    
+    @media (max-width: 768px) {
+      width: 100%;
+    }
 
     .review__checkbox-container {
       display: flex;
       align-items: center;
       gap: $xs;
       margin: $s 0;
+    }
+    
+    .review__stars {
+      display: flex;
+      gap: $s;
+      
+      @media (max-width: 480px) {
+        justify-content: center;
+      }
     }
 
     .review__submit {
@@ -131,9 +159,27 @@ const handleSubmit = async () => {
       padding: $l;
       background-color: $primary-400;
       color: white;
+      
+      @media (max-width: 768px) {
+        width: 100%;
+      }
 
       &:hover {
         background-color: $primary-200;
+      }
+    }
+    
+    .review__textarea {
+      min-height: 150px;
+      padding: $m;
+      border: 1px solid $primary-200;
+      border-radius: $s;
+      width: 100%;
+      resize: vertical;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary-300;
       }
     }
   }

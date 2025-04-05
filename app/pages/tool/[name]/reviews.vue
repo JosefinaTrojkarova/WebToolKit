@@ -181,6 +181,18 @@ main {
   padding: 0 $xxl;
   padding-bottom: $xxl;
   gap: $xxl;
+  
+  @media (max-width: 768px) {
+    padding: 0 $xl;
+    padding-bottom: $xl;
+    gap: $xl;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 $l;
+    padding-bottom: $l;
+    gap: $l;
+  }
 
   .review-cta {
     display: flex;
@@ -195,6 +207,15 @@ main {
 
     border: 1px solid $primary-200;
     border-radius: $m;
+    
+    @media (max-width: 768px) {
+      padding: $l;
+    }
+    
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: $m;
+    }
   }
 
   .content-wrapper {
@@ -204,6 +225,11 @@ main {
     width: 100%;
 
     gap: $xxl;
+    
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      gap: $xl;
+    }
 
     .info {
       position: sticky;
@@ -216,12 +242,22 @@ main {
 
       min-width: fit-content;
       height: fit-content;
+      
+      @media (max-width: 1024px) {
+        position: relative;
+        top: 0;
+        padding-top: 0;
+      }
 
       .rating {
         display: flex;
         flex-direction: row;
 
         gap: $m;
+        
+        @media (max-width: 640px) {
+          flex-direction: column;
+        }
 
         .stats {
           display: flex;
@@ -234,6 +270,10 @@ main {
 
           border: 1px solid $primary-200;
           border-radius: $m;
+          
+          @media (max-width: 480px) {
+            padding: $m;
+          }
 
           .rating-row {
             display: flex;
@@ -241,9 +281,18 @@ main {
             align-items: center;
 
             gap: $m;
+            
+            @media (max-width: 480px) {
+              gap: $xs;
+            }
 
             .label {
               width: 5.5rem;
+              
+              @media (max-width: 480px) {
+                width: 4.5rem;
+                font-size: 0.9rem;
+              }
             }
 
             .bar-background {
@@ -269,6 +318,11 @@ main {
 
             .count {
               width: 2.5rem;
+              
+              @media (max-width: 480px) {
+                width: 1.5rem;
+                font-size: 0.9rem;
+              }
             }
           }
         }
@@ -289,9 +343,24 @@ main {
           border-radius: $m;
 
           user-select: none;
+          
+          @media (max-width: 640px) {
+            width: 100%;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: $l;
+          }
+          
+          @media (max-width: 480px) {
+            padding: $m;
+          }
 
           h1 {
             height: 5.3rem;
+            
+            @media (max-width: 640px) {
+              height: auto;
+            }
           }
         }
       }
@@ -305,6 +374,10 @@ main {
 
         border: 1px solid $primary-200;
         border-radius: $m;
+        
+        @media (max-width: 480px) {
+          padding: $m;
+        }
 
         .upvote,
         .downvote,
@@ -349,6 +422,10 @@ main {
         width: 100%;
 
         gap: $m;
+        
+        @media (max-width: 640px) {
+          grid-template-columns: 1fr;
+        }
 
         .pros,
         .cons {
@@ -363,6 +440,10 @@ main {
 
           border: 1px solid $primary-200;
           border-radius: $m;
+          
+          @media (max-width: 480px) {
+            padding: $m;
+          }
 
           .pros-header,
           .cons-header {
@@ -397,9 +478,19 @@ main {
               justify-content: space-between;
 
               gap: $m;
+              
+              @media (max-width: 480px) {
+                gap: $xs;
+              }
 
               p {
                 text-wrap: nowrap;
+                
+                &:first-child {
+                  @media (max-width: 480px) {
+                    text-wrap: wrap;
+                  }
+                }
               }
 
               .votes-wrapper {
@@ -474,6 +565,14 @@ main {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
         gap: $m;
+        
+        @media (max-width: 768px) {
+          grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+        }
+        
+        @media (max-width: 480px) {
+          grid-template-columns: 1fr;
+        }
       }
     }
   }

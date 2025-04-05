@@ -67,12 +67,17 @@ main {
   gap: $xxl * 4;
   padding: $xxl;
 
+  @media (max-width: 1000px) {
+    height: auto;
+    gap: $xxl;
+  }
+
+
   .heading {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    width: fit-content;
     text-align: center;
     gap: $l;
 
@@ -82,7 +87,7 @@ main {
     }
 
     p {
-      width: 400px;
+      max-width: 400px;
     }
 
     b {
@@ -95,7 +100,11 @@ main {
     justify-content: center;
 
     width: 100%;
-    gap: 25rem;
+    gap: min(28vw, 25rem);
+
+    @media (max-width: 1000px) {
+      gap: 15vw;
+    }
 
     .catalogue,
     .quiz {
@@ -106,21 +115,36 @@ main {
       gap: $s;
       transition: transform 0.3s ease-out;
 
+      h2 {
+        font-size: clamp(2rem, 5vw, 5rem);
+      }
+
       img {
-        max-width: 70rem;
+        max-width: clamp(40rem, 70vw, 70rem);
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        object-position: top;
         border: 0.1rem solid $primary-100;
-        border-radius: $xxl;
+        border-radius: clamp(1rem, 2vw, 2rem);
         overflow: hidden;
       }
 
       .catalogue-note {
         position: absolute;
-        right: -13rem;
+        right: max(-14vw, -13rem);
+
+        svg {
+          width: clamp(3rem, 15vw, 13.9rem);
+        }
 
         p {
           position: absolute;
           top: -1rem;
           right: -3rem;
+        }
+
+        @media (max-width: 1000px) {
+          display: none;
         }
       }
 
@@ -134,13 +158,21 @@ main {
 
       .quiz-note {
         position: absolute;
-        left: -12rem;
+        left: max(-14vw, -12rem);
         top: 5rem;
+
+        svg {
+          width: clamp(3rem, 14vw, 11.5rem);
+        }
 
         p {
           position: absolute;
           top: 8rem;
           left: -3.5rem;
+        }
+
+        @media (max-width: 1000px) {
+          display: none;
         }
       }
 

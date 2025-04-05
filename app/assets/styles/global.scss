@@ -62,7 +62,7 @@ h4, .h4 {
 }
 
 h1, .h1 {
-  font-size: 5rem; //80px
+  font-size: clamp(2rem, 7vw, 5rem); //80px
 }
 
 h2, .h2 {
@@ -74,13 +74,13 @@ h3, .h3 {
 }
 
 h4, .h4 {
-  font-size: 1.25rem; //20px
+  font-size: clamp(1rem, 1.5vw, 1.25rem); //20px
 }
 
 // Paragraphs:
 p {
   font-weight: 500;
-  font-size: 1.125rem; //18px
+  font-size: clamp(.8rem, 2vw, 1.125rem); //18px
   color: $primary-400;
   line-height: 140%;
 }

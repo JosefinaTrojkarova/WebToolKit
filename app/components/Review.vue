@@ -135,6 +135,14 @@ const handleLineLimit = ref(props.limit || '')
 
   border: 1px solid $primary-200;
   border-radius: $m;
+  
+  @media (max-width: 768px) {
+    padding: $l;
+  }
+  
+  @media (max-width: 480px) {
+    padding: $m;
+  }
 }
 
 .clickable {
@@ -154,6 +162,10 @@ const handleLineLimit = ref(props.limit || '')
 
   width: 50rem;
   min-height: 10rem;
+  
+  @media (max-width: 768px) {
+    width: 90vw;
+  }
 }
 
 .review-content-wrapper {
@@ -161,6 +173,44 @@ const handleLineLimit = ref(props.limit || '')
   flex-direction: column;
 
   gap: $xs;
+
+  .tool-info {
+    margin-bottom: $m;
+    border-bottom: 1px solid $primary-100;
+    padding-bottom: $m;
+
+    .tool-link {
+      display: flex;
+      align-items: center;
+      gap: $s;
+      padding: $s;
+      text-decoration: none;
+      border-radius: $m;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: $primary-100;
+        transform: translateY(-2px);
+
+        .tool-name {
+          color: $primary-600;
+        }
+      }
+
+      .tool-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: $xs;
+      }
+
+      .tool-name {
+        font-size: 1rem;
+        font-weight: 500;
+        color: $primary-400;
+        transition: color 0.2s ease;
+      }
+    }
+  }
 
   .comment-header {
     display: flex;
@@ -178,8 +228,11 @@ const handleLineLimit = ref(props.limit || '')
       text-decoration: none;
       transition: transform 0.2s ease;
       gap: $m;
-
       cursor: pointer;
+      
+      @media (max-width: 480px) {
+        gap: $s;
+      }
 
       &:hover {
         transform: translateY(-2px);
@@ -194,8 +247,12 @@ const handleLineLimit = ref(props.limit || '')
       .user-pfp {
         width: 3rem;
         height: 3rem;
-
         border-radius: 50%;
+        
+        @media (max-width: 480px) {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
       }
 
       .user-details {
@@ -263,6 +320,10 @@ const handleLineLimit = ref(props.limit || '')
 .date {
   color: $gray-50;
   padding-top: $s;
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 }
 
 .actions {
@@ -288,44 +349,6 @@ const handleLineLimit = ref(props.limit || '')
 
   .material-symbols-rounded {
     font-size: 1.25rem;
-  }
-}
-
-.tool-info {
-  margin-bottom: $m;
-  border-bottom: 1px solid $primary-100;
-  padding-bottom: $m;
-
-  .tool-link {
-    display: flex;
-    align-items: center;
-    gap: $s;
-    padding: $s;
-    text-decoration: none;
-    border-radius: $m;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: $primary-100;
-      transform: translateY(-2px);
-
-      .tool-name {
-        color: $primary-600;
-      }
-    }
-
-    .tool-logo {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: $xs;
-    }
-
-    .tool-name {
-      font-size: 1rem;
-      font-weight: 500;
-      color: $primary-400;
-      transition: color 0.2s ease;
-    }
   }
 }
 

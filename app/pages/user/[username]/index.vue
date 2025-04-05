@@ -119,6 +119,11 @@ main {
     display: flex;
     gap: 2rem;
 
+    @media (max-width: 500px) {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .profile-image {
       width: 9.375rem;
       height: 9.375rem;
@@ -143,6 +148,15 @@ main {
       .details {
         display: flex;
         gap: 2rem;
+
+        @media (max-width: 768px) {
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        @media (max-width: 480px) {
+          flex-direction: column;
+        }
 
         .detail {
           display: flex;
@@ -184,6 +198,11 @@ main {
       display: flex;
       gap: 1rem;
 
+      @media (max-width: 1000px) {
+        position: static;
+        flex-wrap: wrap;
+      }
+
       button {
         gap: .5rem;
       }
@@ -209,6 +228,10 @@ main {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
+
+      @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+      }
     }
   }
 }

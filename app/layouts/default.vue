@@ -34,10 +34,35 @@
             Sign In
           </button>
         </div>
+        <button class="mobile-menu-btn" @click="toggleMobileMenu">
+          <span class="material-symbols-rounded">{{ mobileMenuOpen ? 'close' : 'menu' }}</span>
+        </button>
         <Modal :is-open="isModalOpen" @close="closeModal">
           <SignIn />
         </Modal>
       </nav>
+      <div class="mobile-menu" :class="{ 'mobile-menu--open': mobileMenuOpen }">
+        <ul class="mobile-menu__list">
+          <li class="mobile-menu__item">
+            <NuxtLink class="mobile-menu__link" to="/explore" @click="closeMobileMenu">
+              Explore
+            </NuxtLink>
+          </li>
+          <li class="mobile-menu__item">
+            <NuxtLink class="mobile-menu__link" to="/wiki" @click="closeMobileMenu">
+              Wiki
+            </NuxtLink>
+          </li>
+          <li class="mobile-menu__item">
+            <NuxtLink v-if="username" class="mobile-menu__link" :to="`/user/${username}`" @click="closeMobileMenu">
+              Profile
+            </NuxtLink>
+            <button v-else class="mobile-menu__button" @click="openModalMobile">
+              Sign In
+            </button>
+          </li>
+        </ul>
+      </div>
     </header>
 
     <main class="layout__main">
@@ -118,6 +143,7 @@ const { data } = useAuth();
 const { fetchUsername } = useUsername()
 const username = ref('')
 const isLoading = ref(true)
+const mobileMenuOpen = ref(false)
 
 defineProps({
   footerDisabled: Boolean
@@ -171,6 +197,25 @@ const scrollToTop = () => {
   })
 }
 
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+  if (mobileMenuOpen.value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+}
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false
+  document.body.style.overflow = ''
+}
+
+const openModalMobile = () => {
+  closeMobileMenu()
+  openModal()
+}
+
 onMounted(() => {
   window.addEventListener('scroll', checkScroll)
 })
@@ -195,6 +240,68 @@ const { isModalOpen, openModal, closeModal } = useModal()
 
 .nav__item {
   padding: 8px;
+}
+
+// Mobile menu button (hidden by default)
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  
+  span {
+    color: $primary-400;
+    font-size: 2rem;
+    font-variation-settings: 'opsz' 32, 'wght' 500, 'FILL' 0, 'GRAD' 100;
+  }
+}
+
+// Mobile menu styles
+.mobile-menu {
+  position: fixed;
+  top: 81px; // Header height
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 81px);
+  background-color: $system-bg;
+  z-index: 998;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+  display: none;
+  
+  &--open {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0s;
+  }
+  
+  &__list {
+    display: flex;
+    flex-direction: column;
+    padding: $xl;
+    gap: $xl;
+  }
+  
+  &__item {
+    border-bottom: 1px solid $primary-100;
+    padding-bottom: $l;
+  }
+  
+  &__link, &__button {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: $primary-400;
+    width: 100%;
+    display: block;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
 }
 
 // Navbar
@@ -246,12 +353,25 @@ const { isModalOpen, openModal, closeModal } = useModal()
   border-top: 1px solid $primary-100;
   background-color: $system-bg;
 
+  @media (max-width: 1220px) {
+    flex-direction: column;
+    align-items: center;
+    gap: $xxl;
+    text-align: center;
+  }
+
   // Left
   .footer__links {
     display: flex;
+    flex-wrap: wrap;
+    gap: $xxl;
 
     .links {
       width: 260px; // ???
+
+      @media (max-width: 910px) {
+        width: 100%;
+      }
 
       .links__title {
         height: 40px; // ???
@@ -261,6 +381,10 @@ const { isModalOpen, openModal, closeModal } = useModal()
         display: flex;
         flex-direction: column;
         gap: $m;
+
+        @media (max-width: 1220px) {
+          align-items: center;
+        }
       }
     }
   }
@@ -271,6 +395,10 @@ const { isModalOpen, openModal, closeModal } = useModal()
     flex-direction: column;
     align-items: end;
     gap: $xxl;
+
+    @media (max-width: 1220px) {
+      align-items: center;
+    }
 
     .footer__text--gray {
       color: $gray-200;
@@ -433,6 +561,138 @@ const { isModalOpen, openModal, closeModal } = useModal()
     opacity: 1;
     scale: 1;
     transition: opacity 0.2s ease-out 0.1s, scale 0.2s ease-out 0.1s;
+  }
+}
+
+// Responsive Media Queries
+@media (max-width: 1024px) {
+  .layout__header .layout__nav {
+    padding: $xl;
+  }
+  
+  .layout__footer {
+    padding: $xl;
+    margin-bottom: 4rem;
+  }
+  
+  .scroll-top-button {
+    bottom: $xl;
+    right: $xl;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout__header .layout__nav {
+    padding: $l;
+  }
+  
+  .nav__list, .nav__btns {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .mobile-menu {
+    display: block;
+  }
+  
+  .layout__footer {
+    padding: $l;
+    gap: $xl;
+    margin-bottom: 3rem;
+    
+    .footer__links {
+      gap: $xl;
+    }
+  }
+  
+  .scroll-top-button {
+    bottom: $l;
+    right: $l;
+    width: 3rem;
+    height: 3rem;
+    
+    .material-symbols-rounded {
+      font-size: 1.75rem;
+    }
+    
+    &::after {
+      display: none;
+    }
+    
+    &.bottom {
+      width: 3rem;
+      
+      .material-symbols-rounded {
+        transform: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .layout__header .layout__nav {
+    padding: $m $l;
+  }
+  
+  .mobile-menu {
+    top: 69px; // Adjusted header height
+    height: calc(100vh - 69px);
+    
+    &__list {
+      padding: $l;
+      gap: $l;
+    }
+  }
+  
+  .layout__footer {
+    padding: $m;
+    margin-bottom: 2rem;
+    
+    .footer__links {
+      gap: $l;
+      
+      .links {
+        .links__title {
+          height: auto;
+          margin-bottom: $s;
+        }
+        
+        .links__list {
+          gap: $s;
+        }
+      }
+    }
+    
+    .footer__info {
+      gap: $l;
+      
+      .footer__icons {
+        gap: $m;
+        
+        .footer__icon {
+          height: 40px;
+          width: 40px;
+        }
+      }
+    }
+  }
+  
+  .scroll-top-button {
+    bottom: $m;
+    right: $m;
+    width: 2.75rem;
+    height: 2.75rem;
+    
+    .material-symbols-rounded {
+      font-size: 1.5rem;
+    }
+    
+    &.bottom {
+      width: 2.75rem;
+    }
   }
 }
 </style>

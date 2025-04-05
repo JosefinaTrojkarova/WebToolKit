@@ -267,6 +267,14 @@ const toggleSection = (section: SectionKey) => {
             transform-origin: top;
             overflow: hidden;
 
+            @media (max-width: 768px) {
+                padding: $l;
+            }
+
+            @media (max-width: 480px) {
+                padding: $m;
+            }
+
             ul {
                 list-style-type: none;
                 padding: 0;

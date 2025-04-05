@@ -20,12 +20,6 @@
           <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
         </div>
       </div>
-      <!-- <label class="select" @click.stop>
-        <input class="checkbox-default" type="checkbox">
-        <span class="checkbox">
-          <span class="material-symbols-rounded check-icon">check</span>
-        </span>
-      </label> -->
     </div>
     <div class="main">
       <p class="item-description">{{ data.description }}</p>
@@ -38,12 +32,6 @@
   </div>
 
   <div v-else-if="alt === 'main'" class="alternative" id="main">
-    <!-- <label class="select" @click.stop>
-      <input class="checkbox-default" type="checkbox">
-      <span class="checkbox">
-        <span class="material-symbols-rounded check-icon">check</span>
-      </span>
-    </label> -->
     <img class="logo" :src="data.logo || ''" :alt="data.name" />
     <div class="info">
       <h3>{{ data.name }}</h3>
@@ -93,14 +81,8 @@
     </div>
   </div>
 
-  <NuxtLink v-else :to="`/tool/${data.name.toLowerCase().replace(/\s+/g, '-')}`">
+  <NuxtLink v-else :to="`/tool/${data.name.toLowerCase().replace(/\s+/g, '-')}`" class="wrapper">
     <div v-if="data.pros !== undefined" class="alternative">
-      <!-- <label class="select" @click.stop>
-        <input class="checkbox-default" type="checkbox">
-        <span class="checkbox">
-          <span class="material-symbols-rounded check-icon">check</span>
-        </span>
-      </label> -->
       <img class="logo" :src="data.logo" :alt="data.name" />
       <div class="info">
         <h3>{{ data.name }}</h3>
@@ -130,14 +112,12 @@
       <div class="rating">
         <Stars :rating="data.rating.stars" />
         <p class="b2">{{ data.rating.stars.toFixed(1) }}/5</p>
-        <!-- <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p> -->
       </div>
       <div class="pros">
         <p class="pros-header b1"><span class="material-symbols-rounded">thumb_up</span> Pros
         </p>
         <div v-for="(pro) in sortAndLimitItems(data.pros)" class="opinion-row">
           <p>{{ pro.name }}</p>
-          <!-- <p class="b1">{{ pro.votes }}</p> -->
         </div>
       </div>
       <div class="cons">
@@ -145,7 +125,6 @@
         </p>
         <div v-for="(con) in sortAndLimitItems(data.cons)" class="opinion-row">
           <p>{{ con.name }}</p>
-          <!-- <p class="b1">{{ con.votes }}</p> -->
         </div>
       </div>
     </div>
@@ -171,12 +150,6 @@
             <p class="p2"><span class="b2">{{ data.rating.saves }}</span> saves</p>
           </div>
         </div>
-        <!-- <label class="select" @click.stop>
-          <input class="checkbox-default" type="checkbox">
-          <span class="checkbox">
-            <span class="material-symbols-rounded check-icon">check</span>
-          </span>
-        </label> -->
       </div>
       <div class="main">
         <p class="item-description">{{ data.description }}</p>
@@ -217,6 +190,10 @@ const sortAndLimitItems = (items: Opinion[]) => {
     box-shadow: none;
     transform: none;
   }
+}
+
+.wrapper {
+  max-width: calc(100vw - 4rem);
 }
 
 .alternative {
@@ -350,11 +327,27 @@ const sortAndLimitItems = (items: Opinion[]) => {
     border: 1px solid $primary-200;
     border-radius: $xl;
   }
+  
+  .info {
+    h3 {
+      margin-bottom: $xs;
+      word-break: break-word;
+    }
+    
+    p {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 
   .categories {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap-reverse;
+    flex-wrap: wrap;
 
     width: 100%;
     flex-grow: 1;
@@ -376,14 +369,30 @@ const sortAndLimitItems = (items: Opinion[]) => {
     flex-direction: column;
 
     gap: $xs;
+    
+    .tag--static--pricing,
+    .tag--static--licensing {
+      display: flex;
+      align-items: center;
+      gap: $xs;
+      
+      span {
+        font-size: 1.25rem;
+      }
+    }
   }
 
   .rating {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
 
     gap: $m;
+    
+    @media (max-width: 400px) {
+      justify-content: center;
+    }
   }
 
   .pros,
@@ -407,12 +416,47 @@ const sortAndLimitItems = (items: Opinion[]) => {
       justify-content: space-between;
 
       gap: $s;
+      
+      p {
+        &:first-child {
+          flex: 1;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        &:last-child {
+          white-space: nowrap;
+        }
+      }
     }
   }
 
   &:hover {
     box-shadow: $shadow-300;
     transform: translateY(-0.3rem);
+  }
+  
+  @media (max-width: 480px) {
+    padding: $l;
+    
+    .logo {
+      width: 5rem;
+      height: 5rem;
+    }
+    
+    .pros,
+    .cons {
+      .pros-header,
+      .cons-header {
+        span {
+          font-size: 1.25rem;
+        }
+      }
+    }
   }
 }
 
@@ -424,13 +468,110 @@ const sortAndLimitItems = (items: Opinion[]) => {
   background-color: $system-bg;
 
   .heading {
+    display: flex;
+    gap: $m;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
     .logo {
-      min-width: 7rem;
-      min-height: 7rem;
+      box-sizing: border-box;
+      width: 6.25rem;
+      height: 6.25rem;
+      padding: $s;
+      border: 1px solid $primary-200;
+      border-radius: $xl;
+      
+      @media (max-width: 480px) {
+        width: 5rem;
+        height: 5rem;
+      }
     }
 
     .content-wrapper {
-      display: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      
+      h3 {
+        margin-bottom: $xs;
+        word-break: break-word;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $l;
+        
+        @media (max-width: 480px) {
+          gap: $m;
+        }
+
+        .tag {
+          display: flex;
+          align-items: center;
+          gap: $xs;
+
+          &--pricing {
+            color: $system-success;
+
+            .text {
+              color: inherit;
+              font-weight: 600;
+              height: 1.3rem;
+            }
+
+            .icon {
+              font-size: 1.5rem;
+            }
+          }
+
+          &--licensing {
+            color: $primary-400;
+
+            .text {
+              color: inherit;
+              font-weight: 600;
+              height: 1.3rem;
+            }
+
+            .icon {
+              font-size: 1.25rem;
+            }
+          }
+
+          .icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 1rem;
+            font-variation-settings:
+              'opsz' 20,
+              'wght' 400,
+              'FILL' 0,
+              'GRAD' 100;
+          }
+        }
+      }
+
+      .rating {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: $m;
+        
+        @media (max-width: 480px) {
+          gap: $s;
+        }
+        
+        @media (max-width: 400px) {
+          p {
+            display: none;
+          }
+        }
+      }
     }
 
     .select {
@@ -467,33 +608,47 @@ const sortAndLimitItems = (items: Opinion[]) => {
   .heading {
     display: flex;
     gap: $m;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
 
     .logo {
       box-sizing: border-box;
-
       width: 6.25rem;
       height: 6.25rem;
-
       padding: $s;
-
       border: 1px solid $primary-200;
       border-radius: $xl;
+      
+      @media (max-width: 480px) {
+        width: 5rem;
+        height: 5rem;
+      }
     }
 
     .content-wrapper {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      
+      h3 {
+        margin-bottom: $xs;
+        word-break: break-word;
+      }
 
       .tags {
         display: flex;
-
+        flex-wrap: wrap;
         gap: $l;
+        
+        @media (max-width: 480px) {
+          gap: $m;
+        }
 
         .tag {
           display: flex;
           align-items: center;
-
           gap: $xs;
 
           &--pricing {
@@ -528,9 +683,7 @@ const sortAndLimitItems = (items: Opinion[]) => {
             display: flex;
             justify-content: center;
             align-items: center;
-
             width: 1rem;
-
             font-variation-settings:
               'opsz' 20,
               'wght' 400,
@@ -544,8 +697,18 @@ const sortAndLimitItems = (items: Opinion[]) => {
         display: flex;
         flex-direction: row;
         align-items: center;
-
+        flex-wrap: wrap;
         gap: $m;
+        
+        @media (max-width: 480px) {
+          gap: $s;
+        }
+        
+        @media (max-width: 400px) {
+          p {
+            display: none;
+          }
+        }
       }
     }
 
@@ -675,6 +838,36 @@ const sortAndLimitItems = (items: Opinion[]) => {
   &:hover {
     box-shadow: $shadow-300;
     transform: translateY(-0.3rem);
+  }
+  
+  @media (max-width: 480px) {
+    padding: $l;
+    gap: $s;
+  }
+}
+
+.static-category {
+  display: flex;
+  align-items: center;
+  
+  padding: $xs $s;
+  
+  background-color: $primary-100;
+  border-radius: $xxl;
+  
+  p {
+    font-size: 0.875rem;
+    line-height: 1;
+    color: $primary-400;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 480px) {
+    padding: calc($xs - 2px) $s;
+    
+    p {
+      font-size: 0.75rem;
+    }
   }
 }
 </style>

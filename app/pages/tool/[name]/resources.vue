@@ -113,6 +113,16 @@ main {
 
   padding: 0 $xxl;
   gap: $xxl;
+  
+  @media (max-width: 768px) {
+    padding: 0 $xl;
+    gap: $xl;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 $l;
+    gap: $l;
+  }
 
   .resource-cta {
     display: flex;
@@ -127,6 +137,16 @@ main {
 
     border: 1px solid $primary-200;
     border-radius: $m;
+    
+    @media (max-width: 768px) {
+      padding: $l;
+    }
+    
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: $m;
+      text-align: center;
+    }
   }
 
   .content-wrapper {
@@ -142,6 +162,14 @@ main {
       flex-direction: column;
 
       gap: $xxl;
+      
+      @media (max-width: 768px) {
+        gap: $xl;
+      }
+      
+      @media (max-width: 480px) {
+        gap: $l;
+      }
 
       width: 100%;
 
@@ -174,11 +202,30 @@ main {
         .resources-wrapper {
           display: flex;
           flex-direction: row;
+          overflow-x: auto;
+          padding-bottom: $m;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: thin;
 
           gap: $m;
 
           width: 100%;
-          height: 30rem;
+          height: auto;
+          min-height: 20rem;
+          
+          &::-webkit-scrollbar {
+            height: 6px;
+          }
+          
+          &::-webkit-scrollbar-track {
+            background: $primary-100;
+            border-radius: 10px;
+          }
+          
+          &::-webkit-scrollbar-thumb {
+            background: $primary-300;
+            border-radius: 10px;
+          }
         }
       }
     }
