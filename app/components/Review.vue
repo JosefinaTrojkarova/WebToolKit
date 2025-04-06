@@ -125,6 +125,7 @@ const handleLineLimit = ref(props.limit || '')
 
 <style scoped lang="scss">
 .review {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

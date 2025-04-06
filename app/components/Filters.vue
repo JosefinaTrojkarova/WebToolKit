@@ -109,6 +109,7 @@ onUnmounted(() => {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 
   width: 100%;
 
@@ -121,6 +122,7 @@ onUnmounted(() => {
   transition: border-bottom-width 0.1s ease;
 
   .filters {
+    flex-wrap: wrap;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -131,12 +133,14 @@ onUnmounted(() => {
       display: flex;
       flex-direction: row;
       align-items: center;
+      flex-wrap: wrap;
 
       gap: $s;
     }
   }
 
   .sort {
+    flex-wrap: wrap;
     display: flex;
     flex-direction: row;
     align-items: center;
